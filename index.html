@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#1a1a2e">
     <meta name="description" content="BLD Trainer - trening algorytmów blindcubing 3x3">
     <link rel="manifest" href="manifest.json">
@@ -81,9 +81,9 @@
         <div id="results-screen" class="screen">
             <h2>Wyniki sesji</h2>
             <div id="session-summary" class="session-summary"></div>
-            <div class="results-header">
-                <span id="sort-case" class="sort-btn" data-sort="case">Case <span class="sort-arrow"></span></span>
-                <span id="sort-time" class="sort-btn active" data-sort="time">Czas <span class="sort-arrow">↓</span></span>
+            <div class="results-header" role="group" aria-label="Sortowanie wyników">
+                <span id="sort-case" class="sort-btn" data-sort="case" tabindex="0" role="button">Case <span class="sort-arrow"></span></span>
+                <span id="sort-time" class="sort-btn active" data-sort="time" tabindex="0" role="button">Czas <span class="sort-arrow">↓</span></span>
             </div>
             <div id="results-list" class="results-list"></div>
             <div class="results-actions">

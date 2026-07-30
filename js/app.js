@@ -337,6 +337,8 @@ function renderResultsList() {
     sorted.forEach(r => {
         const item = document.createElement('div');
         item.className = 'result-item removable';
+        item.tabIndex = 0;
+        item.setAttribute('role', 'button');
         if (!currentGame.results.has(r.id)) {
             item.classList.add('removed');
         }
@@ -344,12 +346,19 @@ function renderResultsList() {
             <span class="case">${r.case}</span>
             <span class="time">${r.time.toFixed(2)}s</span>
         `;
-        item.addEventListener('click', () => {
+        const toggleResult = () => {
             item.classList.toggle('removed');
             if (item.classList.contains('removed')) {
                 currentGame.removeResult(r.id);
             } else {
                 currentGame.results.set(r.id, r.time);
+            }
+        };
+        item.addEventListener('click', toggleResult);
+        item.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleResult();
             }
         });
         listContainer.appendChild(item);
@@ -359,8 +368,20 @@ function renderResultsList() {
 }
 
 function initResultsSorting() {
-    document.getElementById('sort-case').onclick = () => toggleSort('case');
-    document.getElementById('sort-time').onclick = () => toggleSort('time');
+    const caseBtn = document.getElementById('sort-case');
+    const timeBtn = document.getElementById('sort-time');
+
+    const handleKey = (btn, column) => (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            toggleSort(column);
+        }
+    };
+
+    caseBtn.onclick = () => toggleSort('case');
+    timeBtn.onclick = () => toggleSort('time');
+    caseBtn.onkeydown = handleKey(caseBtn, 'case');
+    timeBtn.onkeydown = handleKey(timeBtn, 'time');
 }
 
 function toggleSort(column) {
