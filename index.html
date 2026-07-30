@@ -15,38 +15,44 @@
     <div id="app">
         <!-- Main Menu -->
         <div id="menu-screen" class="screen active">
-            <div id="pull-to-refresh" class="pull-to-refresh">
-                <span class="pull-indicator">↓ Pociągnij aby odświeżyć</span>
-            </div>
             <button id="theme-toggle" class="theme-toggle" title="Zmień motyw">🌙</button>
             <h1>BLD Trainer</h1>
             <div class="menu-buttons">
-                <button id="btn-edges" class="btn btn-primary">Edges</button>
-                <button id="btn-corners" class="btn btn-primary">Corners</button>
+                <button id="btn-edges" class="btn btn-primary">Krawędzie</button>
+                <button id="btn-corners" class="btn btn-primary">Rogi</button>
             </div>
             <div class="menu-buttons secondary">
                 <button id="btn-import" class="btn btn-secondary">Import</button>
-                <button id="btn-stats" class="btn btn-secondary">Stats</button>
+                <button id="btn-stats" class="btn btn-secondary">Statystyki</button>
             </div>
+            <button id="btn-help" class="btn btn-help">?</button>
             <div class="version">v2026-07-30</div>
         </div>
 
         <!-- Buffer Choice -->
         <div id="buffer-screen" class="screen">
+            <button class="btn-logo">BLD Trainer</button>
             <h2>Wybierz bufor</h2>
             <div id="buffer-list" class="button-list"></div>
-            <button class="btn btn-back" data-back="menu-screen">←</button>
-            <button class="btn btn-home" title="Ekran główny">🏠</button>
         </div>
 
         <!-- Subset Choice -->
         <div id="subset-screen" class="screen">
-            <h2>Wybierz podzbiór</h2>
+            <button class="btn-logo">BLD Trainer</button>
+            <h2 id="subset-title">Wybierz podzbiór</h2>
+            <button id="btn-all" class="btn btn-primary btn-all">Wszystkie</button>
+            <div class="subset-modes">
+                <button id="btn-drill-weak" class="btn btn-mode btn-danger">Słabe punkty</button>
+                <button id="btn-maintain" class="btn btn-mode btn-success">Utrzymanie</button>
+                <button id="btn-learn-new" class="btn btn-mode btn-warning">Nowe</button>
+            </div>
             <div class="subset-buttons">
-                <button id="btn-all" class="btn btn-primary">All</button>
-                <button id="btn-slow" class="btn btn-secondary">Slow</button>
-                <button id="btn-unstable" class="btn btn-secondary">Unstable</button>
-                <button id="btn-difficult" class="btn btn-secondary">Difficult</button>
+                <button id="btn-slow" class="btn btn-secondary">Wolne</button>
+                <button id="btn-unstable" class="btn btn-secondary">Niestabilne</button>
+                <button id="btn-regressing" class="btn btn-secondary">Regres</button>
+                <button id="btn-fast" class="btn btn-secondary">Szybkie</button>
+                <button id="btn-difficult" class="btn btn-secondary">Trudne</button>
+                <button id="btn-new" class="btn btn-secondary">Nowe</button>
             </div>
             <div id="subset-custom" class="subset-custom">
                 <h3>Custom</h3>
@@ -56,16 +62,20 @@
                     <button id="btn-add-target" class="btn btn-small">+</button>
                     <button id="btn-remove-target" class="btn btn-small">−</button>
                 </div>
+                <div class="inversion-toggle">
+                    <label>
+                        <input type="checkbox" id="include-inverse" checked>
+                        Z inwersją (AB + BA)
+                    </label>
+                </div>
                 <div id="selected-cases" class="selected-cases"></div>
             </div>
             <button id="btn-start-game" class="btn btn-primary btn-large">Start</button>
-            <button class="btn btn-back" data-back="buffer-screen">←</button>
-            <button class="btn btn-home" title="Ekran główny">🏠</button>
         </div>
 
         <!-- Game Screen -->
         <div id="game-screen" class="screen">
-            <button id="btn-exit-game" class="btn btn-exit">×</button>
+            <button class="btn-logo btn-logo-small">BLD Trainer</button>
             <div class="game-top">
                 <span id="game-progress">1/20</span>
                 <span id="game-avg"></span>
@@ -75,17 +85,14 @@
                 <div id="game-alg" class="game-alg"></div>
                 <div id="game-next-preview" class="game-next-preview"></div>
             </div>
-            <div class="game-bottom">
-                <span id="game-last-result"></span>
-                <span id="game-next"></span>
-            </div>
             <div id="game-tap-area" class="game-tap-area">
-                <span class="tap-hint">Tap to start / stop</span>
+                <div id="game-timer" class="game-timer"></div>
             </div>
         </div>
 
         <!-- Results Screen -->
         <div id="results-screen" class="screen">
+            <button class="btn-logo">BLD Trainer</button>
             <h2>Wyniki sesji</h2>
             <div id="session-summary" class="session-summary"></div>
             <div class="results-header" role="group" aria-label="Sortowanie wyników">
@@ -97,19 +104,25 @@
                 <button id="btn-save-results" class="btn btn-primary">Zapisz</button>
                 <button id="btn-discard-results" class="btn btn-secondary">Odrzuć</button>
             </div>
-            <button class="btn btn-home" title="Ekran główny">🏠</button>
         </div>
 
         <!-- Stats Screen -->
         <div id="stats-screen" class="screen">
+            <button class="btn-logo">BLD Trainer</button>
             <h2>Statystyki</h2>
-            <div id="global-stats" class="global-stats"></div>
-            <button class="btn btn-back" data-back="menu-screen">←</button>
-            <button class="btn btn-home" title="Ekran główny">🏠</button>
+            <div id="stats-content" class="stats-content">
+                <div class="stats-tabs">
+                    <button class="stats-tab active" data-tab="global">Ogólne</button>
+                    <button class="stats-tab" data-tab="edges">Krawędzie</button>
+                    <button class="stats-tab" data-tab="corners">Rogi</button>
+                </div>
+                <div id="stats-panel" class="stats-panel"></div>
+            </div>
         </div>
 
         <!-- Import Screen -->
         <div id="import-screen" class="screen">
+            <button class="btn-logo">BLD Trainer</button>
             <h2>Import algorytmów</h2>
             <div class="import-options">
                 <label class="file-input-label">
@@ -118,8 +131,117 @@
                 </label>
                 <p id="import-status"></p>
             </div>
-            <button class="btn btn-back" data-back="menu-screen">←</button>
-            <button class="btn btn-home" title="Ekran główny">🏠</button>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="help-modal" class="modal">
+        <div class="modal-content modal-help">
+            <h3>Instrukcja</h3>
+            <div class="help-content">
+                <section>
+                    <h4>Import algorytmów</h4>
+                    <p>Kliknij <strong>Import</strong> i wybierz plik.</p>
+
+                    <p><strong>Nazwa arkusza Excel:</strong></p>
+                    <pre>edges_UF      (krawędzie, bufor UF)
+corners_UFR   (rogi, bufor UFR)</pre>
+
+                    <p><strong>Format 1: Tabela NxN</strong></p>
+                    <p>Nagłówki i pierwsza kolumna to targety. W komórkach algorytmy.</p>
+<pre>       A (UB)         B (UR)         C (UL)
+A (UB)    -         R U R' U'      L' U' L U
+B (UR) R' U' R U       -           M2 U M2 U'
+C (UL) L U L' U'    M2 U' M2 U        -</pre>
+                    <p><code>A</code> = letter pair (wyświetlany), <code>(UB)</code> = sticker</p>
+
+                    <p><strong>Format 2: Lista</strong></p>
+<pre>A (UB)    B (UR)    R U R' U'
+A (UB)    C (UL)    L' U' L U
+B (UR)    C (UL)    M2 U M2 U'</pre>
+                    <p>Kolumny: target1, target2, algorytm</p>
+
+                    <p><strong>Format TXT:</strong></p>
+<pre># edges_UF
+UB UR: R U R' U'
+UB UL: L' U' L U
+
+# corners_UFR
+UBL URF: R U R' U'</pre>
+                    <p>Sekcja <code># typ_bufor</code>, potem <code>target1 target2: algorytm</code></p>
+
+                    <p><strong>Oznaczanie trudnych:</strong> Dodaj 💩 w algorytmie.</p>
+                </section>
+
+                <section>
+                    <h4>Gra</h4>
+                    <ol>
+                        <li>Wybierz typ: <strong>Krawędzie</strong> lub <strong>Rogi</strong></li>
+                        <li>Wybierz bufor (jeśli masz kilka)</li>
+                        <li>Wybierz tryb lub konkretne case'y</li>
+                        <li>Kliknij <strong>Start</strong></li>
+                        <li>Po odliczaniu dotknij ekran gdy wykonasz algorytm</li>
+                        <li>Po sesji zapisz lub odrzuć wyniki</li>
+                    </ol>
+                </section>
+
+                <section>
+                    <h4>Tryby treningowe</h4>
+                    <ul>
+                        <li><strong>Słabe punkty</strong> — wolne + niestabilne + regres + trudne</li>
+                        <li><strong>Utrzymanie</strong> — szybkie + średnie (utrzymanie formy)</li>
+                        <li><strong>Nowe</strong> — case'y z &lt;5 wykonań</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h4>Kategorie</h4>
+                    <ul>
+                        <li><strong>Szybkie</strong> — avg &lt; 80% globalnej średniej</li>
+                        <li><strong>Średnie</strong> — między 80-120%</li>
+                        <li><strong>Wolne</strong> — avg &gt; 120% globalnej średniej</li>
+                        <li><strong>Niestabilne</strong> — wysokie odchylenie std.</li>
+                        <li><strong>Regres</strong> — ostatnie 5 gorsze od poprzednich 5</li>
+                        <li><strong>Nowe</strong> — &lt;5 wykonań</li>
+                        <li><strong>Trudne</strong> — ręcznie oznaczone</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h4>Statystyki</h4>
+                    <p>Zakładki: Ogólne / Krawędzie / Rogi</p>
+                    <p>Per bufor: średnia, odch. std., rozkład kategorii, trendy.</p>
+                    <p>Kliknij na case w tabeli aby edytować algorytm.</p>
+                </section>
+
+                <section>
+                    <h4>Wyniki sesji</h4>
+                    <ul>
+                        <li><strong>✎</strong> — edytuj algorytm</li>
+                        <li><strong>!</strong> — oznacz jako trudny</li>
+                        <li><strong>×</strong> — usuń wynik z sesji</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h4>Nawigacja</h4>
+                    <p>Kliknij <strong>BLD Trainer</strong> na górze aby wrócić do menu.</p>
+                </section>
+            </div>
+            <button id="help-modal-close" class="btn btn-primary">Zamknij</button>
+        </div>
+    </div>
+
+    <!-- Edit Algorithm Modal -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <h3 id="edit-modal-title">Edytuj algorytm</h3>
+            <div class="modal-case" id="edit-modal-case"></div>
+            <textarea id="edit-modal-alg" rows="3" placeholder="Algorytm..."></textarea>
+            <div class="modal-actions">
+                <button id="edit-modal-save" class="btn btn-primary">Zapisz</button>
+                <button id="edit-modal-cancel" class="btn btn-secondary">Anuluj</button>
+            </div>
         </div>
     </div>
 

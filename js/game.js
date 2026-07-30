@@ -117,6 +117,13 @@ class Game {
         for (const [id, time] of this.results) {
             promises.push(appendResult(id, time));
         }
+
+        if (this.difficultCases) {
+            for (const id of this.difficultCases) {
+                promises.push(setDifficult(id, true));
+            }
+        }
+
         await Promise.all(promises);
     }
 }

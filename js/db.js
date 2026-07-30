@@ -133,3 +133,57 @@ async function clearAllData() {
         request.onerror = () => reject(request.error);
     });
 }
+
+async function setDifficult(id, difficult) {
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction('algorithms', 'readwrite');
+        const store = tx.objectStore('algorithms');
+        const getRequest = store.get(id);
+
+        getRequest.onsuccess = () => {
+            const alg = getRequest.result;
+            if (alg) {
+                alg.difficult = difficult;
+                alg.updatedAt = Date.now();
+                const putRequest = store.put(alg);
+                putRequest.onsuccess = () => resolve();
+                putRequest.onerror = () => reject(putRequest.error);
+            } else {
+                reject(new Error('Algorithm not found'));
+            }
+        };
+        getRequest.onerror = () => reject(getRequest.error);
+    });
+}
+
+async function getAlgorithmById(id) {
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction('algorithms', 'readonly');
+        const store = tx.objectStore('algorithms');
+        const request = store.get(id);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+    });
+}
+
+async function updateAlgorithmText(id, newAlgText) {
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction('algorithms', 'readwrite');
+        const store = tx.objectStore('algorithms');
+        const getRequest = store.get(id);
+
+        getRequest.onsuccess = () => {
+            const alg = getRequest.result;
+            if (alg) {
+                alg.algorithms[0].alg = newAlgText;
+                alg.updatedAt = Date.now();
+                const putRequest = store.put(alg);
+                putRequest.onsuccess = () => resolve();
+                putRequest.onerror = () => reject(putRequest.error);
+            } else {
+                reject(new Error('Algorithm not found'));
+            }
+        };
+        getRequest.onerror = () => reject(getRequest.error);
+    });
+}

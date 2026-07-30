@@ -4,31 +4,235 @@ PWA do treningu algorytmów blindcubing (3BLD) na Rubika 3x3.
 
 **Live:** https://bldtrainer.grzegorzpacewicz.pl
 
+**Repo:** https://github.com/GrzegorzPacewicz/bldtrainer
+
 ## Funkcje
 
 - Import algorytmów z Excel (.xlsx) lub TXT
-- Trening z timerem (countdown 3-2-1, automatyczny start)
-- Wybór podzbioru: All, Slow, Unstable, Difficult
-- Filtrowanie po letter pairs
-- Statystyki sesji i globalne
+- Trening z timerem i live podglądem czasu
+- Inteligentne tryby treningowe (Słabe punkty, Utrzymanie, Nowe)
+- Automatyczna kategoryzacja case'ów (Szybkie/Wolne/Niestabilne/Regres)
+- Szczegółowe statystyki per bufor z trendami
+- Edycja algorytmów w aplikacji
+- Oznaczanie trudnych case'ów
 - Działa offline (PWA)
 
-## Format importu Excel
+---
 
-Nazwa arkusza: `{pieceType}_{buffer}` np. `edges_UF`, `corners_UFR`
+## Import algorytmów
 
-Nagłówki w formacie: `A (UL)` gdzie:
-- `A` = letter pair (wyświetlane w grze)
-- `(UL)` = sticker/target (wewnętrzny)
+### Nazwa arkusza Excel
 
-Tabela NxN z algorytmami w komórkach.
+Nazwa arkusza określa typ elementów i bufor:
 
-## Stack
+```
+edges_UF       → krawędzie, bufor UF
+edges_DF       → krawędzie, bufor DF
+corners_UFR    → rogi, bufor UFR
+corners_UBL    → rogi, bufor UBL
+```
 
-- Vanilla JS/CSS/HTML
-- IndexedDB (lokalny storage)
-- xlsx.js (import exceli)
-- Service Worker (network-first)
+Format: `{edges|corners}_{BUFOR}`
+
+---
+
+### Format Excel: Tabela NxN
+
+Najwygodniejszy format dla pełnego zestawu algorytmów.
+
+**Struktura:**
+- Wiersz 1 (nagłówki): targety dla pierwszego elementu pary
+- Kolumna A (od wiersza 2): targety dla drugiego elementu pary
+- Komórki: algorytmy
+
+**Przykład arkusza `edges_UF`:**
+
+|        | A (UB)      | B (UR)      | C (UL)      | D (LU)      |
+|--------|-------------|-------------|-------------|-------------|
+| A (UB) | -           | R U R' U'   | L' U' L U   | M' U2 M     |
+| B (UR) | R' U' R U   | -           | M2 U M2 U'  | L U L'      |
+| C (UL) | L U L' U'   | M2 U' M2 U  | -           | U' L' U L   |
+| D (LU) | M U2 M'     | L' U' L     | U L U' L'   | -           |
+
+**Format nagłówków:**
+
+```
+A (UB)
+↑   ↑
+│   └── sticker (wewnętrzny identyfikator)
+└────── letter pair (wyświetlany w grze)
+```
+
+- **Letter pair** = litera/y przed nawiasem (np. `A`, `AB`, `Ko`)
+- **Sticker** = zawartość nawiasu (np. `UB`, `UR`, `UFR`)
+
+Jeśli nie używasz letter pairs, możesz wpisać sam sticker:
+
+|      | UB          | UR          | UL          |
+|------|-------------|-------------|-------------|
+| UB   | -           | R U R' U'   | L' U' L U   |
+| UR   | R' U' R U   | -           | M2 U M2 U'  |
+| UL   | L U L' U'   | M2 U' M2 U  | -           |
+
+---
+
+### Format Excel: Lista
+
+Prostszy format — każdy wiersz to jeden case.
+
+**Kolumny:** Target 1 | Target 2 | Algorytm
+
+**Przykład arkusza `edges_UF`:**
+
+| A          | B          | C               |
+|------------|------------|-----------------|
+| A (UB)     | B (UR)     | R U R' U'       |
+| A (UB)     | C (UL)     | L' U' L U       |
+| A (UB)     | D (LU)     | M' U2 M         |
+| B (UR)     | A (UB)     | R' U' R U       |
+| B (UR)     | C (UL)     | M2 U M2 U'      |
+
+---
+
+### Format TXT
+
+Plik tekstowy z sekcjami.
+
+```
+# edges_UF
+UB UR: R U R' U'
+UB UL: L' U' L U
+UB LU: M' U2 M
+UR UB: R' U' R U
+UR UL: M2 U M2 U'
+
+# edges_DF
+FD BD: M2 U2 M2
+FD RD: R' U R U' M2
+
+# corners_UFR
+UBL URB: R U R' U'
+UBL UFL: L' U' L U
+```
+
+**Format:**
+- `# typ_bufor` — nagłówek sekcji
+- `target1 target2: algorytm` — definicja case'a
+
+---
+
+### Oznaczanie trudnych case'ów
+
+Dodaj emoji 💩 gdziekolwiek w algorytmie:
+
+```
+R U R' U' 💩
+💩 L' U' L U
+```
+
+Case zostanie oznaczony jako "Trudny" i pojawi się w trybie **Słabe punkty**.
+
+---
+
+## Gra
+
+1. Wybierz typ: **Krawędzie** lub **Rogi**
+2. Wybierz bufor (jeśli masz kilka)
+3. Wybierz tryb lub konkretne case'y
+4. Kliknij **Start**
+5. Po odliczaniu 3-2-1 wykonaj algorytm i dotknij ekran
+6. Timer pokazuje czas w trakcie wykonania
+7. Po sesji zapisz lub odrzuć wyniki
+
+---
+
+## Tryby treningowe
+
+| Tryb | Opis |
+|------|------|
+| **Wszystkie** | Wszystkie case'y dla bufora |
+| **Słabe punkty** | Wolne + niestabilne + regres + trudne |
+| **Utrzymanie** | Szybkie + średnie (utrzymanie formy) |
+| **Nowe** | Case'y z <5 wykonań |
+
+### Kategorie szczegółowe
+
+| Kategoria | Logika |
+|-----------|--------|
+| **Szybkie** | Średnia < 80% globalnej średniej bufora |
+| **Wolne** | Średnia > 120% globalnej średniej bufora |
+| **Niestabilne** | Odch. std. > 150% globalnego |
+| **Regres** | Ostatnie 5 wyników gorsze od poprzednich 5 o >15% |
+| **Nowe** | Mniej niż 5 wykonań |
+| **Trudne** | Ręcznie oznaczone (💩 lub przycisk !) |
+
+### Wybór niestandardowy
+
+1. Wybierz target z list rozwijanych
+2. Kliknij **+** aby dodać do selekcji
+3. Kliknij **−** aby usunąć z selekcji
+4. Checkbox **Z inwersją** dodaje automatycznie AB → BA
+
+---
+
+## Statystyki
+
+Trzy zakładki: **Ogólne** / **Krawędzie** / **Rogi**
+
+### Per bufor:
+- Liczba case'ów (z wynikami / wszystkie)
+- Łączna liczba wykonań
+- Średni czas i odchylenie std.
+- Rozkład kategorii (kolorowe badges)
+- Trendy (↑ poprawa / → stabilne / ↓ regres)
+
+### Tabela case'ów
+
+Kliknij "Wszystkie case'y" aby rozwinąć:
+
+| Kolumna | Opis |
+|---------|------|
+| Case | Letter pair (! = trudny) |
+| Wyk. | Liczba wykonań |
+| Avg | Średni czas |
+| Std | Odchylenie standardowe |
+| Best | Najlepszy czas |
+| Worst | Najgorszy czas |
+| Kat. | S=szybki, Ś=średni, W=wolny, N=niestabilny, ?=nowy, R=regres |
+| Tr. | ↑=poprawa, →=stabilny, ↓=regres |
+
+**Kliknij na wiersz aby edytować algorytm.**
+
+---
+
+## Wyniki sesji
+
+Po zakończeniu sesji:
+
+| Przycisk | Akcja |
+|----------|-------|
+| **✎** | Edytuj algorytm |
+| **!** | Oznacz jako trudny |
+| **×** | Usuń wynik z sesji |
+| **Zapisz** | Zapisz wszystkie wyniki do bazy |
+| **Odrzuć** | Nie zapisuj wyników |
+
+---
+
+## Nawigacja
+
+- **BLD Trainer** (na górze każdego ekranu) → powrót do menu
+- **?** (na ekranie głównym) → instrukcja w aplikacji
+
+---
+
+## Stack techniczny
+
+- Vanilla JS/CSS/HTML (zero frameworków)
+- IndexedDB (lokalny storage w przeglądarce)
+- xlsx.js (parsowanie plików Excel)
+- Service Worker (network-first, działa offline)
+- PWA (instalowalna na telefonie)
 
 ## Uruchomienie lokalne
 
