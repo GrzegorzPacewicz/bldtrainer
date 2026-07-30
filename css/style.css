@@ -5,6 +5,9 @@
 }
 
 :root {
+    font-size: 16px;
+
+    /* Dark theme (default) */
     --bg-primary: #1a1a2e;
     --bg-secondary: #16213e;
     --bg-card: #0f3460;
@@ -14,6 +17,18 @@
     --text-secondary: #aaa;
     --success: #4ade80;
     --warning: #fbbf24;
+}
+
+[data-theme="light"] {
+    --bg-primary: #f5f5f5;
+    --bg-secondary: #e8e8e8;
+    --bg-card: #d0d0d0;
+    --accent: #d63850;
+    --accent-hover: #e94560;
+    --text-primary: #222;
+    --text-secondary: #666;
+    --success: #22c55e;
+    --warning: #f59e0b;
 }
 
 html, body {
@@ -28,13 +43,14 @@ body {
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
     user-select: none;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 #app {
     height: 100%;
-    max-width: 600px;
+    max-width: 37.5rem;
     margin: 0 auto;
-    padding: 20px;
+    padding: 1.25rem;
     display: flex;
     flex-direction: column;
 }
@@ -44,6 +60,7 @@ body {
     flex-direction: column;
     height: 100%;
     animation: fadeIn 0.2s ease;
+    position: relative;
 }
 
 .screen.active {
@@ -74,11 +91,38 @@ h3 {
     color: var(--text-secondary);
 }
 
+/* Theme Toggle */
+.theme-toggle {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    background: var(--bg-secondary);
+    border: none;
+    color: var(--text-secondary);
+    padding: 0.5rem;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.25rem;
+    line-height: 1;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s, color 0.2s;
+    z-index: 10;
+}
+
+.theme-toggle:hover {
+    background: var(--bg-card);
+    color: var(--text-primary);
+}
+
 .btn {
-    padding: 15px 30px;
+    padding: 0.9375rem 1.875rem;
     font-size: 1.1rem;
     border: none;
-    border-radius: 8px;
+    border-radius: 0.5rem;
     cursor: pointer;
     transition: all 0.2s;
     font-weight: 600;
@@ -102,20 +146,16 @@ h3 {
     background: var(--bg-secondary);
 }
 
-.screen {
-    position: relative;
-}
-
 .btn-back {
     position: absolute;
-    bottom: 20px;
-    left: 20px;
+    bottom: 1.25rem;
+    left: 1.25rem;
     background: var(--bg-secondary);
     color: var(--text-secondary);
-    padding: 12px 18px;
+    padding: 0.75rem 1.125rem;
     font-size: 1.2rem;
     line-height: 1;
-    border-radius: 8px;
+    border-radius: 0.5rem;
     z-index: 10;
 }
 
@@ -126,11 +166,11 @@ h3 {
 
 .btn-exit {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 1.25rem;
+    right: 1.25rem;
     background: transparent;
     color: var(--text-secondary);
-    padding: 8px 14px;
+    padding: 0.5rem 0.875rem;
     font-size: 1.8rem;
     line-height: 1;
     z-index: 10;
@@ -141,12 +181,12 @@ h3 {
 }
 
 .btn-small {
-    padding: 8px 15px;
+    padding: 0.5rem 0.9375rem;
     font-size: 1rem;
 }
 
 .btn-large {
-    padding: 20px 40px;
+    padding: 1.25rem 2.5rem;
     font-size: 1.3rem;
     margin-top: 1rem;
 }
@@ -154,7 +194,7 @@ h3 {
 .menu-buttons {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 0.9375rem;
     margin-bottom: 2rem;
 }
 
@@ -170,7 +210,7 @@ h3 {
 .button-list {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 0.625rem;
     overflow-y: auto;
     flex: 1;
 }
@@ -178,35 +218,35 @@ h3 {
 .subset-buttons {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    gap: 0.625rem;
     margin-bottom: 1.5rem;
 }
 
 .subset-custom {
     background: var(--bg-secondary);
-    padding: 15px;
-    border-radius: 8px;
+    padding: 0.9375rem;
+    border-radius: 0.5rem;
     margin-bottom: 1rem;
 }
 
 .target-selectors {
     display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
+    gap: 0.625rem;
+    margin-bottom: 0.625rem;
 }
 
 .target-selectors select {
     flex: 1;
-    padding: 10px;
+    padding: 0.625rem;
     font-size: 1rem;
     background: var(--bg-card);
     color: var(--text-primary);
     border: none;
-    border-radius: 4px;
+    border-radius: 0.25rem;
 }
 
 .selected-cases {
-    max-height: 100px;
+    max-height: 6.25rem;
     overflow-y: auto;
     font-size: 0.9rem;
     color: var(--text-secondary);
@@ -217,7 +257,7 @@ h3 {
 .game-top, .game-bottom {
     display: flex;
     justify-content: space-between;
-    padding: 10px 0;
+    padding: 0.625rem 0;
     color: var(--text-secondary);
     font-size: 0.9rem;
 }
@@ -228,7 +268,7 @@ h3 {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 20px;
+    gap: 1.25rem;
 }
 
 .game-case {
@@ -280,8 +320,8 @@ h3 {
 /* Results Screen */
 .session-summary {
     background: var(--bg-secondary);
-    padding: 15px;
-    border-radius: 8px;
+    padding: 0.9375rem;
+    border-radius: 0.5rem;
     margin-bottom: 1rem;
     text-align: center;
 }
@@ -289,10 +329,10 @@ h3 {
 .results-header {
     display: flex;
     justify-content: space-between;
-    padding: 10px 15px;
+    padding: 0.625rem 0.9375rem;
     background: var(--bg-card);
-    border-radius: 4px;
-    margin-bottom: 5px;
+    border-radius: 0.25rem;
+    margin-bottom: 0.3125rem;
 }
 
 .sort-btn {
@@ -331,10 +371,10 @@ h3 {
 .result-item {
     display: flex;
     justify-content: space-between;
-    padding: 10px 15px;
+    padding: 0.625rem 0.9375rem;
     background: var(--bg-secondary);
-    border-radius: 4px;
-    margin-bottom: 5px;
+    border-radius: 0.25rem;
+    margin-bottom: 0.3125rem;
 }
 
 .result-item .case {
@@ -356,7 +396,7 @@ h3 {
 
 .results-actions {
     display: flex;
-    gap: 10px;
+    gap: 0.625rem;
 }
 
 .results-actions .btn {
@@ -366,14 +406,14 @@ h3 {
 /* Stats Screen */
 .global-stats {
     background: var(--bg-secondary);
-    padding: 20px;
-    border-radius: 8px;
+    padding: 1.25rem;
+    border-radius: 0.5rem;
 }
 
 .stat-row {
     display: flex;
     justify-content: space-between;
-    padding: 10px 0;
+    padding: 0.625rem 0;
     border-bottom: 1px solid var(--bg-card);
 }
 
@@ -397,7 +437,7 @@ h3 {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 20px;
+    gap: 1.25rem;
 }
 
 #import-status {
@@ -413,9 +453,9 @@ h3 {
 }
 
 /* Responsive */
-@media (max-width: 400px) {
+@media (max-width: 25rem) {
     #app {
-        padding: 15px;
+        padding: 0.9375rem;
     }
 
     h1 {
@@ -427,6 +467,6 @@ h3 {
     }
 
     .btn {
-        padding: 12px 20px;
+        padding: 0.75rem 1.25rem;
     }
 }
