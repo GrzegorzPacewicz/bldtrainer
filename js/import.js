@@ -40,7 +40,9 @@ function parseSheet(rows, pieceType, buffer) {
         return algorithms;
     }
 
-    const isTable = rows[1] && rows[1][0] === rows[0][1];
+    const firstColVal = rows[1] && rows[1][0] ? extractTarget(String(rows[1][0])) : '';
+    const firstRowVal = rows[0] && rows[0][1] ? extractTarget(String(rows[0][1])) : '';
+    const isTable = firstColVal && firstRowVal && firstColVal === firstRowVal;
 
     if (isTable) {
         const headers = rows[0].slice(1);
@@ -100,7 +102,12 @@ function parseSheet(rows, pieceType, buffer) {
 
 function extractTarget(text) {
     const parts = text.trim().split(/\s+/);
-    return parts[0] || '';
+    const target = parts[0] || '';
+    // Reject if looks like algorithm (contains brackets, colons, primes, numbers)
+    if (/[\[\]:'2]/.test(target)) {
+        return '';
+    }
+    return target;
 }
 
 function extractLp(text) {

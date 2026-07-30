@@ -103,10 +103,18 @@ h3 {
 }
 
 .btn-back {
-    margin-top: auto;
+    position: absolute;
+    top: 20px;
+    left: 20px;
     background: transparent;
     color: var(--text-secondary);
     padding: 10px;
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+.screen {
+    position: relative;
 }
 
 .btn-small {
