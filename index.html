@@ -15,6 +15,9 @@
     <div id="app">
         <!-- Main Menu -->
         <div id="menu-screen" class="screen active">
+            <div id="pull-to-refresh" class="pull-to-refresh">
+                <span class="pull-indicator">↓ Pociągnij aby odświeżyć</span>
+            </div>
             <button id="theme-toggle" class="theme-toggle" title="Zmień motyw">🌙</button>
             <h1>BLD Trainer</h1>
             <div class="menu-buttons">
@@ -33,6 +36,7 @@
             <h2>Wybierz bufor</h2>
             <div id="buffer-list" class="button-list"></div>
             <button class="btn btn-back" data-back="menu-screen">←</button>
+            <button class="btn btn-home" title="Ekran główny">🏠</button>
         </div>
 
         <!-- Subset Choice -->
@@ -56,6 +60,7 @@
             </div>
             <button id="btn-start-game" class="btn btn-primary btn-large">Start</button>
             <button class="btn btn-back" data-back="buffer-screen">←</button>
+            <button class="btn btn-home" title="Ekran główny">🏠</button>
         </div>
 
         <!-- Game Screen -->
@@ -92,6 +97,7 @@
                 <button id="btn-save-results" class="btn btn-primary">Zapisz</button>
                 <button id="btn-discard-results" class="btn btn-secondary">Odrzuć</button>
             </div>
+            <button class="btn btn-home" title="Ekran główny">🏠</button>
         </div>
 
         <!-- Stats Screen -->
@@ -99,6 +105,7 @@
             <h2>Statystyki</h2>
             <div id="global-stats" class="global-stats"></div>
             <button class="btn btn-back" data-back="menu-screen">←</button>
+            <button class="btn btn-home" title="Ekran główny">🏠</button>
         </div>
 
         <!-- Import Screen -->
@@ -112,6 +119,7 @@
                 <p id="import-status"></p>
             </div>
             <button class="btn btn-back" data-back="menu-screen">←</button>
+            <button class="btn btn-home" title="Ekran główny">🏠</button>
         </div>
     </div>
 

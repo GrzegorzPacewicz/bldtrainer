@@ -210,6 +210,56 @@ h3 {
     color: var(--accent);
 }
 
+.btn-home {
+    position: absolute;
+    bottom: 1.25rem;
+    right: 1.25rem;
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    padding: 0.75rem 1.125rem;
+    font-size: 1.2rem;
+    line-height: 1;
+    border-radius: 0.5rem;
+    z-index: 10;
+}
+
+.btn-home:hover, .btn-home:active {
+    background: var(--bg-card);
+    color: var(--text-primary);
+}
+
+/* Pull to Refresh */
+.pull-to-refresh {
+    position: absolute;
+    top: -3rem;
+    left: 0;
+    right: 0;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    transition: transform 0.2s;
+}
+
+.pull-to-refresh.pulling {
+    transform: translateY(3rem);
+}
+
+.pull-to-refresh.refreshing .pull-indicator {
+    animation: spin 1s linear infinite;
+}
+
+.pull-to-refresh.refreshing .pull-indicator::before {
+    content: '↻';
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
 .btn-small {
     padding: 0.5rem 0.9375rem;
     font-size: 1rem;

@@ -13,6 +13,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     initImportHandlers();
     initHistoryNavigation();
     initThemeToggle();
+    initHomeButtons();
+    initPullToRefresh();
 });
 
 function showScreen(screenId, pushState = true) {
@@ -462,5 +464,58 @@ function initThemeToggle() {
             localStorage.setItem('theme', 'light');
             toggle.textContent = '☀️';
         }
+    });
+}
+
+function initHomeButtons() {
+    document.querySelectorAll('.btn-home').forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (currentGame) {
+                currentGame = null;
+                gameState = 'idle';
+            }
+            history.pushState({ screen: 'menu-screen' }, '', '');
+            showScreen('menu-screen', false);
+        });
+    });
+}
+
+function initPullToRefresh() {
+    const menuScreen = document.getElementById('menu-screen');
+    const pullIndicator = document.getElementById('pull-to-refresh');
+    let startY = 0;
+    let pulling = false;
+
+    menuScreen.addEventListener('touchstart', (e) => {
+        if (menuScreen.scrollTop === 0) {
+            startY = e.touches[0].clientY;
+            pulling = true;
+        }
+    }, { passive: true });
+
+    menuScreen.addEventListener('touchmove', (e) => {
+        if (!pulling) return;
+
+        const currentY = e.touches[0].clientY;
+        const diff = currentY - startY;
+
+        if (diff > 50 && menuScreen.scrollTop === 0) {
+            pullIndicator.classList.add('pulling');
+        } else {
+            pullIndicator.classList.remove('pulling');
+        }
+    }, { passive: true });
+
+    menuScreen.addEventListener('touchend', () => {
+        if (pullIndicator.classList.contains('pulling')) {
+            pullIndicator.classList.remove('pulling');
+            pullIndicator.classList.add('refreshing');
+            pullIndicator.querySelector('.pull-indicator').textContent = '';
+
+            setTimeout(() => {
+                location.reload();
+            }, 300);
+        }
+        pulling = false;
     });
 }
