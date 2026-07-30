@@ -103,7 +103,6 @@ function parseSheet(rows, pieceType, buffer) {
 function extractTarget(text) {
     // Format: "A (UL)" - LP przed nawiasem, target w nawiasie
     const match = text.match(/\(([^)]+)\)/);
-    console.log('extractTarget:', text, '→', match ? match[1].trim() : 'no match');
     if (match) {
         return match[1].trim();
     }
@@ -118,7 +117,6 @@ function extractTarget(text) {
 function extractLp(text) {
     // Format: "A (UL)" - LP to część przed nawiasem
     const match = text.match(/^([^(]+)\s*\(/);
-    console.log('extractLp:', text, '→', match ? match[1].trim() : 'no match');
     if (match) {
         return match[1].trim();
     }

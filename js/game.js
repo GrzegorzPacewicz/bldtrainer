@@ -70,7 +70,10 @@ class Game {
     saveResult(time) {
         const id = this.getCurrentId();
         if (id && time >= 0.2) {
-            this.results.set(id, Math.round(time * 100) / 100);
+            const roundedTime = Math.round(time * 100) / 100;
+            this.results.set(id, roundedTime);
+            if (!this.allResults) this.allResults = new Map();
+            this.allResults.set(id, roundedTime);
         }
     }
 
@@ -89,7 +92,8 @@ class Game {
 
     getResultsList() {
         const list = [];
-        for (const [id, time] of this.results) {
+        const source = this.allResults || this.results;
+        for (const [id, time] of source) {
             const alg = this.algorithms.find(a => a.id === id);
             if (alg) {
                 list.push({
@@ -99,7 +103,7 @@ class Game {
                 });
             }
         }
-        return list.sort((a, b) => b.time - a.time);
+        return list;
     }
 
     getSessionAvg() {

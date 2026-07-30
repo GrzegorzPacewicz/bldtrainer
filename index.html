@@ -58,6 +58,7 @@
 
         <!-- Game Screen -->
         <div id="game-screen" class="screen">
+            <button id="btn-exit-game" class="btn btn-exit">×</button>
             <div class="game-top">
                 <span id="game-progress">1/20</span>
                 <span id="game-avg"></span>
@@ -79,6 +80,10 @@
         <div id="results-screen" class="screen">
             <h2>Wyniki sesji</h2>
             <div id="session-summary" class="session-summary"></div>
+            <div class="results-header">
+                <span id="sort-case" class="sort-btn" data-sort="case">Case <span class="sort-arrow"></span></span>
+                <span id="sort-time" class="sort-btn active" data-sort="time">Czas <span class="sort-arrow">↓</span></span>
+            </div>
             <div id="results-list" class="results-list"></div>
             <div class="results-actions">
                 <button id="btn-save-results" class="btn btn-primary">Zapisz</button>

@@ -2,6 +2,8 @@ let currentPieceType = null;
 let currentBuffer = null;
 let currentGame = null;
 let selectedCases = new Set();
+let resultsSortBy = 'time';
+let resultsSortAsc = false;
 
 document.addEventListener('DOMContentLoaded', async () => {
     await initDB();
@@ -9,18 +11,38 @@ document.addEventListener('DOMContentLoaded', async () => {
     initMenuHandlers();
     initGameHandlers();
     initImportHandlers();
+    initHistoryNavigation();
 });
 
-function showScreen(screenId) {
+function showScreen(screenId, pushState = true) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(screenId).classList.add('active');
+
+    if (pushState && history.state?.screen !== screenId) {
+        history.pushState({ screen: screenId }, '', '');
+    }
+}
+
+function initHistoryNavigation() {
+    history.replaceState({ screen: 'menu-screen' }, '', '');
+
+    window.addEventListener('popstate', (e) => {
+        const screen = e.state?.screen || 'menu-screen';
+
+        if (gameState === 'timing' || gameState === 'countdown' || gameState === 'showingAlg') {
+            exitGame();
+            showScreen('menu-screen', false);
+            return;
+        }
+
+        showScreen(screen, false);
+    });
 }
 
 function initNavigation() {
     document.querySelectorAll('.btn-back').forEach(btn => {
         btn.addEventListener('click', () => {
-            const target = btn.dataset.back;
-            showScreen(target);
+            history.back();
         });
     });
 }
@@ -241,7 +263,19 @@ function initGameHandlers() {
             e.preventDefault();
             handleTap(e);
         }
+        if (e.code === 'Escape' && document.getElementById('game-screen').classList.contains('active')) {
+            e.preventDefault();
+            exitGame();
+        }
     });
+
+    document.getElementById('btn-exit-game').addEventListener('click', exitGame);
+}
+
+function exitGame() {
+    gameState = 'idle';
+    currentGame = null;
+    showScreen('subset-screen');
 }
 
 function updateGameDisplay() {
@@ -254,6 +288,26 @@ function updateGameDisplay() {
 }
 
 function endGame() {
+    resultsSortBy = 'time';
+    resultsSortAsc = false;
+
+    updateResultsSummary();
+    renderResultsList();
+    initResultsSorting();
+
+    document.getElementById('btn-save-results').onclick = async () => {
+        await currentGame.saveAllResults();
+        showScreen('menu-screen');
+    };
+
+    document.getElementById('btn-discard-results').onclick = () => {
+        showScreen('menu-screen');
+    };
+
+    showScreen('results-screen');
+}
+
+function updateResultsSummary() {
     const results = currentGame.getResultsList();
     const avg = currentGame.getSessionAvg();
 
@@ -261,13 +315,30 @@ function endGame() {
         <div class="avg">${avg.toFixed(2)}s</div>
         <div>${results.length} case'ów</div>
     `;
+}
+
+function renderResultsList() {
+    const results = currentGame.getResultsList();
+
+    const sorted = [...results].sort((a, b) => {
+        let cmp;
+        if (resultsSortBy === 'case') {
+            cmp = a.case.localeCompare(b.case);
+        } else {
+            cmp = a.time - b.time;
+        }
+        return resultsSortAsc ? cmp : -cmp;
+    });
 
     const listContainer = document.getElementById('results-list');
     listContainer.innerHTML = '';
 
-    results.forEach(r => {
+    sorted.forEach(r => {
         const item = document.createElement('div');
         item.className = 'result-item removable';
+        if (!currentGame.results.has(r.id)) {
+            item.classList.add('removed');
+        }
         item.innerHTML = `
             <span class="case">${r.case}</span>
             <span class="time">${r.time.toFixed(2)}s</span>
@@ -283,16 +354,33 @@ function endGame() {
         listContainer.appendChild(item);
     });
 
-    document.getElementById('btn-save-results').onclick = async () => {
-        await currentGame.saveAllResults();
-        showScreen('menu-screen');
-    };
+    updateSortButtons();
+}
 
-    document.getElementById('btn-discard-results').onclick = () => {
-        showScreen('menu-screen');
-    };
+function initResultsSorting() {
+    document.getElementById('sort-case').onclick = () => toggleSort('case');
+    document.getElementById('sort-time').onclick = () => toggleSort('time');
+}
 
-    showScreen('results-screen');
+function toggleSort(column) {
+    if (resultsSortBy === column) {
+        resultsSortAsc = !resultsSortAsc;
+    } else {
+        resultsSortBy = column;
+        resultsSortAsc = column === 'case';
+    }
+    renderResultsList();
+}
+
+function updateSortButtons() {
+    const caseBtn = document.getElementById('sort-case');
+    const timeBtn = document.getElementById('sort-time');
+
+    caseBtn.classList.toggle('active', resultsSortBy === 'case');
+    timeBtn.classList.toggle('active', resultsSortBy === 'time');
+
+    caseBtn.querySelector('.sort-arrow').textContent = resultsSortBy === 'case' ? (resultsSortAsc ? '↑' : '↓') : '';
+    timeBtn.querySelector('.sort-arrow').textContent = resultsSortBy === 'time' ? (resultsSortAsc ? '↑' : '↓') : '';
 }
 
 function initImportHandlers() {

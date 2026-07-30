@@ -102,19 +102,42 @@ h3 {
     background: var(--bg-secondary);
 }
 
-.btn-back {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    background: transparent;
-    color: var(--text-secondary);
-    padding: 10px;
-    font-size: 1.5rem;
-    line-height: 1;
-}
-
 .screen {
     position: relative;
+}
+
+.btn-back {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    padding: 12px 18px;
+    font-size: 1.2rem;
+    line-height: 1;
+    border-radius: 8px;
+    z-index: 10;
+}
+
+.btn-back:hover, .btn-back:active {
+    background: var(--bg-card);
+    color: var(--text-primary);
+}
+
+.btn-exit {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: transparent;
+    color: var(--text-secondary);
+    padding: 8px 14px;
+    font-size: 1.8rem;
+    line-height: 1;
+    z-index: 10;
+}
+
+.btn-exit:hover, .btn-exit:active {
+    color: var(--accent);
 }
 
 .btn-small {
@@ -261,6 +284,36 @@ h3 {
     border-radius: 8px;
     margin-bottom: 1rem;
     text-align: center;
+}
+
+.results-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 15px;
+    background: var(--bg-card);
+    border-radius: 4px;
+    margin-bottom: 5px;
+}
+
+.sort-btn {
+    cursor: pointer;
+    color: var(--text-secondary);
+    user-select: none;
+    transition: color 0.2s;
+}
+
+.sort-btn:hover {
+    color: var(--text-primary);
+}
+
+.sort-btn.active {
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.sort-arrow {
+    display: inline-block;
+    width: 1em;
 }
 
 .session-summary .avg {
