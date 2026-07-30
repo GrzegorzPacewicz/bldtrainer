@@ -94,7 +94,7 @@ class Game {
             if (alg) {
                 list.push({
                     id,
-                    case: `${alg.target1} ${alg.target2}`,
+                    case: alg.memo || alg.lp || `${alg.target1} ${alg.target2}`,
                     time
                 });
             }

@@ -36,20 +36,26 @@ async function selectPieceType(pieceType) {
     currentPieceType = pieceType;
     const buffers = await getBuffersForPiece(pieceType);
 
+    if (buffers.length === 0) {
+        alert('Brak algorytmów. Zaimportuj najpierw dane.');
+        return;
+    }
+
+    if (buffers.length === 1) {
+        selectBuffer(buffers[0]);
+        return;
+    }
+
     const bufferList = document.getElementById('buffer-list');
     bufferList.innerHTML = '';
 
-    if (buffers.length === 0) {
-        bufferList.innerHTML = '<p style="text-align:center;color:var(--text-secondary)">Brak algorytmów. Zaimportuj najpierw dane.</p>';
-    } else {
-        buffers.forEach(buffer => {
-            const btn = document.createElement('button');
-            btn.className = 'btn btn-primary';
-            btn.textContent = buffer;
-            btn.addEventListener('click', () => selectBuffer(buffer));
-            bufferList.appendChild(btn);
-        });
-    }
+    buffers.forEach(buffer => {
+        const btn = document.createElement('button');
+        btn.className = 'btn btn-primary';
+        btn.textContent = buffer;
+        btn.addEventListener('click', () => selectBuffer(buffer));
+        bufferList.appendChild(btn);
+    });
 
     showScreen('buffer-screen');
 }
@@ -60,11 +66,14 @@ async function selectBuffer(buffer) {
 
     const algs = await getAlgorithmsByPieceAndBuffer(currentPieceType, currentBuffer);
 
-    const targets1 = new Set();
-    const targets2 = new Set();
+    const targets1 = new Map();
+    const targets2 = new Map();
     algs.forEach(a => {
-        targets1.add(a.target1);
-        targets2.add(a.target2);
+        const lp = a.lp || '';
+        const lp1 = lp.charAt(0) || a.target1;
+        const lp2 = lp.charAt(1) || a.target2;
+        if (!targets1.has(a.target1)) targets1.set(a.target1, lp1);
+        if (!targets2.has(a.target2)) targets2.set(a.target2, lp2);
     });
 
     const select1 = document.getElementById('target1-select');
@@ -73,14 +82,19 @@ async function selectBuffer(buffer) {
     select1.innerHTML = '<option value="All">All</option>';
     select2.innerHTML = '<option value="All">All</option>';
 
-    Array.from(targets1).sort().forEach(t => {
-        select1.innerHTML += `<option value="${t}">${t}</option>`;
+    Array.from(targets1.entries()).sort((a, b) => a[1].localeCompare(b[1])).forEach(([target, lp]) => {
+        select1.innerHTML += `<option value="${target}">${lp}</option>`;
     });
-    Array.from(targets2).sort().forEach(t => {
-        select2.innerHTML += `<option value="${t}">${t}</option>`;
+    Array.from(targets2.entries()).sort((a, b) => a[1].localeCompare(b[1])).forEach(([target, lp]) => {
+        select2.innerHTML += `<option value="${target}">${lp}</option>`;
     });
 
     updateSelectedCasesDisplay();
+
+    const subsetBackBtn = document.querySelector('#subset-screen .btn-back');
+    const buffers = await getBuffersForPiece(currentPieceType);
+    subsetBackBtn.dataset.back = buffers.length === 1 ? 'menu-screen' : 'buffer-screen';
+
     showScreen('subset-screen');
 
     document.getElementById('btn-all').onclick = () => selectSubset('all');
@@ -100,7 +114,7 @@ async function selectSubset(type) {
     selectedCases.clear();
 
     if (type === 'all') {
-        algs.forEach(a => selectedCases.add(a.id));
+        algs.filter(a => a.target1 !== a.target2).forEach(a => selectedCases.add(a.id));
     } else if (type === 'slow') {
         const slow = await getSlowCases(currentPieceType, currentBuffer, 40);
         slow.forEach(c => selectedCases.add(c.id));
@@ -158,7 +172,40 @@ async function startGame() {
     currentGame = new Game(filtered);
 
     showScreen('game-screen');
+    startCountdown(() => {
+        startNextCase();
+    });
+}
+
+let gameState = 'idle'; // 'idle' | 'countdown' | 'timing' | 'showingAlg'
+
+function startCountdown(callback) {
+    const caseEl = document.getElementById('game-case');
+    const tapArea = document.getElementById('game-tap-area');
+    gameState = 'countdown';
+
+    let count = 3;
+    caseEl.textContent = count;
+    tapArea.classList.remove('timing');
+
+    const interval = setInterval(() => {
+        count--;
+        if (count > 0) {
+            caseEl.textContent = count;
+        } else {
+            clearInterval(interval);
+            callback();
+        }
+    }, 1000);
+}
+
+function startNextCase() {
+    const tapArea = document.getElementById('game-tap-area');
     updateGameDisplay();
+    document.getElementById('game-alg').classList.remove('visible');
+    currentGame.startTimer();
+    tapArea.classList.add('timing');
+    gameState = 'timing';
 }
 
 function initGameHandlers() {
@@ -168,28 +215,22 @@ function initGameHandlers() {
     const handleTap = (e) => {
         e.preventDefault();
 
-        if (!currentGame) return;
+        if (!currentGame || gameState !== 'timing') return;
 
-        if (!currentGame.isTiming) {
-            currentGame.startTimer();
-            tapArea.classList.add('timing');
-            document.getElementById('game-alg').classList.remove('visible');
-        } else {
-            const time = currentGame.stopTimer();
-            tapArea.classList.remove('timing');
+        const time = currentGame.stopTimer();
+        tapArea.classList.remove('timing');
+        currentGame.saveResult(time);
+        document.getElementById('game-alg').classList.add('visible');
+        gameState = 'showingAlg';
 
-            currentGame.saveResult(time);
-            document.getElementById('game-alg').classList.add('visible');
-
-            setTimeout(() => {
-                if (currentGame.next()) {
-                    updateGameDisplay();
-                    document.getElementById('game-alg').classList.remove('visible');
-                } else {
-                    endGame();
-                }
-            }, 300);
-        }
+        setTimeout(() => {
+            if (currentGame.next()) {
+                startNextCase();
+            } else {
+                endGame();
+                gameState = 'idle';
+            }
+        }, 2000);
     };
 
     tapArea.addEventListener('touchstart', handleTap, { passive: false });
