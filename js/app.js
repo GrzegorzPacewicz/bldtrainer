@@ -209,18 +209,27 @@ async function modifySelection(action) {
     updateSelectedCasesDisplay();
 }
 
-function updateSelectedCasesDisplay() {
+async function updateSelectedCasesDisplay() {
     const container = document.getElementById('selected-cases');
     if (selectedCases.size === 0) {
-        container.textContent = 'Wybierz case\'y';
-    } else {
-        container.textContent = `Wybrano: ${selectedCases.size} case'ów`;
+        container.innerHTML = '<span class="text-muted">Wybierz przypadki</span>';
+        return;
     }
+
+    const algs = await getAlgorithmsByPieceAndBuffer(currentPieceType, currentBuffer);
+    const selected = algs.filter(a => selectedCases.has(a.id));
+    const labels = selected.map(a => a.lp || `${a.target1}${a.target2}`).sort();
+
+    const preview = labels.length <= 20
+        ? labels.join(', ')
+        : labels.slice(0, 20).join(', ') + ` ... (+${labels.length - 20})`;
+
+    container.innerHTML = `<strong>Wybrano: ${selectedCases.size}</strong><div class="selected-preview">${preview}</div>`;
 }
 
 async function startGame() {
     if (selectedCases.size === 0) {
-        alert('Wybierz przynajmniej jeden case');
+        alert('Wybierz przynajmniej jeden przypadek');
         return;
     }
 
@@ -357,7 +366,7 @@ function updateResultsSummary() {
 
     document.getElementById('session-summary').innerHTML = `
         <div class="avg">${avg.toFixed(2)}s</div>
-        <div>${results.length} case'ów</div>
+        <div>${results.length} przypadków</div>
     `;
 }
 
@@ -537,6 +546,8 @@ async function renderStatsTab(tab) {
         }
         panel.innerHTML = html;
         initCaseRowClicks();
+        initTableSorting();
+        initDetailsLock();
     }
 }
 

@@ -289,7 +289,7 @@ function renderGlobalStats(stats) {
             <span class="stat-value">${stats.totalAlgorithms}</span>
         </div>
         <div class="stat-row">
-            <span class="stat-label">Case'ów z wynikami</span>
+            <span class="stat-label">Przypadków z wynikami</span>
             <span class="stat-value">${stats.casesWithResults}</span>
         </div>
         <div class="stat-row">
@@ -350,7 +350,7 @@ function renderBufferStats(buffer, stats) {
         <div class="stats-section">
             <h3>${buffer}</h3>
             <div class="stat-row">
-                <span class="stat-label">Case'y</span>
+                <span class="stat-label">Przypadki</span>
                 <span class="stat-value">${stats.casesWithResults} / ${stats.totalCases}</span>
             </div>
             <div class="stat-row">
@@ -374,7 +374,7 @@ function renderBufferStats(buffer, stats) {
                 <div class="trend-badges">${trendHtml}</div>
             </div>
             <details class="cases-details">
-                <summary>Wszystkie case'y (${stats.cases.length})</summary>
+                <summary>Wszystkie przypadki (${stats.cases.length})</summary>
                 <div class="cases-table-wrapper">
                     ${renderCasesTable(stats.cases, buffer)}
                 </div>
@@ -434,7 +434,7 @@ function renderCasesTable(cases, buffer) {
         <table class="cases-table" data-buffer="${buffer}">
             <thead>
                 <tr>
-                    <th data-sort="case">Case</th>
+                    <th data-sort="case">Przyp.</th>
                     <th data-sort="exec">Wyk.</th>
                     <th data-sort="avg">Avg</th>
                     <th data-sort="std">Std</th>
@@ -461,4 +461,68 @@ function initCaseRowClicks() {
             }
         });
     });
+}
+
+function initTableSorting() {
+    document.querySelectorAll('.cases-table').forEach(table => {
+        const headers = table.querySelectorAll('th[data-sort]');
+        let currentSort = { column: 'avg', direction: 'desc' };
+
+        headers.forEach(th => {
+            th.addEventListener('click', () => {
+                const column = th.dataset.sort;
+                const direction = (currentSort.column === column && currentSort.direction === 'desc') ? 'asc' : 'desc';
+                currentSort = { column, direction };
+
+                headers.forEach(h => {
+                    h.classList.remove('sort-asc', 'sort-desc');
+                });
+                th.classList.add(`sort-${direction}`);
+
+                sortTable(table, column, direction);
+            });
+        });
+    });
+}
+
+function sortTable(table, column, direction) {
+    const tbody = table.querySelector('tbody');
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+
+    const getValue = (row, col) => {
+        const cells = row.querySelectorAll('td');
+        switch (col) {
+            case 'case': return cells[0].textContent.replace('!', '');
+            case 'exec': return parseFloat(cells[1].textContent) || 0;
+            case 'avg': return cells[2].textContent === '-' ? null : parseFloat(cells[2].textContent);
+            case 'std': return cells[3].textContent === '-' ? null : parseFloat(cells[3].textContent);
+            case 'best': return cells[4].textContent === '-' ? null : parseFloat(cells[4].textContent);
+            case 'worst': return cells[5].textContent === '-' ? null : parseFloat(cells[5].textContent);
+            case 'cat': return cells[6].textContent;
+            case 'trend': return cells[7].textContent;
+            default: return '';
+        }
+    };
+
+    rows.sort((a, b) => {
+        let valA = getValue(a, column);
+        let valB = getValue(b, column);
+
+        if (valA === null && valB === null) return 0;
+        if (valA === null) return 1;
+        if (valB === null) return -1;
+
+        if (typeof valA === 'string') {
+            const cmp = valA.localeCompare(valB);
+            return direction === 'asc' ? cmp : -cmp;
+        }
+
+        return direction === 'asc' ? valA - valB : valB - valA;
+    });
+
+    tbody.innerHTML = '';
+    rows.forEach(row => tbody.appendChild(row));
+}
+
+function initDetailsLock() {
 }

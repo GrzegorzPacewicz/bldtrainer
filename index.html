@@ -96,7 +96,7 @@
             <h2>Wyniki sesji</h2>
             <div id="session-summary" class="session-summary"></div>
             <div class="results-header" role="group" aria-label="Sortowanie wyników">
-                <span id="sort-case" class="sort-btn" data-sort="case" tabindex="0" role="button">Case <span class="sort-arrow"></span></span>
+                <span id="sort-case" class="sort-btn" data-sort="case" tabindex="0" role="button">Przyp. <span class="sort-arrow"></span></span>
                 <span id="sort-time" class="sort-btn active" data-sort="time" tabindex="0" role="button">Czas <span class="sort-arrow">↓</span></span>
             </div>
             <div id="results-list" class="results-list"></div>
@@ -178,7 +178,8 @@ UBL URF: R U R' U'</pre>
                     <ol>
                         <li>Wybierz typ: <strong>Krawędzie</strong> lub <strong>Rogi</strong></li>
                         <li>Wybierz bufor (jeśli masz kilka)</li>
-                        <li>Wybierz tryb lub konkretne case'y</li>
+                        <li>Wybierz tryb (np. Słabe punkty) — aplikacja automatycznie wybierze przypadki na podstawie Twoich wyników</li>
+                        <li>Pod przyciskiem Start zobaczysz listę wybranych przypadków</li>
                         <li>Kliknij <strong>Start</strong></li>
                         <li>Po odliczaniu dotknij ekran gdy wykonasz algorytm</li>
                         <li>Po sesji zapisz lub odrzuć wyniki</li>
@@ -187,11 +188,14 @@ UBL URF: R U R' U'</pre>
 
                 <section>
                     <h4>Tryby treningowe</h4>
+                    <p>Aplikacja analizuje Twoje dotychczasowe wyniki i automatycznie wybiera przypadki:</p>
                     <ul>
-                        <li><strong>Słabe punkty</strong> — wolne + niestabilne + regres + trudne</li>
+                        <li><strong>Słabe punkty</strong> — wolne + niestabilne + w regresie + oznaczone jako trudne</li>
                         <li><strong>Utrzymanie</strong> — szybkie + średnie (utrzymanie formy)</li>
-                        <li><strong>Nowe</strong> — case'y z &lt;5 wykonań</li>
+                        <li><strong>Nowe</strong> — przypadki z &lt;5 wykonaniami</li>
+                        <li><strong>Wolne / Niestab. / Regres</strong> — pojedyncze kategorie</li>
                     </ul>
+                    <p>Możesz też ręcznie dodawać/usuwać przypadki używając selektorów i przycisków +/−.</p>
                 </section>
 
                 <section>
@@ -211,7 +215,7 @@ UBL URF: R U R' U'</pre>
                     <h4>Statystyki</h4>
                     <p>Zakładki: Ogólne / Krawędzie / Rogi</p>
                     <p>Per bufor: średnia, odch. std., rozkład kategorii, trendy.</p>
-                    <p>Kliknij na case w tabeli aby edytować algorytm.</p>
+                    <p>Kliknij na przypadek w tabeli aby edytować algorytm. Nagłówki kolumn są klikalne — sortują tabelę.</p>
                 </section>
 
                 <section>
