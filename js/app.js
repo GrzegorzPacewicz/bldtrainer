@@ -606,9 +606,12 @@ function initEditModal() {
         if (!currentEditId) return;
 
         const newAlg = document.getElementById('edit-modal-alg').value.trim();
+        const difficult = document.getElementById('edit-modal-difficult').checked;
+
         if (newAlg) {
             await updateAlgorithmText(currentEditId, newAlg);
         }
+        await setDifficult(currentEditId, difficult);
         closeEditModal();
     });
 
@@ -623,12 +626,14 @@ async function openEditModal(id, caseName) {
     const modal = document.getElementById('edit-modal');
     const caseEl = document.getElementById('edit-modal-case');
     const algInput = document.getElementById('edit-modal-alg');
+    const difficultCheckbox = document.getElementById('edit-modal-difficult');
 
     currentEditId = id;
     caseEl.textContent = caseName;
 
     const alg = await getAlgorithmById(id);
     algInput.value = alg?.algorithms[0]?.alg || '';
+    difficultCheckbox.checked = alg?.difficult || false;
 
     modal.classList.add('active');
     algInput.focus();
