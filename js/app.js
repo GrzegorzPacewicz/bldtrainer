@@ -224,10 +224,13 @@ function startCountdown(callback) {
 
 function startNextCase() {
     const tapArea = document.getElementById('game-tap-area');
+    const gameScreen = document.getElementById('game-screen');
     updateGameDisplay();
     document.getElementById('game-alg').classList.remove('visible');
+    document.getElementById('game-next-preview').classList.remove('visible');
     currentGame.startTimer();
     tapArea.classList.add('timing');
+    gameScreen.classList.add('timing');
     gameState = 'timing';
 }
 
@@ -242,8 +245,11 @@ function initGameHandlers() {
 
         const time = currentGame.stopTimer();
         tapArea.classList.remove('timing');
+        document.getElementById('game-screen').classList.remove('timing');
         currentGame.saveResult(time);
         document.getElementById('game-alg').classList.add('visible');
+        document.getElementById('game-next-preview').textContent = currentGame.getNextCase();
+        document.getElementById('game-next-preview').classList.add('visible');
         gameState = 'showingAlg';
 
         setTimeout(() => {
@@ -420,6 +426,7 @@ function initImportHandlers() {
             const count = await handleFileImport(file);
             status.textContent = `Zaimportowano ${count} algorytmów`;
             status.className = 'success';
+            setTimeout(() => showScreen('menu-screen'), 1000);
         } catch (err) {
             status.textContent = `Błąd: ${err.message}`;
             status.className = 'error';

@@ -103,8 +103,8 @@ h3 {
 /* Theme Toggle */
 .theme-toggle {
     position: absolute;
-    top: 1.25rem;
-    right: 1.25rem;
+    top: 0;
+    right: 0;
     background: var(--bg-secondary);
     border: none;
     color: var(--text-secondary);
@@ -130,6 +130,17 @@ h3 {
 .theme-toggle:focus-visible {
     outline: none;
     box-shadow: var(--focus-ring);
+}
+
+.version {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    opacity: 0.5;
 }
 
 .btn {
@@ -316,6 +327,20 @@ h3 {
     opacity: 1;
 }
 
+.game-next-preview {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+    margin-top: 1rem;
+}
+
+.game-next-preview.visible {
+    opacity: 1;
+}
+
 .game-tap-area {
     position: fixed;
     bottom: 0;
@@ -330,6 +355,14 @@ h3 {
 
 .game-tap-area.timing {
     background: linear-gradient(to top, var(--accent) 0%, transparent 100%);
+}
+
+#game-screen.timing {
+    background: var(--bg-secondary);
+}
+
+#game-screen.timing .game-case {
+    color: var(--text-primary);
 }
 
 .tap-hint {
