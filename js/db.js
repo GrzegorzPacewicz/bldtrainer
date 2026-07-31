@@ -73,7 +73,26 @@ async function saveAlgorithms(algs) {
         const tx = db.transaction('algorithms', 'readwrite');
         const store = tx.objectStore('algorithms');
 
-        algs.forEach(alg => store.put(alg));
+        let pending = algs.length;
+        if (pending === 0) {
+            resolve();
+            return;
+        }
+
+        algs.forEach(newAlg => {
+            const getReq = store.get(newAlg.id);
+            getReq.onsuccess = () => {
+                const existing = getReq.result;
+                if (existing) {
+                    const existingResults = existing.algorithms[0]?.results || [];
+                    newAlg.algorithms[0].results = existingResults;
+                    if (existing.difficult) newAlg.difficult = true;
+                }
+                store.put(newAlg);
+                pending--;
+                if (pending === 0) tx.commit?.();
+            };
+        });
 
         tx.oncomplete = () => resolve();
         tx.onerror = () => reject(tx.error);

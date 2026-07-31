@@ -19,6 +19,7 @@ async function getGlobalStats() {
 
     const edgeBuffers = new Set();
     const cornerBuffers = new Set();
+    const parityBuffers = new Set();
 
     for (const alg of all) {
         const results = alg.algorithms[0]?.results || [];
@@ -29,6 +30,7 @@ async function getGlobalStats() {
         }
         if (alg.pieceType === 'edges') edgeBuffers.add(alg.buffer);
         if (alg.pieceType === 'corners') cornerBuffers.add(alg.buffer);
+        if (alg.pieceType === 'parity') parityBuffers.add(alg.buffer);
     }
 
     const avgTime = totalCount > 0 ? totalTime / totalCount : 0;
@@ -45,7 +47,8 @@ async function getGlobalStats() {
         timeSpent,
         globalAvg: avgTime.toFixed(2),
         edgeBuffers: edgeBuffers.size,
-        cornerBuffers: cornerBuffers.size
+        cornerBuffers: cornerBuffers.size,
+        parityBuffers: parityBuffers.size
     };
 }
 
@@ -147,7 +150,7 @@ async function getDetailedCaseStats(pieceType, buffer) {
     const cases = [];
 
     for (const alg of algs) {
-        if (alg.target1 === alg.target2) continue;
+        if (alg.target2 && alg.target1 === alg.target2) continue;
 
         const results = alg.algorithms[0]?.results || [];
         const executions = results.length;
@@ -158,9 +161,14 @@ async function getDetailedCaseStats(pieceType, buffer) {
         const best = executions > 0 ? Math.min(...results) : null;
         const worst = executions > 0 ? Math.max(...results) : null;
 
+        let caseName;
+        if (alg.lp) caseName = alg.lp;
+        else if (alg.target2) caseName = `${alg.target1}${alg.target2}`;
+        else caseName = alg.target1;
+
         cases.push({
             id: alg.id,
-            case: alg.lp || `${alg.target1}${alg.target2}`,
+            case: caseName,
             target1: alg.target1,
             target2: alg.target2,
             executions,
@@ -373,12 +381,12 @@ function renderBufferStats(buffer, stats) {
                 <div class="stat-label">Trendy:</div>
                 <div class="trend-badges">${trendHtml}</div>
             </div>
-            <details class="cases-details">
-                <summary>Wszystkie przypadki (${stats.cases.length})</summary>
+            <div class="cases-details">
+                <div class="cases-header">Wszystkie przypadki (${stats.cases.length})</div>
                 <div class="cases-table-wrapper">
                     ${renderCasesTable(stats.cases, buffer)}
                 </div>
-            </details>
+            </div>
         </div>
     `;
 }

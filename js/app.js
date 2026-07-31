@@ -56,6 +56,7 @@ function initNavigation() {
 function initMenuHandlers() {
     document.getElementById('btn-edges').addEventListener('click', () => selectPieceType('edges'));
     document.getElementById('btn-corners').addEventListener('click', () => selectPieceType('corners'));
+    document.getElementById('btn-parity').addEventListener('click', () => selectPieceType('parity'));
     document.getElementById('btn-import').addEventListener('click', () => showScreen('import-screen'));
     document.getElementById('btn-stats').addEventListener('click', showStats);
     document.getElementById('btn-help').addEventListener('click', openHelpModal);
@@ -112,13 +113,15 @@ async function selectBuffer(buffer) {
     algs.forEach(a => {
         const lp = a.lp || '';
         const lp1 = lp.charAt(0) || a.target1;
-        const lp2 = lp.charAt(1) || a.target2;
+        const lp2 = a.target2 ? (lp.charAt(1) || a.target2) : null;
         if (!targets1.has(a.target1)) targets1.set(a.target1, lp1);
-        if (!targets2.has(a.target2)) targets2.set(a.target2, lp2);
+        if (a.target2 && !targets2.has(a.target2)) targets2.set(a.target2, lp2);
     });
 
     const select1 = document.getElementById('target1-select');
     const select2 = document.getElementById('target2-select');
+    const inversionWrapper = document.getElementById('inversion-toggle-wrapper');
+    const isParity = currentPieceType === 'parity';
 
     select1.innerHTML = '<option value="All">All</option>';
     select2.innerHTML = '<option value="All">All</option>';
@@ -129,6 +132,9 @@ async function selectBuffer(buffer) {
     Array.from(targets2.entries()).sort((a, b) => a[1].localeCompare(b[1])).forEach(([target, lp]) => {
         select2.innerHTML += `<option value="${target}">${lp}</option>`;
     });
+
+    document.getElementById('target2-wrapper').style.display = isParity ? 'none' : '';
+    inversionWrapper.style.display = isParity ? 'none' : '';
 
     updateSelectedCasesDisplay();
 
@@ -161,7 +167,7 @@ async function selectSubset(type) {
     selectedCases.clear();
 
     if (type === 'all') {
-        algs.filter(a => a.target1 !== a.target2 && hasAlgorithm(a)).forEach(a => selectedCases.add(a.id));
+        algs.filter(a => (!a.target2 || a.target1 !== a.target2) && hasAlgorithm(a)).forEach(a => selectedCases.add(a.id));
     } else if (type === 'drill-weak') {
         const weak = await getDrillWeakCases(currentPieceType, currentBuffer);
         weak.forEach(a => selectedCases.add(a.id));
@@ -209,7 +215,7 @@ async function modifySelection(action) {
             (t2 === 'All' || a.target1 === t2)
         );
 
-        if ((matchT1 && matchT2 || matchInverse) && a.target1 !== a.target2) {
+        if ((matchT1 && matchT2 || matchInverse) && (!a.target2 || a.target1 !== a.target2)) {
             if (action === 'add') {
                 selectedCases.add(a.id);
             } else {
@@ -230,7 +236,11 @@ async function updateSelectedCasesDisplay() {
 
     const algs = await getAlgorithmsByPieceAndBuffer(currentPieceType, currentBuffer);
     const selected = algs.filter(a => selectedCases.has(a.id) && hasAlgorithm(a));
-    const labels = selected.map(a => a.lp || `${a.target1}${a.target2}`).sort();
+    const labels = selected.map(a => {
+        if (a.lp) return a.lp;
+        if (a.target2) return `${a.target1}${a.target2}`;
+        return a.target1;
+    }).sort();
 
     const preview = labels.length <= 20
         ? labels.join(', ')
@@ -626,6 +636,7 @@ function initEditModal() {
     const modal = document.getElementById('edit-modal');
     const saveBtn = document.getElementById('edit-modal-save');
     const cancelBtn = document.getElementById('edit-modal-cancel');
+    const resetBtn = document.getElementById('edit-modal-reset');
 
     cancelBtn.addEventListener('click', closeEditModal);
 
@@ -643,9 +654,20 @@ function initEditModal() {
         await setDifficult(currentEditId, difficult);
         closeEditModal();
 
-        // Refresh flashcard if active
         if (document.getElementById('flashcard-screen').classList.contains('active')) {
             refreshCurrentFlashcard();
+        }
+    });
+
+    resetBtn.addEventListener('click', async () => {
+        if (!currentEditId) return;
+        if (!confirm('Na pewno zresetować wyniki tego przypadku?')) return;
+
+        await updateResults(currentEditId, []);
+        closeEditModal();
+
+        if (document.getElementById('stats-screen').classList.contains('active')) {
+            await showStats();
         }
     });
 
@@ -752,7 +774,10 @@ async function startFlashcard() {
 
 function showFlashcard() {
     const c = flashcardCases[flashcardIndex];
-    const caseName = c.lp || `${c.target1}${c.target2}`;
+    let caseName;
+    if (c.lp) caseName = c.lp;
+    else if (c.target2) caseName = `${c.target1}${c.target2}`;
+    else caseName = c.target1;
 
     document.getElementById('flashcard-progress').textContent = `${flashcardIndex + 1}/${flashcardCases.length}`;
     document.getElementById('flashcard-case').textContent = caseName;
@@ -801,7 +826,10 @@ function openFlashcardEdit() {
     if (flashcardCases.length === 0) return;
 
     const c = flashcardCases[flashcardIndex];
-    const caseName = c.lp || `${c.target1}${c.target2}`;
+    let caseName;
+    if (c.lp) caseName = c.lp;
+    else if (c.target2) caseName = `${c.target1}${c.target2}`;
+    else caseName = c.target1;
     openEditModal(c.id, caseName);
 }
 

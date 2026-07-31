@@ -30,9 +30,10 @@ edges_UF       → krawędzie, bufor UF
 edges_DF       → krawędzie, bufor DF
 corners_UFR    → rogi, bufor UFR
 corners_UBL    → rogi, bufor UBL
+parity_UFR     → parity, bufor UFR
 ```
 
-Format: `{edges|corners}_{BUFOR}`
+Format: `{edges|corners|parity}_{BUFOR}`
 
 ---
 
@@ -94,6 +95,24 @@ Prostszy format — każdy wiersz to jeden case.
 
 ---
 
+### Format Parity
+
+Parity ma osobny format — jeden target zamiast dwóch.
+
+**Kolumny:** LP (target) | Algorytm
+
+**Przykład arkusza `parity_UFR`:**
+
+| LP           | Algorytm                    |
+|--------------|------------------------------|
+| A (UBL)      | R U R' F R' F' R            |
+| B (UBR)      | R U' R' U' R U R D R' U'... |
+| C (UFR)      | ...                         |
+
+Pierwszy wiersz to nagłówek (pomijany przy imporcie).
+
+---
+
 ### Format TXT
 
 Plik tekstowy z sekcjami.
@@ -136,7 +155,7 @@ Case zostanie oznaczony jako "Trudny" i pojawi się w trybie **Słabe punkty**.
 
 ## Gra
 
-1. Wybierz typ: **Krawędzie** lub **Rogi**
+1. Wybierz typ: **Krawędzie**, **Rogi** lub **Parity**
 2. Wybierz bufor (jeśli masz kilka)
 3. Wybierz tryb lub konkretne case'y
 4. Kliknij **Start** (trening z timerem) lub **Nauka** (flashcards)
@@ -198,7 +217,7 @@ Tryb do nauki nowych algorytmów bez presji czasu.
 
 ## Statystyki
 
-Trzy zakładki: **Ogólne** / **Krawędzie** / **Rogi**
+Cztery zakładki: **Ogólne** / **Krawędzie** / **Rogi** / **Parity**
 
 ### Per bufor:
 - Liczba case'ów (z wynikami / wszystkie)
@@ -209,7 +228,7 @@ Trzy zakładki: **Ogólne** / **Krawędzie** / **Rogi**
 
 ### Tabela case'ów
 
-Kliknij "Wszystkie case'y" aby rozwinąć:
+Kliknij na wiersz case'a aby edytować algorytm lub zresetować wyniki.
 
 | Kolumna | Opis |
 |---------|------|
@@ -222,7 +241,7 @@ Kliknij "Wszystkie case'y" aby rozwinąć:
 | Kat. | S=szybki, Ś=średni, W=wolny, N=niestabilny, ?=nowy, R=regres |
 | Tr. | ↑=poprawa, →=stabilny, ↓=regres |
 
-**Kliknij na wiersz aby edytować algorytm.**
+**Re-import:** Zachowuje istniejące wyniki treningów — można bezpiecznie aktualizować algorytmy.
 
 ---
 
@@ -268,6 +287,14 @@ GitHub Pages + Cloudflare subdomain
 ---
 
 ## Changelog
+
+### v1.1 (2026-07-31)
+
+- Parity: nowy typ case'ów (jeden target)
+- Reset wyników dla poszczególnych case'ów
+- Re-import zachowuje istniejące wyniki
+- Ulepszone UI: większe elementy dotykowe (~48px), custom strzałka w selectach
+- Zaktualizowane instrukcje
 
 ### v1.0 (2026-07-31)
 

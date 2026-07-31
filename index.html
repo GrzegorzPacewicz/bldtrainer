@@ -20,6 +20,7 @@
             <div class="menu-buttons">
                 <button id="btn-edges" class="btn btn-primary">Krawędzie</button>
                 <button id="btn-corners" class="btn btn-primary">Rogi</button>
+                <button id="btn-parity" class="btn btn-primary">Parity</button>
             </div>
             <div class="menu-buttons secondary">
                 <button id="btn-import" class="btn btn-secondary">Import</button>
@@ -61,13 +62,15 @@
                 <h3>Custom</h3>
                 <div class="target-selectors">
                     <select id="target1-select"></select>
-                    <select id="target2-select"></select>
+                    <span id="target2-wrapper">
+                        <select id="target2-select"></select>
+                    </span>
                     <button id="btn-add-target" class="btn btn-small">+</button>
                     <button id="btn-remove-target" class="btn btn-small">−</button>
                 </div>
-                <div class="inversion-toggle">
+                <div class="inversion-toggle" id="inversion-toggle-wrapper">
                     <label>
-                        <input type="checkbox" id="include-inverse" checked>
+                        <input type="checkbox" id="include-inverse">
                         Z inwersją (AB + BA)
                     </label>
                 </div>
@@ -143,6 +146,7 @@
                     <button class="stats-tab active" data-tab="global">Ogólne</button>
                     <button class="stats-tab" data-tab="edges">Krawędzie</button>
                     <button class="stats-tab" data-tab="corners">Rogi</button>
+                    <button class="stats-tab" data-tab="parity">Parity</button>
                 </div>
                 <div id="stats-panel" class="stats-panel"></div>
             </div>
@@ -173,9 +177,10 @@
 
                     <p><strong>Nazwa arkusza Excel:</strong></p>
                     <pre>edges_UF      (krawędzie, bufor UF)
-corners_UFR   (rogi, bufor UFR)</pre>
+corners_UFR   (rogi, bufor UFR)
+parity_UFR    (parity, bufor UFR)</pre>
 
-                    <p><strong>Format 1: Tabela NxN</strong></p>
+                    <p><strong>Format 1: Tabela NxN</strong> (krawędzie, rogi)</p>
                     <p>Nagłówki i pierwsza kolumna to targety. W komórkach algorytmy.</p>
 <pre>       A (UB)         B (UR)         C (UL)
 A (UB)    -         R U R' U'      L' U' L U
@@ -183,11 +188,17 @@ B (UR) R' U' R U       -           M2 U M2 U'
 C (UL) L U L' U'    M2 U' M2 U        -</pre>
                     <p><code>A</code> = letter pair (wyświetlany), <code>(UB)</code> = sticker</p>
 
-                    <p><strong>Format 2: Lista</strong></p>
+                    <p><strong>Format 2: Lista</strong> (krawędzie, rogi)</p>
 <pre>A (UB)    B (UR)    R U R' U'
 A (UB)    C (UL)    L' U' L U
 B (UR)    C (UL)    M2 U M2 U'</pre>
                     <p>Kolumny: target1, target2, algorytm</p>
+
+                    <p><strong>Format Parity:</strong></p>
+<pre>LP       Algorytm
+A (UBL)  R U R' F R' F' R
+B (UBR)  R U' R' U' R U R D ...</pre>
+                    <p>Pierwszy wiersz to nagłówek (pomijany). Kolumny: LP (target), algorytm</p>
 
                     <p><strong>Format TXT:</strong></p>
 <pre># edges_UF
@@ -199,12 +210,14 @@ UBL URF: R U R' U'</pre>
                     <p>Sekcja <code># typ_bufor</code>, potem <code>target1 target2: algorytm</code></p>
 
                     <p><strong>Oznaczanie trudnych:</strong> Dodaj 💩 w algorytmie.</p>
+
+                    <p><strong>Re-import:</strong> Zachowuje istniejące wyniki treningów.</p>
                 </section>
 
                 <section>
                     <h4>Gra</h4>
                     <ol>
-                        <li>Wybierz typ: <strong>Krawędzie</strong> lub <strong>Rogi</strong></li>
+                        <li>Wybierz typ: <strong>Krawędzie</strong>, <strong>Rogi</strong> lub <strong>Parity</strong></li>
                         <li>Wybierz bufor (jeśli masz kilka)</li>
                         <li>Wybierz tryb (np. Słabe punkty) — aplikacja automatycznie wybierze przypadki na podstawie Twoich wyników</li>
                         <li>Pod przyciskiem Start zobaczysz listę wybranych przypadków</li>
@@ -241,7 +254,7 @@ UBL URF: R U R' U'</pre>
 
                 <section>
                     <h4>Statystyki</h4>
-                    <p>Zakładki: Ogólne / Krawędzie / Rogi</p>
+                    <p>Zakładki: Ogólne / Krawędzie / Rogi / Parity</p>
                     <p>Per bufor: średnia, odch. std., rozkład kategorii, trendy.</p>
                     <p><strong>Avg</strong> — średnia arytmetyczna wszystkich czasów dla case'a.</p>
                     <p><strong>Trendy</strong> (wymagają min. 6 wykonań):</p>
@@ -284,6 +297,7 @@ UBL URF: R U R' U'</pre>
             <div class="modal-actions">
                 <button id="edit-modal-save" class="btn btn-primary">Zapisz</button>
                 <button id="edit-modal-cancel" class="btn btn-secondary">Anuluj</button>
+                <button id="edit-modal-reset" class="btn btn-danger">Resetuj wyniki</button>
             </div>
         </div>
     </div>

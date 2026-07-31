@@ -19,7 +19,10 @@ class Game {
     getCurrentCase() {
         if (this.index >= this.shuffled.length) return null;
         const alg = this.shuffled[this.index];
-        return alg.memo || alg.lp || `${alg.target1} ${alg.target2}`;
+        if (alg.memo) return alg.memo;
+        if (alg.lp) return alg.lp;
+        if (alg.target2) return `${alg.target1} ${alg.target2}`;
+        return alg.target1;
     }
 
     getCurrentAlg() {
@@ -35,7 +38,10 @@ class Game {
     getNextCase() {
         if (this.index + 1 >= this.shuffled.length) return '';
         const alg = this.shuffled[this.index + 1];
-        return alg.memo || alg.lp || `${alg.target1} ${alg.target2}`;
+        if (alg.memo) return alg.memo;
+        if (alg.lp) return alg.lp;
+        if (alg.target2) return `${alg.target1} ${alg.target2}`;
+        return alg.target1;
     }
 
     getProgress() {
@@ -96,9 +102,14 @@ class Game {
         for (const [id, time] of source) {
             const alg = this.algorithms.find(a => a.id === id);
             if (alg) {
+                let caseName;
+                if (alg.memo) caseName = alg.memo;
+                else if (alg.lp) caseName = alg.lp;
+                else if (alg.target2) caseName = `${alg.target1} ${alg.target2}`;
+                else caseName = alg.target1;
                 list.push({
                     id,
-                    case: alg.memo || alg.lp || `${alg.target1} ${alg.target2}`,
+                    case: caseName,
                     time
                 });
             }

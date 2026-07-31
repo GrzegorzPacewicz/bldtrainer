@@ -28,9 +28,12 @@ npx serve .
 GitHub Pages + Cloudflare subdomain: `bldtrainer.grzegorzpacewicz.pl`
 
 ## Format importu Excel
-Arkusz nazywany `{pieceType}_{buffer}` np. `edges_UF`:
-- Tabela NxN gdzie header = first target, first column = second target
-- Lub lista: kolumna A = target1, B = target2, C = alg
+Arkusz nazywany `{pieceType}_{buffer}` np. `edges_UF`, `corners_UFR`, `parity_UFR`:
+- **Krawędzie/Rogi tabela NxN**: header = first target, first column = second target
+- **Krawędzie/Rogi lista**: kolumna A = target1, B = target2, C = alg
+- **Parity**: pierwszy wiersz to nagłówek (pomijany), kolumna A = LP + target (np. "A (UBL)"), B = alg
+
+Re-import zachowuje istniejące wyniki treningów.
 
 ## Format importu TXT
 ```

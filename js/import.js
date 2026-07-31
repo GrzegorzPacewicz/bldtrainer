@@ -36,7 +36,28 @@ async function importExcel(file) {
 function parseSheet(rows, pieceType, buffer) {
     const algorithms = [];
 
-    if (rows.length < 2 || !rows[0] || rows[0].length < 2) {
+    if (rows.length < 1 || !rows[0]) {
+        return algorithms;
+    }
+
+    const isParity = pieceType.toLowerCase() === 'parity';
+
+    if (isParity) {
+        for (let rowIdx = 1; rowIdx < rows.length; rowIdx++) {
+            const row = rows[rowIdx];
+            if (!row || row.length < 2 || !row[0] || !row[1]) continue;
+
+            const target = extractTarget(String(row[0]));
+            const lp = extractLp(String(row[0]));
+            const algText = String(row[1]);
+
+            const alg = parseParityAlgorithm(pieceType, buffer, target, algText, lp);
+            if (alg) algorithms.push(alg);
+        }
+        return algorithms;
+    }
+
+    if (rows.length < 2 || rows[0].length < 2) {
         return algorithms;
     }
 
@@ -162,6 +183,37 @@ function parseAlgorithm(pieceType, buffer, target1, target2, algText, lp1, lp2) 
             results: []
         }],
         lp,
+        memo: '',
+        difficult,
+        updatedAt: Date.now()
+    };
+}
+
+function parseParityAlgorithm(pieceType, buffer, target, algText, lp) {
+    const canonBuffer = canonicalRepresentation(buffer);
+    const canonTarget = canonicalRepresentation(target);
+
+    if (!canonTarget) return null;
+
+    let difficult = false;
+    let cleanAlg = algText;
+
+    if (algText.includes('💩')) {
+        difficult = true;
+        cleanAlg = algText.replace(/💩/g, '').trim();
+    }
+
+    return {
+        id: `${pieceType}_${canonBuffer};${canonTarget}`,
+        pieceType,
+        buffer: canonBuffer,
+        target1: canonTarget,
+        target2: null,
+        algorithms: [{
+            alg: cleanAlg,
+            results: []
+        }],
+        lp: lp || '',
         memo: '',
         difficult,
         updatedAt: Date.now()
