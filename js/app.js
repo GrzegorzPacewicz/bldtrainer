@@ -143,13 +143,17 @@ async function selectBuffer(buffer) {
     document.getElementById('btn-start-game').onclick = startGame;
 }
 
+function hasAlgorithm(a) {
+    return a.algorithms[0]?.alg?.trim();
+}
+
 async function selectSubset(type) {
     const algs = await getAlgorithmsByPieceAndBuffer(currentPieceType, currentBuffer);
 
     selectedCases.clear();
 
     if (type === 'all') {
-        algs.filter(a => a.target1 !== a.target2).forEach(a => selectedCases.add(a.id));
+        algs.filter(a => a.target1 !== a.target2 && hasAlgorithm(a)).forEach(a => selectedCases.add(a.id));
     } else if (type === 'drill-weak') {
         const weak = await getDrillWeakCases(currentPieceType, currentBuffer);
         weak.forEach(a => selectedCases.add(a.id));
@@ -217,14 +221,14 @@ async function updateSelectedCasesDisplay() {
     }
 
     const algs = await getAlgorithmsByPieceAndBuffer(currentPieceType, currentBuffer);
-    const selected = algs.filter(a => selectedCases.has(a.id));
+    const selected = algs.filter(a => selectedCases.has(a.id) && hasAlgorithm(a));
     const labels = selected.map(a => a.lp || `${a.target1}${a.target2}`).sort();
 
     const preview = labels.length <= 20
         ? labels.join(', ')
         : labels.slice(0, 20).join(', ') + ` ... (+${labels.length - 20})`;
 
-    container.innerHTML = `<strong>Wybrano: ${selectedCases.size}</strong><div class="selected-preview">${preview}</div>`;
+    container.innerHTML = `<strong>Wybrano: ${selected.length}</strong><div class="selected-preview">${preview}</div>`;
 }
 
 async function startGame() {
@@ -234,7 +238,12 @@ async function startGame() {
     }
 
     const algs = await getAlgorithmsByPieceAndBuffer(currentPieceType, currentBuffer);
-    const filtered = algs.filter(a => selectedCases.has(a.id));
+    const filtered = algs.filter(a => selectedCases.has(a.id) && hasAlgorithm(a));
+
+    if (filtered.length === 0) {
+        alert('Brak przypadków z algorytmami');
+        return;
+    }
 
     currentGame = new Game(filtered);
 
@@ -608,9 +617,7 @@ function initEditModal() {
         const newAlg = document.getElementById('edit-modal-alg').value.trim();
         const difficult = document.getElementById('edit-modal-difficult').checked;
 
-        if (newAlg) {
-            await updateAlgorithmText(currentEditId, newAlg);
-        }
+        await updateAlgorithmText(currentEditId, newAlg);
         await setDifficult(currentEditId, difficult);
         closeEditModal();
     });
