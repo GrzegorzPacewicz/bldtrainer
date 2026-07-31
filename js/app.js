@@ -369,11 +369,11 @@ function endGame() {
 
     document.getElementById('btn-save-results').onclick = async () => {
         await currentGame.saveAllResults();
-        showScreen('menu-screen');
+        showScreen('subset-screen');
     };
 
     document.getElementById('btn-discard-results').onclick = () => {
-        showScreen('menu-screen');
+        showScreen('subset-screen');
     };
 
     showScreen('results-screen');
