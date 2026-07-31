@@ -255,6 +255,18 @@ async function startGame() {
 
     currentGame = new Game(filtered);
 
+    // Reset display before showing
+    document.getElementById('game-case').textContent = '';
+    document.getElementById('game-alg').textContent = '';
+    document.getElementById('game-alg').classList.remove('visible');
+    document.getElementById('game-timer').textContent = '';
+    document.getElementById('game-avg').textContent = '';
+    document.getElementById('game-progress').textContent = '';
+    document.getElementById('game-next-preview').textContent = '';
+    document.getElementById('game-next-preview').classList.remove('visible');
+    document.getElementById('game-tap-area').classList.remove('timing');
+    document.getElementById('game-screen').classList.remove('timing');
+
     showScreen('game-screen');
     startCountdown(() => {
         startNextCase();
@@ -300,6 +312,8 @@ function startNextCase() {
 function initGameHandlers() {
     const tapArea = document.getElementById('game-tap-area');
     const gameScreen = document.getElementById('game-screen');
+
+    document.getElementById('btn-game-back').addEventListener('click', exitGame);
 
     const handleTap = (e) => {
         e.preventDefault();
