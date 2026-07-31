@@ -847,10 +847,11 @@ h3 {
     font-weight: 600;
 }
 
-.case-row.cat-fast td.case-avg { color: #22c55e; }
-.case-row.cat-slow td.case-avg { color: #ef4444; }
-.case-row.cat-unstable td.case-std { color: #a78bfa; }
-.case-row.cat-regressing td.case-trend { color: #f97316; }
+.case-row.cat-fast { background: #16a34a; color: white; }
+.case-row.cat-slow { background: #dc2626; color: white; }
+.case-row.cat-unstable { background: #7c3aed; color: white; }
+.case-row.cat-new { background: #0ea5e9; color: white; }
+.case-row.cat-regressing { background: #ea580c; color: white; }
 
 .text-muted {
     color: var(--text-secondary);
