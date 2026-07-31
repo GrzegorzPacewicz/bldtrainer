@@ -717,13 +717,13 @@ h3 {
     color: var(--text-primary);
 }
 
-.cat-fast { background: #16a34a; color: white; }
-.cat-average { background: var(--bg-card); }
-.cat-slow { background: #dc2626; color: white; }
-.cat-unstable { background: #7c3aed; color: white; }
-.cat-new { background: #0ea5e9; color: white; }
-.cat-regressing { background: #ea580c; color: white; }
-.cat-difficult { background: #fbbf24; color: #1a1a2e; }
+.cat-badge.cat-fast { background: #16a34a; color: white; }
+.cat-badge.cat-average { background: var(--bg-card); }
+.cat-badge.cat-slow { background: #dc2626; color: white; }
+.cat-badge.cat-unstable { background: #7c3aed; color: white; }
+.cat-badge.cat-new { background: #0ea5e9; color: white; }
+.cat-badge.cat-regressing { background: #ea580c; color: white; }
+.cat-badge.cat-difficult { background: #fbbf24; color: #1a1a2e; }
 
 .trend-improving { color: #22c55e; }
 .trend-stable { color: var(--text-secondary); }
