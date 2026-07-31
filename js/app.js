@@ -38,13 +38,11 @@ function initHistoryNavigation() {
 
         if (gameState === 'timing' || gameState === 'countdown' || gameState === 'showingAlg') {
             exitGame();
-            showScreen('menu-screen', false);
             return;
         }
 
         if (flashcardState === 'hidden' || flashcardState === 'revealed') {
-            flashcardState = 'idle';
-            showScreen('menu-screen', false);
+            exitFlashcard();
             return;
         }
 
