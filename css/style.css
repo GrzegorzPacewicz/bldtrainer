@@ -415,6 +415,36 @@ h3 {
     word-break: break-word;
 }
 
+/* Pause Setting */
+.pause-setting {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.pause-setting select {
+    padding: 0.5rem 2rem 0.5rem 0.75rem;
+    font-size: 0.9rem;
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: none;
+    border-radius: 0.25rem;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M2 4l4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    cursor: pointer;
+}
+
+.pause-setting select:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+}
+
 /* Game Screen */
 .game-top {
     display: flex;

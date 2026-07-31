@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bldtrainer-v4';
+const CACHE_NAME = 'bldtrainer-v5';
 const ASSETS = [
     '/',
     '/index.html',

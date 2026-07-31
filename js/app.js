@@ -19,7 +19,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     initThemeToggle();
     initHomeButtons();
     initEditModal();
+    initPauseSetting();
 });
+
+function initPauseSetting() {
+    const select = document.getElementById('pause-duration');
+    const saved = localStorage.getItem('pauseDuration');
+    if (saved !== null) {
+        select.value = saved;
+    }
+    select.addEventListener('change', () => {
+        localStorage.setItem('pauseDuration', select.value);
+    });
+}
+
+function getPauseDuration() {
+    return parseInt(localStorage.getItem('pauseDuration') ?? '2000', 10);
+}
 
 function showScreen(screenId, pushState = true) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -341,14 +357,24 @@ function initGameHandlers() {
         document.getElementById('game-next-preview').classList.add('visible');
         gameState = 'showingAlg';
 
-        setTimeout(() => {
+        const pause = getPauseDuration();
+        if (pause === 0) {
             if (currentGame.next()) {
                 startNextCase();
             } else {
                 endGame();
                 gameState = 'idle';
             }
-        }, 2000);
+        } else {
+            setTimeout(() => {
+                if (currentGame.next()) {
+                    startNextCase();
+                } else {
+                    endGame();
+                    gameState = 'idle';
+                }
+            }, pause);
+        }
     };
 
     tapArea.addEventListener('touchstart', handleTap, { passive: false });
