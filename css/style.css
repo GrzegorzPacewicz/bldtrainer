@@ -141,13 +141,25 @@ h3 {
 
 .version {
     position: absolute;
-    bottom: 0;
+    bottom: 0.5rem;
     left: 0;
     right: 0;
     text-align: center;
     font-size: 0.75rem;
     color: var(--text-secondary);
-    opacity: 0.5;
+    opacity: 0.6;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.version a {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.version a:hover {
+    text-decoration: underline;
 }
 
 .btn {
@@ -1034,5 +1046,132 @@ h3 {
 
     .btn {
         padding: 0.75rem 1.25rem;
+    }
+}
+
+/* Flashcard Screen */
+.start-buttons {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.start-buttons .btn {
+    flex: 1;
+}
+
+.flashcard-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    padding: 0 0.5rem;
+}
+
+.flashcard-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.flashcard-case {
+    font-size: 5rem;
+    font-weight: 700;
+    color: var(--accent);
+    text-align: center;
+}
+
+.flashcard-alg {
+    font-size: 1.5rem;
+    font-family: monospace;
+    color: var(--text-primary);
+    text-align: center;
+    padding: 1rem;
+    min-height: 3rem;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.flashcard-alg.visible {
+    opacity: 1;
+}
+
+.flashcard-tap-area {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to top, var(--bg-secondary) 0%, transparent 100%);
+    cursor: pointer;
+}
+
+.flashcard-tap-area .tap-hint {
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+.flashcard-tap-area.hidden {
+    display: none;
+}
+
+.flashcard-buttons {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 30rem;
+    display: flex;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    padding-bottom: calc(1.5rem + var(--safe-bottom));
+    background: var(--bg-secondary);
+}
+
+.flashcard-buttons.hidden {
+    display: none;
+}
+
+.flashcard-buttons .btn {
+    flex: 1;
+    padding: 1.25rem;
+    font-size: 1.1rem;
+}
+
+.flashcard-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.btn-flashcard-edit {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+.btn-flashcard-edit:hover {
+    color: var(--accent);
+}
+
+@media (max-width: 25rem) {
+    .flashcard-case {
+        font-size: 3.5rem;
+    }
+
+    .flashcard-alg {
+        font-size: 1.2rem;
     }
 }

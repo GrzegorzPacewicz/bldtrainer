@@ -139,10 +139,31 @@ Case zostanie oznaczony jako "Trudny" i pojawi się w trybie **Słabe punkty**.
 1. Wybierz typ: **Krawędzie** lub **Rogi**
 2. Wybierz bufor (jeśli masz kilka)
 3. Wybierz tryb lub konkretne case'y
-4. Kliknij **Start**
+4. Kliknij **Start** (trening z timerem) lub **Nauka** (flashcards)
 5. Po odliczaniu 3-2-1 wykonaj algorytm i dotknij ekran
 6. Timer pokazuje czas w trakcie wykonania
 7. Po sesji zapisz lub odrzuć wyniki
+
+---
+
+## Tryb Nauka (Flashcards)
+
+Tryb do nauki nowych algorytmów bez presji czasu.
+
+1. Wybierz case'y i kliknij **Nauka**
+2. Widzisz case — przypomnij sobie algorytm
+3. Dotknij ekran (lub spacja) aby zobaczyć algorytm
+4. Oceń: **Znam** (✓) lub **Nie znam** (✗)
+5. "Nie znam" automatycznie oznacza case jako trudny
+
+**Skróty klawiszowe:**
+- Spacja — odkryj algorytm / następny (jeśli znam)
+- ← lub 1 — Nie znam
+- → lub 2 — Znam
+
+**Dodatkowe opcje:**
+- ✎ — edytuj algorytm w trakcie nauki
+- ← Wróć — wyjście z zachowaniem postępu
 
 ---
 
@@ -243,3 +264,18 @@ npx serve .
 ## Deploy
 
 GitHub Pages + Cloudflare subdomain
+
+---
+
+## Changelog
+
+### v1.0 (2026-07-31)
+
+- Tryb Nauka (flashcards) z oceną Znam/Nie znam
+- Checkbox "trudny" w modalu edycji algorytmu
+- Pomijanie case'ów bez algorytmów (pusty alg = wyłączony case)
+- Sortowalna tabela case'ów w statystykach
+- Podgląd wybranych case'ów przed startem
+- Polska terminologia w UI
+- Edycja algorytmu w trakcie nauki
+- Link do GitHub w stopce

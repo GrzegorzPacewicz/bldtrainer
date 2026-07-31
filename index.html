@@ -26,7 +26,10 @@
                 <button id="btn-stats" class="btn btn-secondary">Statystyki</button>
             </div>
             <button id="btn-help" class="btn btn-help">?</button>
-            <div class="version">v2026-07-30</div>
+            <div class="version">
+                <div>v1.0 | 2026-07-31</div>
+                <a href="https://github.com/GrzegorzPacewicz/bldtrainer" target="_blank" rel="noopener">GitHub</a>
+            </div>
         </div>
 
         <!-- Buffer Choice -->
@@ -70,7 +73,31 @@
                 </div>
                 <div id="selected-cases" class="selected-cases"></div>
             </div>
-            <button id="btn-start-game" class="btn btn-primary btn-large">Start</button>
+            <div class="start-buttons">
+                <button id="btn-start-game" class="btn btn-primary btn-large">Start</button>
+                <button id="btn-start-flashcard" class="btn btn-secondary btn-large">Nauka</button>
+            </div>
+        </div>
+
+        <!-- Flashcard Screen -->
+        <div id="flashcard-screen" class="screen">
+            <button class="btn-logo btn-logo-small">BLD Trainer</button>
+            <div class="flashcard-top">
+                <button id="btn-flashcard-back" class="btn btn-small btn-secondary">← Wróć</button>
+                <span id="flashcard-progress">1/20</span>
+                <button id="btn-flashcard-edit" class="btn-flashcard-edit" title="Edytuj algorytm">✎</button>
+            </div>
+            <div class="flashcard-main">
+                <div id="flashcard-case" class="flashcard-case"></div>
+                <div id="flashcard-alg" class="flashcard-alg"></div>
+            </div>
+            <div id="flashcard-tap-area" class="flashcard-tap-area">
+                <span class="tap-hint">Dotknij aby zobaczyć algorytm</span>
+            </div>
+            <div id="flashcard-buttons" class="flashcard-buttons hidden">
+                <button id="btn-flashcard-fail" class="btn btn-danger btn-large">Nie znam</button>
+                <button id="btn-flashcard-ok" class="btn btn-success btn-large">Znam</button>
+            </div>
         </div>
 
         <!-- Game Screen -->

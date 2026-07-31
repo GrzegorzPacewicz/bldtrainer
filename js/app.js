@@ -4,12 +4,16 @@ let currentGame = null;
 let selectedCases = new Set();
 let resultsSortBy = 'time';
 let resultsSortAsc = false;
+let flashcardCases = [];
+let flashcardIndex = 0;
+let flashcardState = 'hidden'; // 'hidden' | 'revealed'
 
 document.addEventListener('DOMContentLoaded', async () => {
     await initDB();
     initNavigation();
     initMenuHandlers();
     initGameHandlers();
+    initFlashcardHandlers();
     initImportHandlers();
     initHistoryNavigation();
     initThemeToggle();
@@ -34,6 +38,12 @@ function initHistoryNavigation() {
 
         if (gameState === 'timing' || gameState === 'countdown' || gameState === 'showingAlg') {
             exitGame();
+            showScreen('menu-screen', false);
+            return;
+        }
+
+        if (flashcardState === 'hidden' || flashcardState === 'revealed') {
+            flashcardState = 'idle';
             showScreen('menu-screen', false);
             return;
         }
@@ -620,6 +630,11 @@ function initEditModal() {
         await updateAlgorithmText(currentEditId, newAlg);
         await setDifficult(currentEditId, difficult);
         closeEditModal();
+
+        // Refresh flashcard if active
+        if (document.getElementById('flashcard-screen').classList.contains('active')) {
+            refreshCurrentFlashcard();
+        }
     });
 
     document.addEventListener('keydown', (e) => {
@@ -666,5 +681,125 @@ function stopGameTimer() {
     if (timerInterval) {
         clearInterval(timerInterval);
         timerInterval = null;
+    }
+}
+
+// Flashcard mode
+function initFlashcardHandlers() {
+    document.getElementById('btn-start-flashcard').addEventListener('click', startFlashcard);
+
+    document.getElementById('flashcard-tap-area').addEventListener('click', revealFlashcard);
+
+    document.getElementById('btn-flashcard-fail').addEventListener('click', () => flashcardAnswer(false));
+    document.getElementById('btn-flashcard-ok').addEventListener('click', () => flashcardAnswer(true));
+
+    document.getElementById('btn-flashcard-back').addEventListener('click', exitFlashcard);
+    document.getElementById('btn-flashcard-edit').addEventListener('click', openFlashcardEdit);
+
+    document.addEventListener('keydown', (e) => {
+        if (!document.getElementById('flashcard-screen').classList.contains('active')) return;
+
+        if (e.code === 'Space' && flashcardState === 'hidden') {
+            e.preventDefault();
+            revealFlashcard();
+        } else if (flashcardState === 'revealed') {
+            if (e.code === 'ArrowLeft' || e.code === 'Digit1') {
+                flashcardAnswer(false);
+            } else if (e.code === 'ArrowRight' || e.code === 'Digit2' || e.code === 'Space') {
+                e.preventDefault();
+                flashcardAnswer(true);
+            }
+        }
+    });
+}
+
+async function startFlashcard() {
+    if (selectedCases.size === 0) {
+        alert('Wybierz przynajmniej jeden przypadek');
+        return;
+    }
+
+    const algs = await getAlgorithmsByPieceAndBuffer(currentPieceType, currentBuffer);
+    flashcardCases = algs.filter(a => selectedCases.has(a.id) && hasAlgorithm(a));
+
+    if (flashcardCases.length === 0) {
+        alert('Brak przypadków z algorytmami');
+        return;
+    }
+
+    // Shuffle
+    for (let i = flashcardCases.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [flashcardCases[i], flashcardCases[j]] = [flashcardCases[j], flashcardCases[i]];
+    }
+
+    flashcardIndex = 0;
+    showScreen('flashcard-screen');
+    showFlashcard();
+}
+
+function showFlashcard() {
+    const c = flashcardCases[flashcardIndex];
+    const caseName = c.lp || `${c.target1}${c.target2}`;
+
+    document.getElementById('flashcard-progress').textContent = `${flashcardIndex + 1}/${flashcardCases.length}`;
+    document.getElementById('flashcard-case').textContent = caseName;
+    document.getElementById('flashcard-alg').textContent = c.algorithms[0].alg;
+    document.getElementById('flashcard-alg').classList.remove('visible');
+
+    document.getElementById('flashcard-tap-area').classList.remove('hidden');
+    document.getElementById('flashcard-buttons').classList.add('hidden');
+
+    flashcardState = 'hidden';
+}
+
+function revealFlashcard() {
+    if (flashcardState !== 'hidden') return;
+
+    document.getElementById('flashcard-alg').classList.add('visible');
+    document.getElementById('flashcard-tap-area').classList.add('hidden');
+    document.getElementById('flashcard-buttons').classList.remove('hidden');
+
+    flashcardState = 'revealed';
+}
+
+async function flashcardAnswer(known) {
+    const c = flashcardCases[flashcardIndex];
+
+    if (!known) {
+        await setDifficult(c.id, true);
+    }
+
+    flashcardIndex++;
+
+    if (flashcardIndex >= flashcardCases.length) {
+        exitFlashcard();
+        return;
+    }
+
+    showFlashcard();
+}
+
+function exitFlashcard() {
+    flashcardState = 'idle';
+    showScreen('menu-screen');
+}
+
+function openFlashcardEdit() {
+    if (flashcardCases.length === 0) return;
+
+    const c = flashcardCases[flashcardIndex];
+    const caseName = c.lp || `${c.target1}${c.target2}`;
+    openEditModal(c.id, caseName);
+}
+
+async function refreshCurrentFlashcard() {
+    if (flashcardIndex >= flashcardCases.length) return;
+
+    const c = flashcardCases[flashcardIndex];
+    const updated = await getAlgorithmById(c.id);
+    if (updated) {
+        flashcardCases[flashcardIndex] = updated;
+        document.getElementById('flashcard-alg').textContent = updated.algorithms[0]?.alg || '';
     }
 }
