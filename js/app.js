@@ -580,6 +580,9 @@ let currentStatsTab = 'global';
 
 async function showStats() {
     initStatsTabs();
+    document.querySelectorAll('.stats-tab').forEach(t => t.classList.remove('active'));
+    document.querySelector('.stats-tab[data-tab="global"]').classList.add('active');
+    currentStatsTab = 'global';
     await renderStatsTab('global');
     showScreen('stats-screen');
 }
