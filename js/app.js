@@ -37,11 +37,15 @@ function getPauseDuration() {
     return parseInt(localStorage.getItem('pauseDuration') ?? '2000', 10);
 }
 
-function showScreen(screenId, pushState = true) {
+function showScreen(screenId, pushState = true, replaceState = false) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(screenId).classList.add('active');
 
-    if (pushState && history.state?.screen !== screenId) {
+    if (history.state?.screen === screenId) return;
+
+    if (replaceState) {
+        history.replaceState({ screen: screenId }, '', '');
+    } else if (pushState) {
         history.pushState({ screen: screenId }, '', '');
     }
 }
@@ -417,11 +421,11 @@ function endGame() {
 
     document.getElementById('btn-save-results').onclick = async () => {
         await currentGame.saveAllResults();
-        showScreen('subset-screen');
+        showScreen('subset-screen', true, true);
     };
 
     document.getElementById('btn-discard-results').onclick = () => {
-        showScreen('subset-screen');
+        showScreen('subset-screen', true, true);
     };
 
     showScreen('results-screen');
