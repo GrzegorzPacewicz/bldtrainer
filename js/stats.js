@@ -587,11 +587,17 @@ async function exportToExcel() {
             const cases = await getDetailedCaseStats(pieceType, buffer);
             const caseMap = new Map(cases.map(c => [c.id, c]));
 
-            const rows = [['Case', 'Algorithm', 'Executions', 'Avg', 'Best', 'Worst', 'StdDev', 'Category', 'Trend', 'Difficult']];
+            const rows = [['Case', 'Algorithm', 'Exec', 'Avg', 'Best', 'Worst', 'Category']];
 
-            for (const alg of algs) {
-                if (alg.target2 && alg.target1 === alg.target2) continue;
+            const sorted = [...algs]
+                .filter(a => !a.target2 || a.target1 !== a.target2)
+                .sort((a, b) => {
+                    const caseA = a.lp || (a.target2 ? `${a.target1}${a.target2}` : a.target1);
+                    const caseB = b.lp || (b.target2 ? `${b.target1}${b.target2}` : b.target1);
+                    return caseA.localeCompare(caseB);
+                });
 
+            for (const alg of sorted) {
                 const stats = caseMap.get(alg.id) || {};
                 let caseName;
                 if (alg.lp) caseName = alg.lp;
@@ -605,16 +611,21 @@ async function exportToExcel() {
                     stats.avg ? stats.avg.toFixed(2) : '',
                     stats.best ? stats.best.toFixed(2) : '',
                     stats.worst ? stats.worst.toFixed(2) : '',
-                    stats.stdDev ? stats.stdDev.toFixed(2) : '',
-                    stats.category || 'new',
-                    stats.trend || '',
-                    alg.difficult ? 'yes' : ''
+                    stats.category || 'new'
                 ]);
             }
 
             const sheet = XLSX.utils.aoa_to_sheet(rows);
-            const sheetName = `${pieceType}_${buffer}`;
-            XLSX.utils.book_append_sheet(workbook, sheet, sheetName);
+            sheet['!cols'] = [
+                { wch: 6 },   // Case
+                { wch: 40 },  // Algorithm
+                { wch: 5 },   // Exec
+                { wch: 6 },   // Avg
+                { wch: 6 },   // Best
+                { wch: 6 },   // Worst
+                { wch: 10 }   // Category
+            ];
+            XLSX.utils.book_append_sheet(workbook, sheet, `${pieceType}_${buffer}`);
         }
     }
 
