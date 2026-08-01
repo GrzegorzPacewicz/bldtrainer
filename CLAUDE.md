@@ -4,18 +4,19 @@ PWA do treningu algorytmów blindcubing (3BLD).
 
 ## Stack
 - Vanilla JS/CSS/HTML
-- IndexedDB (lokalny storage)
-- xlsx.js (import exceli)
+- IndexedDB (lokalny storage algorytmów i wyników)
+- localStorage (ustawienia, sortowanie, statystyki dzienne)
+- xlsx.js (import/eksport exceli)
 - Service Worker (network-first)
 
 ## Struktura
-- `index.html` — główny plik
+- `index.html` — główny plik + modal pomocy
 - `css/style.css` — style
 - `js/db.js` — IndexedDB wrapper
-- `js/game.js` — logika gry (Game class)
+- `js/game.js` — logika gry (Game class) + statystyki dzienne
 - `js/import.js` — import Excel/TXT
-- `js/stats.js` — statystyki
-- `js/app.js` — główna logika UI
+- `js/stats.js` — statystyki + eksport Excel
+- `js/app.js` — główna logika UI + obsługa historii (Android back)
 - `sw.js` — Service Worker
 - `manifest.json` — PWA manifest
 
