@@ -190,31 +190,31 @@ async function selectSubset(type) {
         algs.filter(a => (!a.target2 || a.target1 !== a.target2) && hasAlgorithm(a)).forEach(a => selectedCases.add(a.id));
     } else if (type === 'drill-weak') {
         const weak = await getDrillWeakCases(currentPieceType, currentBuffer);
-        weak.forEach(a => selectedCases.add(a.id));
+        weak.filter(a => a.hasAlg).forEach(a => selectedCases.add(a.id));
     } else if (type === 'maintain') {
         const maintain = await getMaintainCases(currentPieceType, currentBuffer);
-        maintain.forEach(a => selectedCases.add(a.id));
+        maintain.filter(a => a.hasAlg).forEach(a => selectedCases.add(a.id));
     } else if (type === 'learn-new') {
         const newCases = await getNewCases(currentPieceType, currentBuffer);
-        newCases.forEach(a => selectedCases.add(a.id));
+        newCases.filter(a => a.hasAlg).forEach(a => selectedCases.add(a.id));
     } else if (type === 'slow') {
         const cats = await getCasesByCategory(currentPieceType, currentBuffer);
-        cats.slow.forEach(a => selectedCases.add(a.id));
+        cats.slow.filter(a => a.hasAlg).forEach(a => selectedCases.add(a.id));
     } else if (type === 'unstable') {
         const cats = await getCasesByCategory(currentPieceType, currentBuffer);
-        cats.unstable.forEach(a => selectedCases.add(a.id));
+        cats.unstable.filter(a => a.hasAlg).forEach(a => selectedCases.add(a.id));
     } else if (type === 'regressing') {
         const cats = await getCasesByCategory(currentPieceType, currentBuffer);
-        cats.regressing.forEach(a => selectedCases.add(a.id));
+        cats.regressing.filter(a => a.hasAlg).forEach(a => selectedCases.add(a.id));
     } else if (type === 'fast') {
         const cats = await getCasesByCategory(currentPieceType, currentBuffer);
-        cats.fast.forEach(a => selectedCases.add(a.id));
+        cats.fast.filter(a => a.hasAlg).forEach(a => selectedCases.add(a.id));
     } else if (type === 'new') {
         const cats = await getCasesByCategory(currentPieceType, currentBuffer);
-        cats.new.forEach(a => selectedCases.add(a.id));
+        cats.new.filter(a => a.hasAlg).forEach(a => selectedCases.add(a.id));
     } else if (type === 'difficult') {
         const difficult = await getDifficultCases(currentPieceType, currentBuffer);
-        difficult.forEach(a => selectedCases.add(a.id));
+        difficult.filter(a => hasAlgorithm(a)).forEach(a => selectedCases.add(a.id));
     }
 
     updateSelectedCasesDisplay();

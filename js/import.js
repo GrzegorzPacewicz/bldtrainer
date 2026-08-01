@@ -74,14 +74,13 @@ function parseSheet(rows, pieceType, buffer) {
             const secondTarget = extractTarget(String(row[0]));
             const secondLp = extractLp(String(row[0]));
 
-            for (let colIdx = 1; colIdx < row.length; colIdx++) {
-                const cellValue = row[colIdx];
-                if (!cellValue || cellValue === '') continue;
+            for (let colIdx = 1; colIdx < headers.length + 1; colIdx++) {
+                const cellValue = row[colIdx] || '';
 
                 const firstTarget = extractTarget(String(headers[colIdx - 1] || ''));
                 const firstLp = extractLp(String(headers[colIdx - 1] || ''));
 
-                if (firstTarget === secondTarget) continue;
+                if (!firstTarget || firstTarget === secondTarget) continue;
 
                 const alg = parseAlgorithm(
                     pieceType,
