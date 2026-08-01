@@ -166,6 +166,8 @@ async function getDetailedCaseStats(pieceType, buffer) {
         else if (alg.target2) caseName = `${alg.target1}${alg.target2}`;
         else caseName = alg.target1;
 
+        const hasAlg = !!(alg.algorithms[0]?.alg?.trim());
+
         cases.push({
             id: alg.id,
             case: caseName,
@@ -178,7 +180,8 @@ async function getDetailedCaseStats(pieceType, buffer) {
             worst,
             category,
             trend,
-            difficult: alg.difficult || false
+            difficult: alg.difficult || false,
+            hasAlg
         });
     }
 
@@ -387,6 +390,23 @@ function renderBufferStats(buffer, stats) {
                     ${renderCasesTable(stats.cases, buffer)}
                 </div>
             </div>
+            ${renderMissingAlgorithms(stats.cases)}
+        </div>
+    `;
+}
+
+function renderMissingAlgorithms(cases) {
+    const missing = cases.filter(c => !c.hasAlg);
+    if (missing.length === 0) return '';
+
+    const items = missing.map(c => `
+        <span class="missing-alg-item" data-id="${c.id}" data-case="${c.case}">${c.case}</span>
+    `).join('');
+
+    return `
+        <div class="missing-algs">
+            <div class="cases-header">Brak algorytmu (${missing.length})</div>
+            <div class="missing-algs-list">${items}</div>
         </div>
     `;
 }
@@ -464,6 +484,16 @@ function initCaseRowClicks() {
         row.addEventListener('click', () => {
             const id = row.dataset.id;
             const caseName = row.dataset.case;
+            if (id && caseName && typeof openEditModal === 'function') {
+                openEditModal(id, caseName);
+            }
+        });
+    });
+
+    document.querySelectorAll('.missing-alg-item').forEach(item => {
+        item.addEventListener('click', () => {
+            const id = item.dataset.id;
+            const caseName = item.dataset.case;
             if (id && caseName && typeof openEditModal === 'function') {
                 openEditModal(id, caseName);
             }

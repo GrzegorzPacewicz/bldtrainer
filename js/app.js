@@ -690,6 +690,13 @@ function initEditModal() {
         if (document.getElementById('flashcard-screen').classList.contains('active')) {
             refreshCurrentFlashcard();
         }
+
+        if (document.getElementById('stats-screen').classList.contains('active')) {
+            await renderStatsTab(currentStatsTab);
+            initCaseRowClicks();
+            initTableSorting();
+            initDetailsLock();
+        }
     });
 
     resetBtn.addEventListener('click', async () => {

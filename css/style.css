@@ -858,6 +858,37 @@ h3 {
     font-style: italic;
 }
 
+/* Missing algorithms */
+.missing-algs {
+    margin-top: 1rem;
+    border-top: 1px solid var(--bg-card);
+    padding-top: 0.75rem;
+}
+
+.missing-algs-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+}
+
+.missing-alg-item {
+    background: var(--bg-card);
+    padding: 0.3rem 0.6rem;
+    border-radius: 0.25rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    color: var(--text-secondary);
+    border: 1px solid var(--text-secondary);
+    transition: all 0.15s;
+}
+
+.missing-alg-item:hover {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+}
+
 /* Modal */
 .modal {
     display: none;

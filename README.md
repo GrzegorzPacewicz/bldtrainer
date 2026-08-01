@@ -11,10 +11,10 @@ PWA do treningu algorytmów blindcubing (3BLD) na Rubika 3x3.
 - Import algorytmów z Excel (.xlsx) lub TXT
 - Trening z timerem i live podglądem czasu
 - Inteligentne tryby treningowe (Słabe punkty, Utrzymanie, Nowe)
-- Automatyczna kategoryzacja case'ów (Szybkie/Wolne/Niestabilne/Regres)
+- Automatyczna kategoryzacja przypadków (Szybkie/Wolne/Niestabilne/Regres)
 - Szczegółowe statystyki per bufor z trendami
 - Edycja algorytmów w aplikacji
-- Oznaczanie trudnych case'ów
+- Oznaczanie trudnych przypadków
 - Działa offline (PWA)
 
 ---
@@ -79,7 +79,7 @@ Jeśli nie używasz letter pairs, możesz wpisać sam sticker:
 
 ### Format Excel: Lista
 
-Prostszy format — każdy wiersz to jeden case.
+Prostszy format — każdy wiersz to jeden przypadek.
 
 **Kolumny:** Target 1 | Target 2 | Algorytm
 
@@ -136,11 +136,11 @@ UBL UFL: L' U' L U
 
 **Format:**
 - `# typ_bufor` — nagłówek sekcji
-- `target1 target2: algorytm` — definicja case'a
+- `target1 target2: algorytm` — definicja przypadku
 
 ---
 
-### Oznaczanie trudnych case'ów
+### Oznaczanie trudnych przypadków
 
 Dodaj emoji 💩 gdziekolwiek w algorytmie:
 
@@ -149,7 +149,7 @@ R U R' U' 💩
 💩 L' U' L U
 ```
 
-Case zostanie oznaczony jako "Trudny" i pojawi się w trybie **Słabe punkty**.
+Przyp. zostanie oznaczony jako "Trudny" i pojawi się w trybie **Słabe punkty**.
 
 ---
 
@@ -157,7 +157,7 @@ Case zostanie oznaczony jako "Trudny" i pojawi się w trybie **Słabe punkty**.
 
 1. Wybierz typ: **Krawędzie**, **Rogi** lub **Parity**
 2. Wybierz bufor (jeśli masz kilka)
-3. Wybierz tryb lub konkretne case'y
+3. Wybierz tryb lub konkretne przypadek'y
 4. Kliknij **Start** (trening z timerem) lub **Nauka** (flashcards)
 5. Po odliczaniu 3-2-1 wykonaj algorytm i dotknij ekran
 6. Timer pokazuje czas w trakcie wykonania
@@ -169,11 +169,11 @@ Case zostanie oznaczony jako "Trudny" i pojawi się w trybie **Słabe punkty**.
 
 Tryb do nauki nowych algorytmów bez presji czasu.
 
-1. Wybierz case'y i kliknij **Nauka**
-2. Widzisz case — przypomnij sobie algorytm
+1. Wybierz przypadek'y i kliknij **Nauka**
+2. Widzisz przypadek — przypomnij sobie algorytm
 3. Dotknij ekran (lub spacja) aby zobaczyć algorytm
 4. Oceń: **Znam** (✓) lub **Nie znam** (✗)
-5. "Nie znam" automatycznie oznacza case jako trudny
+5. "Nie znam" automatycznie oznacza przypadek jako trudny
 
 **Skróty klawiszowe:**
 - Spacja — odkryj algorytm / następny (jeśli znam)
@@ -190,10 +190,10 @@ Tryb do nauki nowych algorytmów bez presji czasu.
 
 | Tryb | Opis |
 |------|------|
-| **Wszystkie** | Wszystkie case'y dla bufora |
+| **Wszystkie** | Wszystkie przypadek'y dla bufora |
 | **Słabe punkty** | Wolne + niestabilne + regres + trudne |
 | **Utrzymanie** | Szybkie + średnie (utrzymanie formy) |
-| **Nowe** | Case'y z <5 wykonań |
+| **Nowe** | Przyp.'y z <5 wykonań |
 
 ### Kategorie szczegółowe
 
@@ -220,19 +220,23 @@ Tryb do nauki nowych algorytmów bez presji czasu.
 Cztery zakładki: **Ogólne** / **Krawędzie** / **Rogi** / **Parity**
 
 ### Per bufor:
-- Liczba case'ów (z wynikami / wszystkie)
+- Liczba przypadków (z wynikami / wszystkie)
 - Łączna liczba wykonań
 - Średni czas i odchylenie std.
 - Rozkład kategorii (kolorowe badges)
 - Trendy (↑ poprawa / → stabilne / ↓ regres)
 
-### Tabela case'ów
+### Tabela przypadków
 
-Kliknij na wiersz case'a aby edytować algorytm lub zresetować wyniki.
+Kliknij na wiersz przypadku aby edytować algorytm lub zresetować wyniki.
+
+### Brak algorytmu
+
+Pod tabelą wyświetlana jest sekcja z przypadkami bez algorytmu. Kliknij na przypadek aby dodać algorytm.
 
 | Kolumna | Opis |
 |---------|------|
-| Case | Letter pair (! = trudny) |
+| Przyp. | Letter pair (! = trudny) |
 | Wyk. | Liczba wykonań |
 | Avg | Średni czas |
 | Std | Odchylenie standardowe |
@@ -288,21 +292,23 @@ GitHub Pages + Cloudflare subdomain
 
 ## Changelog
 
-### v1.1 (2026-07-31)
+### v1.0 (2026-08-01)
 
-- Parity: nowy typ case'ów (jeden target)
-- Reset wyników dla poszczególnych case'ów
+- Sekcja "Brak algorytmu" w statystykach — widok przypadków bez algorytmu z możliwością dodania
+- Parity: nowy typ przypadków (jeden target)
+- Reset wyników dla poszczególnych przypadków
 - Re-import zachowuje istniejące wyniki
 - Ulepszone UI: większe elementy dotykowe (~48px), custom strzałka w selectach
 - Zaktualizowane instrukcje
-
-### v1.0 (2026-07-31)
-
 - Tryb Nauka (flashcards) z oceną Znam/Nie znam
 - Checkbox "trudny" w modalu edycji algorytmu
-- Pomijanie case'ów bez algorytmów (pusty alg = wyłączony case)
-- Sortowalna tabela case'ów w statystykach
-- Podgląd wybranych case'ów przed startem
+- Pomijanie przypadków bez algorytmów (pusty alg = wyłączony przypadek)
+- Sortowalna tabela przypadków w statystykach
+- Podgląd wybranych przypadków przed startem
 - Polska terminologia w UI
 - Edycja algorytmu w trakcie nauki
 - Link do GitHub w stopce
+
+### v0.9 (2026-07-31)
+
+- Pierwsza wersja
