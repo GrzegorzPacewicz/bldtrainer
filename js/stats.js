@@ -502,15 +502,26 @@ function initCaseRowClicks() {
 }
 
 function initTableSorting() {
+    const saved = JSON.parse(localStorage.getItem('statsSort') || 'null');
+    const defaultSort = saved || { column: 'case', direction: 'asc' };
+
     document.querySelectorAll('.cases-table').forEach(table => {
         const headers = table.querySelectorAll('th[data-sort]');
-        let currentSort = { column: 'avg', direction: 'desc' };
+        let currentSort = { ...defaultSort };
+
+        const defaultTh = table.querySelector(`th[data-sort="${defaultSort.column}"]`);
+        if (defaultTh) {
+            defaultTh.classList.add(`sort-${defaultSort.direction}`);
+            sortTable(table, defaultSort.column, defaultSort.direction);
+        }
 
         headers.forEach(th => {
             th.addEventListener('click', () => {
                 const column = th.dataset.sort;
                 const direction = (currentSort.column === column && currentSort.direction === 'desc') ? 'asc' : 'desc';
                 currentSort = { column, direction };
+
+                localStorage.setItem('statsSort', JSON.stringify(currentSort));
 
                 headers.forEach(h => {
                     h.classList.remove('sort-asc', 'sort-desc');
