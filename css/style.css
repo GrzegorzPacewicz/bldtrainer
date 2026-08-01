@@ -162,6 +162,22 @@ h3 {
     text-decoration: underline;
 }
 
+.copyright {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.gh-icon {
+    vertical-align: middle;
+    opacity: 0.8;
+}
+
+.gh-icon:hover {
+    opacity: 1;
+}
+
 .btn {
     padding: 0.9375rem 1.875rem;
     font-size: 1.1rem;
