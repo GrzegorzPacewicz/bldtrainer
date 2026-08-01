@@ -575,3 +575,49 @@ function sortTable(table, column, direction) {
 
 function initDetailsLock() {
 }
+
+async function exportToExcel() {
+    const workbook = XLSX.utils.book_new();
+
+    for (const pieceType of ['edges', 'corners', 'parity']) {
+        const buffers = await getBuffersForPiece(pieceType);
+
+        for (const buffer of buffers) {
+            const algs = await getAlgorithmsByPieceAndBuffer(pieceType, buffer);
+            const cases = await getDetailedCaseStats(pieceType, buffer);
+            const caseMap = new Map(cases.map(c => [c.id, c]));
+
+            const rows = [['Case', 'Algorithm', 'Executions', 'Avg', 'Best', 'Worst', 'StdDev', 'Category', 'Trend', 'Difficult']];
+
+            for (const alg of algs) {
+                if (alg.target2 && alg.target1 === alg.target2) continue;
+
+                const stats = caseMap.get(alg.id) || {};
+                let caseName;
+                if (alg.lp) caseName = alg.lp;
+                else if (alg.target2) caseName = `${alg.target1}${alg.target2}`;
+                else caseName = alg.target1;
+
+                rows.push([
+                    caseName,
+                    alg.algorithms[0]?.alg || '',
+                    stats.executions || 0,
+                    stats.avg ? stats.avg.toFixed(2) : '',
+                    stats.best ? stats.best.toFixed(2) : '',
+                    stats.worst ? stats.worst.toFixed(2) : '',
+                    stats.stdDev ? stats.stdDev.toFixed(2) : '',
+                    stats.category || 'new',
+                    stats.trend || '',
+                    alg.difficult ? 'yes' : ''
+                ]);
+            }
+
+            const sheet = XLSX.utils.aoa_to_sheet(rows);
+            const sheetName = `${pieceType}_${buffer}`;
+            XLSX.utils.book_append_sheet(workbook, sheet, sheetName);
+        }
+    }
+
+    const date = new Date().toISOString().slice(0, 10);
+    XLSX.writeFile(workbook, `bldtrainer_export_${date}.xlsx`);
+}
