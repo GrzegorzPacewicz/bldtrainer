@@ -385,9 +385,9 @@ function renderBufferStats(buffer, stats) {
                 <div class="trend-badges">${trendHtml}</div>
             </div>
             <div class="cases-details">
-                <div class="cases-header">Wszystkie przypadki (${stats.cases.length})</div>
+                <div class="cases-header">Wszystkie przypadki (${stats.cases.filter(c => c.hasAlg).length})</div>
                 <div class="cases-table-wrapper">
-                    ${renderCasesTable(stats.cases, buffer)}
+                    ${renderCasesTable(stats.cases.filter(c => c.hasAlg), buffer)}
                 </div>
             </div>
             ${renderMissingAlgorithms(stats.cases)}
