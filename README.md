@@ -9,11 +9,14 @@ PWA do treningu algorytmów blindcubing (3BLD) na Rubika 3x3.
 ## Funkcje
 
 - Import algorytmów z Excel (.xlsx) lub TXT
+- Eksport algorytmów ze statystykami do Excel
 - Trening z timerem i live podglądem czasu
+- Konfigurowalna pauza między algorytmami (0-4s)
 - Inteligentne tryby treningowe (Słabe punkty, Utrzymanie, Nowe)
 - Automatyczna kategoryzacja przypadków (Szybkie/Wolne/Niestabilne/Regres)
 - Szczegółowe statystyki per bufor z trendami
-- Edycja algorytmów w aplikacji
+- Statystyki dzienne (ostatnie 7 dni)
+- Edycja algorytmów w aplikacji (także pustych)
 - Oznaczanie trudnych przypadków
 - Działa offline (PWA)
 

@@ -136,5 +136,23 @@ class Game {
         }
 
         await Promise.all(promises);
+
+        this.saveDailyStats();
+    }
+
+    saveDailyStats() {
+        const today = new Date().toISOString().slice(0, 10);
+        const dailyStats = JSON.parse(localStorage.getItem('dailyStats') || '{}');
+
+        if (!dailyStats[today]) {
+            dailyStats[today] = { executions: 0, totalTime: 0 };
+        }
+
+        for (const time of this.results.values()) {
+            dailyStats[today].executions++;
+            dailyStats[today].totalTime += time;
+        }
+
+        localStorage.setItem('dailyStats', JSON.stringify(dailyStats));
     }
 }

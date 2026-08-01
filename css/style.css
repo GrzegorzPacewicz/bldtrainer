@@ -737,6 +737,34 @@ h3 {
     border-bottom: none;
 }
 
+.daily-stats {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--bg-card);
+}
+
+.daily-table {
+    width: 100%;
+    margin-top: 0.5rem;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.daily-table th,
+.daily-table td {
+    padding: 0.4rem 0.5rem;
+    text-align: left;
+}
+
+.daily-table th {
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.daily-table tr:not(:last-child) {
+    border-bottom: 1px solid var(--bg-card);
+}
+
 .stat-label {
     color: var(--text-secondary);
 }

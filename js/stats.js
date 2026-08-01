@@ -294,6 +294,8 @@ async function getNewCases(pieceType, buffer) {
 }
 
 function renderGlobalStats(stats) {
+    const dailyHtml = renderDailyStats();
+
     return `
         <div class="stat-row">
             <span class="stat-label">Algorytmów w bazie</span>
@@ -322,6 +324,47 @@ function renderGlobalStats(stats) {
         <div class="stat-row">
             <span class="stat-label">Bufory rogów</span>
             <span class="stat-value">${stats.cornerBuffers}</span>
+        </div>
+        ${dailyHtml}
+    `;
+}
+
+function renderDailyStats() {
+    const dailyStats = JSON.parse(localStorage.getItem('dailyStats') || '{}');
+    const days = Object.keys(dailyStats).sort().reverse().slice(0, 7);
+
+    if (days.length === 0) return '';
+
+    const rows = days.map(day => {
+        const d = dailyStats[day];
+        const avg = d.executions > 0 ? (d.totalTime / d.executions).toFixed(2) : '-';
+        const mins = Math.floor(d.totalTime / 60);
+        const secs = Math.floor(d.totalTime % 60);
+        const timeStr = `${mins}:${secs.toString().padStart(2, '0')}`;
+        return `
+            <tr>
+                <td>${day}</td>
+                <td>${d.executions}</td>
+                <td>${timeStr}</td>
+                <td>${avg}s</td>
+            </tr>
+        `;
+    }).join('');
+
+    return `
+        <div class="daily-stats">
+            <div class="stat-label">Ostatnie 7 dni</div>
+            <table class="daily-table">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Wyk.</th>
+                        <th>Czas</th>
+                        <th>Avg</th>
+                    </tr>
+                </thead>
+                <tbody>${rows}</tbody>
+            </table>
         </div>
     `;
 }
