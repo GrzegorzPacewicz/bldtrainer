@@ -54,6 +54,12 @@ function initHistoryNavigation() {
     history.replaceState({ screen: 'menu-screen' }, '', '');
 
     window.addEventListener('popstate', (e) => {
+        const editModal = document.getElementById('edit-modal');
+        if (editModal.classList.contains('active')) {
+            closeEditModal(true);
+            return;
+        }
+
         const screen = e.state?.screen || 'menu-screen';
 
         if (gameState === 'timing' || gameState === 'countdown' || gameState === 'showingAlg') {
@@ -731,14 +737,21 @@ async function openEditModal(id, caseName) {
     algInput.value = alg?.algorithms[0]?.alg || '';
     difficultCheckbox.checked = alg?.difficult || false;
 
+    history.pushState({ modal: 'edit' }, '', '');
     modal.classList.add('active');
     algInput.focus();
 }
 
-function closeEditModal() {
+function closeEditModal(skipHistory = false) {
     const modal = document.getElementById('edit-modal');
+    if (!modal.classList.contains('active')) return;
+
     modal.classList.remove('active');
     currentEditId = null;
+
+    if (!skipHistory && history.state?.modal === 'edit') {
+        history.back();
+    }
 }
 
 function startGameTimer() {
