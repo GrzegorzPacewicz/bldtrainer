@@ -544,15 +544,16 @@ h3 {
 
 .game-tap-area {
     position: fixed;
+    top: 0;
     bottom: 0;
     left: 0;
     right: 0;
-    height: 50vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    background: linear-gradient(to top, var(--bg-secondary) 0%, transparent 100%);
+    justify-content: flex-end;
+    padding-bottom: 20vh;
+    background: linear-gradient(to top, var(--bg-secondary) 0%, transparent 50%);
 }
 
 .game-tap-area.timing {
@@ -980,6 +981,7 @@ h3 {
     max-width: 24rem;
     max-height: 80vh;
     overflow-y: auto;
+    margin-bottom: 4rem;
 }
 
 .modal-content h3 {
