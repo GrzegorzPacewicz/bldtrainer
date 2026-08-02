@@ -640,6 +640,7 @@ async function renderStatsTab(tab) {
         panel.innerHTML = html;
         initCaseRowClicks();
         initTableSorting();
+        initCategoryFilter();
         initDetailsLock();
     }
 }
@@ -714,6 +715,7 @@ function initEditModal() {
             await renderStatsTab(currentStatsTab);
             initCaseRowClicks();
             initTableSorting();
+            initCategoryFilter();
             initDetailsLock();
         }
     });

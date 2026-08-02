@@ -350,7 +350,7 @@ h3 {
 
 .subset-buttons .btn {
     padding: 0.75rem 0.5rem;
-    font-size: 0.85rem;
+    font-size: 1rem;
     min-height: 3rem;
 }
 
@@ -854,9 +854,41 @@ h3 {
 .cat-badge.cat-regressing { background: #ea580c; color: white; }
 .cat-badge.cat-difficult { background: #fbbf24; color: #1a1a2e; }
 
-.trend-improving { color: white; text-shadow: 0 0 2px #000; }
-.trend-stable { color: white; text-shadow: 0 0 2px #000; }
-.trend-declining { color: white; text-shadow: 0 0 2px #000; }
+.cat-badge[data-filter-cat] {
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.cat-badge[data-filter-cat]:hover {
+    transform: scale(1.05);
+}
+
+.cat-badge[data-filter-cat].active {
+    box-shadow: 0 0 0 2px white, 0 0 0 4px var(--accent);
+}
+
+.trend-improving,
+.trend-stable,
+.trend-declining {
+    color: var(--text-primary);
+}
+
+.case-row.cat-fast .trend-improving,
+.case-row.cat-fast .trend-stable,
+.case-row.cat-fast .trend-declining,
+.case-row.cat-slow .trend-improving,
+.case-row.cat-slow .trend-stable,
+.case-row.cat-slow .trend-declining,
+.case-row.cat-unstable .trend-improving,
+.case-row.cat-unstable .trend-stable,
+.case-row.cat-unstable .trend-declining,
+.case-row.cat-regressing .trend-improving,
+.case-row.cat-regressing .trend-stable,
+.case-row.cat-regressing .trend-declining,
+.case-row.cat-new .trend-improving,
+.case-row.cat-new .trend-stable,
+.case-row.cat-new .trend-declining {
+    color: white;
+}
 
 .cases-details {
     margin-top: 0.75rem;

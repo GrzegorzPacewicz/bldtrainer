@@ -391,7 +391,7 @@ function renderBufferStats(buffer, stats) {
 
     const categoryHtml = Object.entries(cats)
         .filter(([_, count]) => count > 0)
-        .map(([cat, count]) => `<span class="cat-badge cat-${cat}">${categoryLabels[cat]}: ${count}</span>`)
+        .map(([cat, count]) => `<span class="cat-badge cat-${cat}" data-filter-cat="${cat}" style="cursor:pointer">${categoryLabels[cat]}: ${count}</span>`)
         .join(' ');
 
     const trendHtml = `
@@ -544,6 +544,35 @@ function initCaseRowClicks() {
     });
 }
 
+function initCategoryFilter() {
+    document.querySelectorAll('.cat-badge[data-filter-cat]').forEach(badge => {
+        badge.addEventListener('click', () => {
+            const cat = badge.dataset.filterCat;
+            const section = badge.closest('.stats-section');
+            const table = section.querySelector('.cases-table');
+            if (!table) return;
+
+            const rows = table.querySelectorAll('tbody tr');
+            const isActive = badge.classList.contains('active');
+
+            if (isActive) {
+                rows.forEach(row => row.style.display = '');
+                badge.classList.remove('active');
+            } else {
+                rows.forEach(row => {
+                    if (row.classList.contains(`cat-${cat}`)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+                section.querySelectorAll('.cat-badge[data-filter-cat]').forEach(b => b.classList.remove('active'));
+                badge.classList.add('active');
+            }
+        });
+    });
+}
+
 function initTableSorting() {
     const saved = JSON.parse(localStorage.getItem('statsSort') || 'null');
     const defaultSort = saved || { column: 'case', direction: 'asc' };
@@ -599,6 +628,20 @@ function sortTable(table, column, direction) {
     rows.sort((a, b) => {
         let valA = getValue(a, column);
         let valB = getValue(b, column);
+
+        if (column === 'trend') {
+            const trendOrder = { '↑': 1, '↓': 2, '→': 3, '': 4 };
+            const orderA = trendOrder[valA] || 4;
+            const orderB = trendOrder[valB] || 4;
+            if (direction === 'asc') {
+                return orderA - orderB;
+            } else {
+                if (orderA <= 2 && orderB <= 2) return orderB - orderA;
+                if (orderA <= 2) return -1;
+                if (orderB <= 2) return 1;
+                return orderA - orderB;
+            }
+        }
 
         if (valA === null && valB === null) return 0;
         if (valA === null) return 1;
