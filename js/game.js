@@ -1,6 +1,7 @@
 class Game {
-    constructor(algorithms, includeInverse = false) {
+    constructor(algorithms, includeInverse = false, allAlgorithms = null) {
         this.algorithms = algorithms;
+        this.allAlgorithms = allAlgorithms || algorithms;
         this.includeInverse = includeInverse;
         this.pendingInverse = null;
 
@@ -164,7 +165,7 @@ class Game {
     }
 
     findInverseData(alg) {
-        const inverse = this.algorithms.find(a =>
+        const inverse = this.allAlgorithms.find(a =>
             a.target1 === alg.target2 && a.target2 === alg.target1
         );
         return {

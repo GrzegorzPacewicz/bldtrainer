@@ -180,6 +180,7 @@ async function selectBuffer(buffer) {
     document.getElementById('btn-add-target').onclick = modifySelection.bind(null, 'add');
     document.getElementById('btn-remove-target').onclick = modifySelection.bind(null, 'remove');
     document.getElementById('btn-reset-selection').onclick = resetSelection;
+    document.getElementById('include-inverse').onchange = updateSelectedCasesDisplay;
 
     document.getElementById('btn-start-game').onclick = startGame;
 }
@@ -273,7 +274,12 @@ async function updateSelectedCasesDisplay() {
         ? labels.join(', ')
         : labels.slice(0, 20).join(', ') + ` ... (+${labels.length - 20})`;
 
-    container.innerHTML = `<strong>Wybrano: ${selected.length}</strong><div class="selected-preview">${preview}</div>`;
+    const includeInverse = document.getElementById('include-inverse').checked;
+    const pairsCount = selected.filter(a => a.target2).length;
+    const singlesCount = selected.length - pairsCount;
+    const totalCount = includeInverse ? (pairsCount * 2 + singlesCount) : selected.length;
+
+    container.innerHTML = `<strong>Wybrano: ${totalCount}</strong><div class="selected-preview">${preview}</div>`;
 }
 
 async function startGame() {
@@ -291,7 +297,7 @@ async function startGame() {
     }
 
     const includeInverse = document.getElementById('include-inverse').checked;
-    currentGame = new Game(filtered, includeInverse);
+    currentGame = new Game(filtered, includeInverse, algs);
 
     // Reset display before showing
     document.getElementById('game-case').textContent = '';
