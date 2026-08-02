@@ -230,19 +230,14 @@ async function selectSubset(type) {
 async function modifySelection(action) {
     const t1 = document.getElementById('target1-select').value;
     const t2 = document.getElementById('target2-select').value;
-    const includeInverse = document.getElementById('include-inverse').checked;
 
     const algs = await getAlgorithmsByPieceAndBuffer(currentPieceType, currentBuffer);
 
     algs.forEach(a => {
         const matchT1 = t1 === 'All' || a.target1 === t1;
         const matchT2 = t2 === 'All' || a.target2 === t2;
-        const matchInverse = includeInverse && (
-            (t1 === 'All' || a.target2 === t1) &&
-            (t2 === 'All' || a.target1 === t2)
-        );
 
-        if ((matchT1 && matchT2 || matchInverse) && (!a.target2 || a.target1 !== a.target2)) {
+        if (matchT1 && matchT2 && (!a.target2 || a.target1 !== a.target2)) {
             if (action === 'add') {
                 selectedCases.add(a.id);
             } else {
