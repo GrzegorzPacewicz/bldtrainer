@@ -839,11 +839,14 @@ h3 {
 
 .cat-badge,
 .trend-badge {
-    font-size: 0.75rem;
-    padding: 0.2rem 0.5rem;
+    font-size: 0.85rem;
+    padding: 0.5rem 0.75rem;
     border-radius: 0.25rem;
     background: var(--bg-card);
     color: var(--text-primary);
+    min-height: 2.5rem;
+    display: inline-flex;
+    align-items: center;
 }
 
 .cat-badge.cat-fast { background: #16a34a; color: white; }

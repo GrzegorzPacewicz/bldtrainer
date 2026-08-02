@@ -60,7 +60,7 @@ class Game {
 
     getCurrentId() {
         if (this.pendingInverse) {
-            return this.pendingInverse.id + '_inv';
+            return this.pendingInverse.inverseId;
         }
         if (this.index >= this.shuffled.length) return null;
         return this.shuffled[this.index].id;
@@ -152,6 +152,7 @@ class Game {
                 const inverseData = this.findInverseData(alg);
                 this.pendingInverse = {
                     ...alg,
+                    inverseId: inverseData.id,
                     inverseAlg: inverseData.alg,
                     inverseLp: inverseData.lp,
                     inverseMemo: inverseData.memo
@@ -169,6 +170,7 @@ class Game {
             a.target1 === alg.target2 && a.target2 === alg.target1
         );
         return {
+            id: inverse?.id || null,
             alg: inverse?.algorithms?.[0]?.alg || '',
             lp: inverse?.lp || '',
             memo: inverse?.memo || ''
@@ -187,18 +189,12 @@ class Game {
         const list = [];
         const source = this.allResults || this.results;
         for (const [id, time] of source) {
-            const isInverse = id.endsWith('_inv');
-            const baseId = isInverse ? id.slice(0, -4) : id;
-            const alg = this.algorithms.find(a => a.id === baseId);
+            const alg = this.allAlgorithms.find(a => a.id === id);
             if (alg) {
                 let caseName;
                 if (alg.memo) caseName = alg.memo;
                 else if (alg.lp) caseName = alg.lp;
-                else if (alg.target2) {
-                    caseName = isInverse
-                        ? `${alg.target2} ${alg.target1}`
-                        : `${alg.target1} ${alg.target2}`;
-                }
+                else if (alg.target2) caseName = `${alg.target1} ${alg.target2}`;
                 else caseName = alg.target1;
                 list.push({
                     id,
