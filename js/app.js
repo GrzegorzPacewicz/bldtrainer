@@ -170,12 +170,12 @@ async function selectBuffer(buffer) {
     document.getElementById('btn-drill-weak').onclick = () => selectSubset('drill-weak');
     document.getElementById('btn-maintain').onclick = () => selectSubset('maintain');
     document.getElementById('btn-learn-new').onclick = () => selectSubset('learn-new');
+    document.getElementById('btn-fast').onclick = () => selectSubset('fast');
+    document.getElementById('btn-average').onclick = () => selectSubset('average');
     document.getElementById('btn-slow').onclick = () => selectSubset('slow');
     document.getElementById('btn-unstable').onclick = () => selectSubset('unstable');
     document.getElementById('btn-regressing').onclick = () => selectSubset('regressing');
-    document.getElementById('btn-fast').onclick = () => selectSubset('fast');
     document.getElementById('btn-difficult').onclick = () => selectSubset('difficult');
-    document.getElementById('btn-new').onclick = () => selectSubset('new');
 
     document.getElementById('btn-add-target').onclick = modifySelection.bind(null, 'add');
     document.getElementById('btn-remove-target').onclick = modifySelection.bind(null, 'remove');
@@ -217,9 +217,9 @@ async function selectSubset(type) {
     } else if (type === 'fast') {
         const cats = await getCasesByCategory(currentPieceType, currentBuffer);
         cats.fast.filter(a => a.hasAlg).forEach(a => selectedCases.add(a.id));
-    } else if (type === 'new') {
+    } else if (type === 'average') {
         const cats = await getCasesByCategory(currentPieceType, currentBuffer);
-        cats.new.filter(a => a.hasAlg).forEach(a => selectedCases.add(a.id));
+        cats.average.filter(a => a.hasAlg).forEach(a => selectedCases.add(a.id));
     } else if (type === 'difficult') {
         const difficult = await getDifficultCases(currentPieceType, currentBuffer);
         difficult.filter(a => hasAlgorithm(a)).forEach(a => selectedCases.add(a.id));

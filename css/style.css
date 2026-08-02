@@ -354,6 +354,13 @@ h3 {
     min-height: 3rem;
 }
 
+#btn-fast { background: #16a34a; color: white; }
+#btn-average { background: var(--bg-card); color: var(--text-primary); }
+#btn-slow { background: #dc2626; color: white; }
+#btn-unstable { background: #7c3aed; color: white; }
+#btn-regressing { background: #ea580c; color: white; }
+#btn-difficult { background: #fbbf24; color: #1a1a2e; }
+
 .inversion-toggle {
     margin-top: 0.75rem;
     padding-top: 0.75rem;
@@ -847,9 +854,9 @@ h3 {
 .cat-badge.cat-regressing { background: #ea580c; color: white; }
 .cat-badge.cat-difficult { background: #fbbf24; color: #1a1a2e; }
 
-.trend-improving { color: #22c55e; }
-.trend-stable { color: var(--text-secondary); }
-.trend-declining { color: #ef4444; }
+.trend-improving { color: white; text-shadow: 0 0 2px #000; }
+.trend-stable { color: white; text-shadow: 0 0 2px #000; }
+.trend-declining { color: white; text-shadow: 0 0 2px #000; }
 
 .cases-details {
     margin-top: 0.75rem;
