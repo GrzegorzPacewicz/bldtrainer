@@ -1,337 +1,496 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#1a1a2e">
-    <meta name="description" content="BLD Trainer - trening algorytmów blindcubing 3x3">
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/png" href="icons/icon-192.png">
-    <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#1a1a2e" />
+    <meta
+      name="description"
+      content="BLD Trainer - trening algorytmów blindcubing 3x3"
+    />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" type="image/png" href="icons/icon-192.png" />
+    <link rel="apple-touch-icon" href="icons/icon-192.png" />
     <title>BLD Trainer</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
     <div id="app">
-        <!-- Main Menu -->
-        <div id="menu-screen" class="screen active">
-            <button id="theme-toggle" class="theme-toggle" title="Zmień motyw">🌙</button>
-            <h1>BLD Trainer</h1>
-            <div class="menu-buttons">
-                <button id="btn-edges" class="btn btn-primary">Krawędzie</button>
-                <button id="btn-corners" class="btn btn-primary">Rogi</button>
-                <button id="btn-parity" class="btn btn-primary">Parity</button>
-            </div>
-            <div class="menu-buttons secondary">
-                <button id="btn-import" class="btn btn-secondary">Import</button>
-                <button id="btn-stats" class="btn btn-secondary">Statystyki</button>
-            </div>
-            <button id="btn-help" class="btn btn-help">?</button>
-            <div class="version">
-                <div>v1.0 | 2026-08-01</div>
-                <div class="copyright">
-                    © 2026 <a href="https://grzegorzpacewicz.pl" target="_blank" rel="noopener">Grzegorz Pacewicz</a>
-                    <a href="https://github.com/GrzegorzPacewicz/bldtrainer" target="_blank" rel="noopener" title="GitHub">
-                        <svg class="gh-icon" viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-                    </a>
-                </div>
-            </div>
+      <!-- Main Menu -->
+      <div id="menu-screen" class="screen active">
+        <button id="theme-toggle" class="theme-toggle" title="Zmień motyw">
+          🌙
+        </button>
+        <h1>BLD Trainer</h1>
+        <div class="menu-buttons">
+          <button id="btn-edges" class="btn btn-primary">Krawędzie</button>
+          <button id="btn-corners" class="btn btn-primary">Rogi</button>
+          <button id="btn-parity" class="btn btn-primary">Parity</button>
         </div>
+        <div class="menu-buttons secondary">
+          <button id="btn-import" class="btn btn-secondary">Import</button>
+          <button id="btn-stats" class="btn btn-secondary">Statystyki</button>
+        </div>
+        <button id="btn-help" class="btn btn-help">?</button>
+        <div class="version">
+          <div>v1.0 | 2026-08-02</div>
+          <div class="copyright">
+            © 2026
+            <a href="https://grzegorzpacewicz.pl" target="_blank" rel="noopener"
+              >Grzegorz Pacewicz</a
+            >
+            <a
+              href="https://github.com/GrzegorzPacewicz/bldtrainer"
+              target="_blank"
+              rel="noopener"
+              title="GitHub"
+            >
+              <svg class="gh-icon" viewBox="0 0 16 16" width="16" height="16">
+                <path
+                  fill="currentColor"
+                  d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"
+                />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
 
-        <!-- Buffer Choice -->
-        <div id="buffer-screen" class="screen">
-            <button class="btn-logo">BLD Trainer</button>
-            <h2>Wybierz bufor</h2>
-            <div id="buffer-list" class="button-list"></div>
-        </div>
+      <!-- Buffer Choice -->
+      <div id="buffer-screen" class="screen">
+        <button class="btn-logo">BLD Trainer</button>
+        <h2>Wybierz bufor</h2>
+        <div id="buffer-list" class="button-list"></div>
+      </div>
 
-        <!-- Subset Choice -->
-        <div id="subset-screen" class="screen">
-            <button class="btn-logo">BLD Trainer</button>
-            <h2 id="subset-title">Wybierz podzbiór</h2>
-            <button id="btn-all" class="btn btn-primary btn-all">Wszystkie</button>
-            <div class="subset-modes">
-                <button id="btn-drill-weak" class="btn btn-mode btn-danger">Słabe punkty</button>
-                <button id="btn-maintain" class="btn btn-mode btn-success">Utrzymanie</button>
-                <button id="btn-learn-new" class="btn btn-mode btn-warning">Nowe</button>
-            </div>
-            <div class="subset-buttons">
-                <button id="btn-slow" class="btn btn-secondary">Wolne</button>
-                <button id="btn-unstable" class="btn btn-secondary">Niestabilne</button>
-                <button id="btn-regressing" class="btn btn-secondary">Regres</button>
-                <button id="btn-fast" class="btn btn-secondary">Szybkie</button>
-                <button id="btn-difficult" class="btn btn-secondary">Trudne</button>
-                <button id="btn-new" class="btn btn-secondary">Nowe</button>
-            </div>
-            <div id="subset-custom" class="subset-custom">
-                <h3>Custom</h3>
-                <div class="target-selectors">
-                    <select id="target1-select"></select>
-                    <span id="target2-wrapper">
-                        <select id="target2-select"></select>
-                    </span>
-                    <button id="btn-add-target" class="btn btn-small">+</button>
-                    <button id="btn-remove-target" class="btn btn-small">−</button>
-                </div>
-                <div class="inversion-toggle" id="inversion-toggle-wrapper">
-                    <label>
-                        <input type="checkbox" id="include-inverse">
-                        Z inwersją (AB + BA)
-                    </label>
-                </div>
-                <div class="selected-cases-row">
-                    <div id="selected-cases" class="selected-cases"></div>
-                    <button id="btn-reset-selection" class="btn-reset">Reset</button>
-                </div>
-            </div>
-            <div class="pause-setting">
-                <label for="pause-duration">Pauza między algami:</label>
-                <select id="pause-duration">
-                    <option value="0">0s</option>
-                    <option value="500">0.5s</option>
-                    <option value="1000">1s</option>
-                    <option value="1500">1.5s</option>
-                    <option value="2000" selected>2s</option>
-                    <option value="2500">2.5s</option>
-                    <option value="3000">3s</option>
-                    <option value="4000">4s</option>
-                </select>
-            </div>
-            <div class="start-buttons">
-                <button id="btn-start-game" class="btn btn-primary btn-large">Start</button>
-                <button id="btn-start-flashcard" class="btn btn-secondary btn-large">Nauka</button>
-            </div>
+      <!-- Subset Choice -->
+      <div id="subset-screen" class="screen">
+        <button class="btn-logo">BLD Trainer</button>
+        <h2 id="subset-title">Wybierz podzbiór</h2>
+        <button id="btn-all" class="btn btn-primary btn-all">Wszystkie</button>
+        <div class="subset-modes">
+          <button id="btn-drill-weak" class="btn btn-mode btn-danger">
+            Słabe punkty
+          </button>
+          <button id="btn-maintain" class="btn btn-mode btn-success">
+            Utrzymanie
+          </button>
+          <button id="btn-learn-new" class="btn btn-mode btn-warning">
+            Nowe
+          </button>
         </div>
+        <div class="subset-buttons">
+          <button id="btn-slow" class="btn btn-secondary">Wolne</button>
+          <button id="btn-unstable" class="btn btn-secondary">
+            Niestabilne
+          </button>
+          <button id="btn-regressing" class="btn btn-secondary">Regres</button>
+          <button id="btn-fast" class="btn btn-secondary">Szybkie</button>
+          <button id="btn-difficult" class="btn btn-secondary">Trudne</button>
+          <button id="btn-new" class="btn btn-secondary">Nowe</button>
+        </div>
+        <div id="subset-custom" class="subset-custom">
+          <h3>Custom</h3>
+          <div class="target-selectors">
+            <select id="target1-select"></select>
+            <span id="target2-wrapper">
+              <select id="target2-select"></select>
+            </span>
+            <button id="btn-add-target" class="btn btn-small">+</button>
+            <button id="btn-remove-target" class="btn btn-small">−</button>
+          </div>
+          <div class="inversion-toggle" id="inversion-toggle-wrapper">
+            <label>
+              <input type="checkbox" id="include-inverse" />
+              Z inwersją (AB + BA)
+            </label>
+          </div>
+          <div class="selected-cases-row">
+            <div id="selected-cases" class="selected-cases"></div>
+            <button id="btn-reset-selection" class="btn-reset">Reset</button>
+          </div>
+        </div>
+        <div class="pause-setting">
+          <label for="pause-duration">Pauza między algami:</label>
+          <select id="pause-duration">
+            <option value="0">0s</option>
+            <option value="500">0.5s</option>
+            <option value="1000">1s</option>
+            <option value="1500">1.5s</option>
+            <option value="2000" selected>2s</option>
+            <option value="2500">2.5s</option>
+            <option value="3000">3s</option>
+            <option value="4000">4s</option>
+          </select>
+        </div>
+        <div class="start-buttons">
+          <button id="btn-start-game" class="btn btn-primary btn-large">
+            Start
+          </button>
+          <button id="btn-start-flashcard" class="btn btn-secondary btn-large">
+            Nauka
+          </button>
+        </div>
+      </div>
 
-        <!-- Flashcard Screen -->
-        <div id="flashcard-screen" class="screen">
-            <button class="btn-logo btn-logo-small">BLD Trainer</button>
-            <div class="flashcard-top">
-                <button id="btn-flashcard-back" class="btn btn-small btn-secondary">← Wróć</button>
-                <span id="flashcard-progress">1/20</span>
-                <button id="btn-flashcard-edit" class="btn-flashcard-edit" title="Edytuj algorytm">✎</button>
-            </div>
-            <div class="flashcard-main">
-                <div id="flashcard-case" class="flashcard-case"></div>
-                <div id="flashcard-alg" class="flashcard-alg"></div>
-            </div>
-            <div id="flashcard-tap-area" class="flashcard-tap-area">
-                <span class="tap-hint">Dotknij aby zobaczyć algorytm</span>
-            </div>
-            <div id="flashcard-buttons" class="flashcard-buttons hidden">
-                <button id="btn-flashcard-fail" class="btn btn-danger btn-large">Nie znam</button>
-                <button id="btn-flashcard-ok" class="btn btn-success btn-large">Znam</button>
-            </div>
+      <!-- Flashcard Screen -->
+      <div id="flashcard-screen" class="screen">
+        <button class="btn-logo btn-logo-small">BLD Trainer</button>
+        <div class="flashcard-top">
+          <button id="btn-flashcard-back" class="btn btn-small btn-secondary">
+            ← Wróć
+          </button>
+          <span id="flashcard-progress">1/20</span>
+          <button
+            id="btn-flashcard-edit"
+            class="btn-flashcard-edit"
+            title="Edytuj algorytm"
+          >
+            ✎
+          </button>
         </div>
+        <div class="flashcard-main">
+          <div id="flashcard-case" class="flashcard-case"></div>
+          <div id="flashcard-alg" class="flashcard-alg"></div>
+        </div>
+        <div id="flashcard-tap-area" class="flashcard-tap-area">
+          <span class="tap-hint">Dotknij aby zobaczyć algorytm</span>
+        </div>
+        <div id="flashcard-buttons" class="flashcard-buttons hidden">
+          <button id="btn-flashcard-fail" class="btn btn-danger btn-large">
+            Nie znam
+          </button>
+          <button id="btn-flashcard-ok" class="btn btn-success btn-large">
+            Znam
+          </button>
+        </div>
+      </div>
 
-        <!-- Game Screen -->
-        <div id="game-screen" class="screen">
-            <button class="btn-logo btn-logo-small">BLD Trainer</button>
-            <div class="game-top">
-                <button id="btn-game-back" class="btn btn-small btn-secondary">← Wróć</button>
-                <span id="game-progress">1/20</span>
-                <span id="game-avg"></span>
-            </div>
-            <div class="game-main">
-                <div id="game-case" class="game-case"></div>
-                <div id="game-alg" class="game-alg"></div>
-                <div id="game-next-preview" class="game-next-preview"></div>
-            </div>
-            <div id="game-tap-area" class="game-tap-area">
-                <div id="game-timer" class="game-timer"></div>
-            </div>
+      <!-- Game Screen -->
+      <div id="game-screen" class="screen">
+        <button class="btn-logo btn-logo-small">BLD Trainer</button>
+        <div class="game-top">
+          <button id="btn-game-back" class="btn btn-small btn-secondary">
+            ← Wróć
+          </button>
+          <span id="game-progress">1/20</span>
+          <span id="game-avg"></span>
         </div>
+        <div class="game-main">
+          <div id="game-case" class="game-case"></div>
+          <div id="game-alg" class="game-alg"></div>
+          <div id="game-next-preview" class="game-next-preview"></div>
+        </div>
+        <div id="game-tap-area" class="game-tap-area">
+          <div id="game-timer" class="game-timer"></div>
+        </div>
+      </div>
 
-        <!-- Results Screen -->
-        <div id="results-screen" class="screen">
-            <button class="btn-logo">BLD Trainer</button>
-            <h2>Wyniki sesji</h2>
-            <div id="session-summary" class="session-summary"></div>
-            <div class="results-header" role="group" aria-label="Sortowanie wyników">
-                <span id="sort-case" class="sort-btn" data-sort="case" tabindex="0" role="button">Przyp. <span class="sort-arrow"></span></span>
-                <span id="sort-time" class="sort-btn active" data-sort="time" tabindex="0" role="button">Czas <span class="sort-arrow">↓</span></span>
-            </div>
-            <div id="results-list" class="results-list"></div>
-            <div class="results-actions">
-                <button id="btn-save-results" class="btn btn-primary">Zapisz</button>
-                <button id="btn-discard-results" class="btn btn-secondary">Odrzuć</button>
-            </div>
+      <!-- Results Screen -->
+      <div id="results-screen" class="screen">
+        <button class="btn-logo">BLD Trainer</button>
+        <h2>Wyniki sesji</h2>
+        <div id="session-summary" class="session-summary"></div>
+        <div
+          class="results-header"
+          role="group"
+          aria-label="Sortowanie wyników"
+        >
+          <span
+            id="sort-case"
+            class="sort-btn"
+            data-sort="case"
+            tabindex="0"
+            role="button"
+            >Przyp. <span class="sort-arrow"></span
+          ></span>
+          <span
+            id="sort-time"
+            class="sort-btn active"
+            data-sort="time"
+            tabindex="0"
+            role="button"
+            >Czas <span class="sort-arrow">↓</span></span
+          >
         </div>
+        <div id="results-list" class="results-list"></div>
+        <div class="results-actions">
+          <button id="btn-save-results" class="btn btn-primary">Zapisz</button>
+          <button id="btn-discard-results" class="btn btn-secondary">
+            Odrzuć
+          </button>
+        </div>
+      </div>
 
-        <!-- Stats Screen -->
-        <div id="stats-screen" class="screen">
-            <button class="btn-logo">BLD Trainer</button>
-            <h2>Statystyki</h2>
-            <div id="stats-content" class="stats-content">
-                <div class="stats-tabs">
-                    <button class="stats-tab active" data-tab="global">Ogólne</button>
-                    <button class="stats-tab" data-tab="edges">Krawędzie</button>
-                    <button class="stats-tab" data-tab="corners">Rogi</button>
-                    <button class="stats-tab" data-tab="parity">Parity</button>
-                </div>
-                <div id="stats-panel" class="stats-panel"></div>
-                <button id="btn-export" class="btn btn-secondary">Eksportuj do Excel</button>
-            </div>
+      <!-- Stats Screen -->
+      <div id="stats-screen" class="screen">
+        <button class="btn-logo">BLD Trainer</button>
+        <h2>Statystyki</h2>
+        <div id="stats-content" class="stats-content">
+          <div class="stats-tabs">
+            <button class="stats-tab active" data-tab="global">Ogólne</button>
+            <button class="stats-tab" data-tab="edges">Krawędzie</button>
+            <button class="stats-tab" data-tab="corners">Rogi</button>
+            <button class="stats-tab" data-tab="parity">Parity</button>
+          </div>
+          <div id="stats-panel" class="stats-panel"></div>
+          <button id="btn-export" class="btn btn-secondary">
+            Eksportuj do Excel
+          </button>
         </div>
+      </div>
 
-        <!-- Import Screen -->
-        <div id="import-screen" class="screen">
-            <button class="btn-logo">BLD Trainer</button>
-            <h2>Import algorytmów</h2>
-            <div class="import-options">
-                <label class="file-input-label">
-                    <input type="file" id="import-file" accept=".xlsx,.xls,.txt,.csv" hidden>
-                    <span class="btn btn-primary">Wybierz plik</span>
-                </label>
-                <p id="import-status"></p>
-            </div>
+      <!-- Import Screen -->
+      <div id="import-screen" class="screen">
+        <button class="btn-logo">BLD Trainer</button>
+        <h2>Import algorytmów</h2>
+        <div class="import-options">
+          <label class="file-input-label">
+            <input
+              type="file"
+              id="import-file"
+              accept=".xlsx,.xls,.txt,.csv"
+              hidden
+            />
+            <span class="btn btn-primary">Wybierz plik</span>
+          </label>
+          <p id="import-status"></p>
         </div>
+      </div>
     </div>
 
     <!-- Help Modal -->
     <div id="help-modal" class="modal">
-        <div class="modal-content modal-help">
-            <h3>Instrukcja</h3>
-            <div class="help-content">
-                <section>
-                    <h4>Import algorytmów</h4>
-                    <p>Kliknij <strong>Import</strong> i wybierz plik.</p>
+      <div class="modal-content modal-help">
+        <h3>Instrukcja</h3>
+        <div class="help-content">
+          <section>
+            <h4>Import algorytmów</h4>
+            <p>Kliknij <strong>Import</strong> i wybierz plik.</p>
 
-                    <p><strong>Nazwa arkusza Excel:</strong></p>
-                    <pre>edges_UF      (krawędzie, bufor UF)
+            <p><strong>Nazwa arkusza Excel:</strong></p>
+            <pre>
+edges_UF      (krawędzie, bufor UF)
 corners_UFR   (rogi, bufor UFR)
-parity_UFR    (parity, bufor UFR)</pre>
+parity_UFR    (parity, bufor UFR)</pre
+            >
 
-                    <p><strong>Format 1: Tabela NxN</strong> (krawędzie, rogi)</p>
-                    <p>Nagłówki i pierwsza kolumna to targety. W komórkach algorytmy.</p>
-<pre>       A (UB)         B (UR)         C (UL)
+            <p><strong>Format 1: Tabela NxN</strong> (krawędzie, rogi)</p>
+            <p>
+              Nagłówki i pierwsza kolumna to targety. W komórkach algorytmy.
+            </p>
+            <pre>
+       A (UB)         B (UR)         C (UL)
 A (UB)    -         R U R' U'      L' U' L U
 B (UR) R' U' R U       -           M2 U M2 U'
-C (UL) L U L' U'    M2 U' M2 U        -</pre>
-                    <p><code>A</code> = letter pair (wyświetlany), <code>(UB)</code> = sticker</p>
+C (UL) L U L' U'    M2 U' M2 U        -</pre
+            >
+            <p>
+              <code>A</code> = letter pair (wyświetlany), <code>(UB)</code> =
+              sticker
+            </p>
 
-                    <p><strong>Format 2: Lista</strong> (krawędzie, rogi)</p>
-<pre>A (UB)    B (UR)    R U R' U'
+            <p><strong>Format 2: Lista</strong> (krawędzie, rogi)</p>
+            <pre>
+A (UB)    B (UR)    R U R' U'
 A (UB)    C (UL)    L' U' L U
-B (UR)    C (UL)    M2 U M2 U'</pre>
-                    <p>Kolumny: target1, target2, algorytm</p>
+B (UR)    C (UL)    M2 U M2 U'</pre
+            >
+            <p>Kolumny: target1, target2, algorytm</p>
 
-                    <p><strong>Format Parity:</strong></p>
-<pre>LP       Algorytm
+            <p><strong>Format Parity:</strong></p>
+            <pre>
+LP       Algorytm
 A (UBL)  R U R' F R' F' R
-B (UBR)  R U' R' U' R U R D ...</pre>
-                    <p>Pierwszy wiersz to nagłówek (pomijany). Kolumny: LP (target), algorytm</p>
+B (UBR)  R U' R' U' R U R D ...</pre
+            >
+            <p>
+              Pierwszy wiersz to nagłówek (pomijany). Kolumny: LP (target),
+              algorytm
+            </p>
 
-                    <p><strong>Format TXT:</strong></p>
-<pre># edges_UF
+            <p><strong>Format TXT:</strong></p>
+            <pre>
+# edges_UF
 UB UR: R U R' U'
 UB UL: L' U' L U
 
 # corners_UFR
-UBL URF: R U R' U'</pre>
-                    <p>Sekcja <code># typ_bufor</code>, potem <code>target1 target2: algorytm</code></p>
+UBL URF: R U R' U'</pre
+            >
+            <p>
+              Sekcja <code># typ_bufor</code>, potem
+              <code>target1 target2: algorytm</code>
+            </p>
 
-                    <p><strong>Oznaczanie trudnych:</strong> Dodaj 💩 w algorytmie.</p>
+            <p><strong>Oznaczanie trudnych:</strong> Dodaj 💩 w algorytmie.</p>
 
-                    <p><strong>Re-import:</strong> Zachowuje istniejące wyniki treningów.</p>
-                </section>
+            <p>
+              <strong>Re-import:</strong> Zachowuje istniejące wyniki treningów.
+            </p>
+          </section>
 
-                <section>
-                    <h4>Gra</h4>
-                    <ol>
-                        <li>Wybierz typ: <strong>Krawędzie</strong>, <strong>Rogi</strong> lub <strong>Parity</strong></li>
-                        <li>Wybierz bufor (jeśli masz kilka)</li>
-                        <li>Wybierz tryb (np. Słabe punkty) — aplikacja automatycznie wybierze przypadki na podstawie Twoich wyników</li>
-                        <li>Pod przyciskiem Start zobaczysz listę wybranych przypadków</li>
-                        <li>Ustaw <strong>Pauzę między algami</strong> (0-4s)</li>
-                        <li>Kliknij <strong>Start</strong></li>
-                        <li>Po odliczaniu dotknij ekran gdy wykonasz algorytm</li>
-                        <li>Po sesji zapisz lub odrzuć wyniki</li>
-                    </ol>
-                </section>
+          <section>
+            <h4>Gra</h4>
+            <ol>
+              <li>
+                Wybierz typ: <strong>Krawędzie</strong>,
+                <strong>Rogi</strong> lub <strong>Parity</strong>
+              </li>
+              <li>Wybierz bufor (jeśli masz kilka)</li>
+              <li>
+                Wybierz tryb (np. Słabe punkty) — aplikacja automatycznie
+                wybierze przypadki na podstawie Twoich wyników
+              </li>
+              <li>
+                Pod przyciskiem Start zobaczysz listę wybranych przypadków
+              </li>
+              <li>Ustaw <strong>Pauzę między algami</strong> (0-4s)</li>
+              <li>Kliknij <strong>Start</strong></li>
+              <li>Po odliczaniu dotknij ekran gdy wykonasz algorytm</li>
+              <li>Po sesji zapisz lub odrzuć wyniki</li>
+            </ol>
+          </section>
 
-                <section>
-                    <h4>Tryby treningowe</h4>
-                    <p>Aplikacja analizuje Twoje dotychczasowe wyniki i automatycznie wybiera przypadki:</p>
-                    <ul>
-                        <li><strong>Słabe punkty</strong> — wolne + niestabilne + w regresie + oznaczone jako trudne</li>
-                        <li><strong>Utrzymanie</strong> — szybkie + średnie (utrzymanie formy)</li>
-                        <li><strong>Nowe</strong> — przypadki z &lt;5 wykonaniami</li>
-                        <li><strong>Wolne / Niestab. / Regres</strong> — pojedyncze kategorie</li>
-                    </ul>
-                    <p>Możesz też ręcznie dodawać/usuwać przypadki używając selektorów i przycisków +/−.</p>
-                </section>
+          <section>
+            <h4>Tryby treningowe</h4>
+            <p>
+              Aplikacja analizuje Twoje dotychczasowe wyniki i automatycznie
+              wybiera przypadki:
+            </p>
+            <ul>
+              <li>
+                <strong>Słabe punkty</strong> — wolne + niestabilne + w regresie
+                + oznaczone jako trudne
+              </li>
+              <li>
+                <strong>Utrzymanie</strong> — szybkie + średnie (utrzymanie
+                formy)
+              </li>
+              <li><strong>Nowe</strong> — przypadki z &lt;5 wykonaniami</li>
+              <li>
+                <strong>Wolne / Niestab. / Regres</strong> — pojedyncze
+                kategorie
+              </li>
+            </ul>
+            <p>
+              Możesz też ręcznie dodawać/usuwać przypadki używając selektorów i
+              przycisków +/−.
+            </p>
+          </section>
 
-                <section>
-                    <h4>Kategorie</h4>
-                    <ul>
-                        <li><strong>Szybkie</strong> — avg &lt; 80% globalnej średniej</li>
-                        <li><strong>Średnie</strong> — między 80-120%</li>
-                        <li><strong>Wolne</strong> — avg &gt; 120% globalnej średniej</li>
-                        <li><strong>Niestabilne</strong> — wysokie odchylenie std.</li>
-                        <li><strong>Regres</strong> — ostatnie 5 gorsze od poprzednich 5</li>
-                        <li><strong>Nowe</strong> — &lt;5 wykonań</li>
-                        <li><strong>Trudne</strong> — ręcznie oznaczone</li>
-                    </ul>
-                </section>
+          <section>
+            <h4>Kategorie</h4>
+            <ul>
+              <li>
+                <strong>Szybkie</strong> — avg &lt; 80% globalnej średniej
+              </li>
+              <li><strong>Średnie</strong> — między 80-120%</li>
+              <li><strong>Wolne</strong> — avg &gt; 120% globalnej średniej</li>
+              <li><strong>Niestabilne</strong> — wysokie odchylenie std.</li>
+              <li>
+                <strong>Regres</strong> — ostatnie 5 gorsze od poprzednich 5
+              </li>
+              <li><strong>Nowe</strong> — &lt;5 wykonań</li>
+              <li><strong>Trudne</strong> — ręcznie oznaczone</li>
+            </ul>
+          </section>
 
-                <section>
-                    <h4>Statystyki</h4>
-                    <p>Zakładki: Ogólne / Krawędzie / Rogi / Parity</p>
-                    <p><strong>Ogólne</strong> — podsumowanie + statystyki dzienne (ostatnie 7 dni).</p>
-                    <p>Per bufor: średnia, odch. std., rozkład kategorii, trendy.</p>
-                    <p><strong>Avg</strong> — średnia arytmetyczna wszystkich czasów dla case'a.</p>
-                    <p><strong>Trendy</strong> (wymagają min. 6 wykonań):</p>
-                    <ul>
-                        <li><strong>↑</strong> — ostatnie 3 szybsze o &gt;10% od poprzednich 3</li>
-                        <li><strong>→</strong> — zmiana w granicach ±10%</li>
-                        <li><strong>↓</strong> — ostatnie 3 wolniejsze o &gt;10%</li>
-                    </ul>
-                    <p>Kliknij na przypadek w tabeli aby edytować algorytm. Nagłówki kolumn są klikalne — sortują tabelę (zapamiętuje ostatnie sortowanie).</p>
-                    <p><strong>Eksportuj do Excel</strong> — pobierz wszystkie algorytmy ze statystykami (posortowane alfabetycznie).</p>
-                </section>
+          <section>
+            <h4>Statystyki</h4>
+            <p>Zakładki: Ogólne / Krawędzie / Rogi / Parity</p>
+            <p>
+              <strong>Ogólne</strong> — podsumowanie + statystyki dzienne
+              (ostatnie 7 dni).
+            </p>
+            <p>Per bufor: średnia, odch. std., rozkład kategorii, trendy.</p>
+            <p>
+              <strong>Avg</strong> — średnia arytmetyczna wszystkich czasów dla
+              case'a.
+            </p>
+            <p><strong>Trendy</strong> (wymagają min. 6 wykonań):</p>
+            <ul>
+              <li>
+                <strong>↑</strong> — ostatnie 3 szybsze o &gt;10% od poprzednich
+                3
+              </li>
+              <li><strong>→</strong> — zmiana w granicach ±10%</li>
+              <li><strong>↓</strong> — ostatnie 3 wolniejsze o &gt;10%</li>
+            </ul>
+            <p>
+              Kliknij na przypadek w tabeli aby edytować algorytm. Nagłówki
+              kolumn są klikalne — sortują tabelę (zapamiętuje ostatnie
+              sortowanie).
+            </p>
+            <p>
+              <strong>Eksportuj do Excel</strong> — pobierz wszystkie algorytmy
+              ze statystykami (posortowane alfabetycznie).
+            </p>
+          </section>
 
-                <section>
-                    <h4>Edycja algorytmów</h4>
-                    <p>Możesz edytować algorytm klikając ✎ przy wyniku lub na przypadek w statystykach.</p>
-                    <p>Puste algorytmy (bez treści) można uzupełnić — dodaj algorytm i zapisz.</p>
-                    <p>Przypadki bez algorytmów nie pojawiają się w grze, ale widać je w statystykach.</p>
-                </section>
+          <section>
+            <h4>Edycja algorytmów</h4>
+            <p>
+              Możesz edytować algorytm klikając ✎ przy wyniku lub na przypadek w
+              statystykach.
+            </p>
+            <p>
+              Puste algorytmy (bez treści) można uzupełnić — dodaj algorytm i
+              zapisz.
+            </p>
+            <p>
+              Przypadki bez algorytmów nie pojawiają się w grze, ale widać je w
+              statystykach.
+            </p>
+          </section>
 
-                <section>
-                    <h4>Wyniki sesji</h4>
-                    <ul>
-                        <li><strong>✎</strong> — edytuj algorytm</li>
-                        <li><strong>!</strong> — oznacz jako trudny</li>
-                        <li><strong>×</strong> — usuń wynik z sesji</li>
-                    </ul>
-                </section>
+          <section>
+            <h4>Wyniki sesji</h4>
+            <ul>
+              <li><strong>✎</strong> — edytuj algorytm</li>
+              <li><strong>!</strong> — oznacz jako trudny</li>
+              <li><strong>×</strong> — usuń wynik z sesji</li>
+            </ul>
+          </section>
 
-                <section>
-                    <h4>Nawigacja</h4>
-                    <p>Kliknij <strong>BLD Trainer</strong> na górze aby wrócić do menu.</p>
-                </section>
-            </div>
-            <button id="help-modal-close" class="btn btn-primary">Zamknij</button>
+          <section>
+            <h4>Nawigacja</h4>
+            <p>
+              Kliknij <strong>BLD Trainer</strong> na górze aby wrócić do menu.
+            </p>
+          </section>
         </div>
+        <button id="help-modal-close" class="btn btn-primary">Zamknij</button>
+      </div>
     </div>
 
     <!-- Edit Algorithm Modal -->
     <div id="edit-modal" class="modal">
-        <div class="modal-content">
-            <h3 id="edit-modal-title">Edytuj algorytm</h3>
-            <div class="modal-case" id="edit-modal-case"></div>
-            <textarea id="edit-modal-alg" rows="3" placeholder="Algorytm..."></textarea>
-            <label class="checkbox-row">
-                <input type="checkbox" id="edit-modal-difficult">
-                <span>Oznacz jako trudny</span>
-            </label>
-            <div class="modal-actions">
-                <button id="edit-modal-save" class="btn btn-primary">Zapisz</button>
-                <button id="edit-modal-cancel" class="btn btn-secondary">Anuluj</button>
-                <button id="edit-modal-reset" class="btn btn-danger">Resetuj wyniki</button>
-            </div>
+      <div class="modal-content">
+        <h3 id="edit-modal-title">Edytuj algorytm</h3>
+        <div class="modal-case" id="edit-modal-case"></div>
+        <textarea
+          id="edit-modal-alg"
+          rows="3"
+          placeholder="Algorytm..."
+        ></textarea>
+        <label class="checkbox-row">
+          <input type="checkbox" id="edit-modal-difficult" />
+          <span>Oznacz jako trudny</span>
+        </label>
+        <div class="modal-actions">
+          <button id="edit-modal-save" class="btn btn-primary">Zapisz</button>
+          <button id="edit-modal-cancel" class="btn btn-secondary">
+            Anuluj
+          </button>
+          <button id="edit-modal-reset" class="btn btn-danger">
+            Resetuj wyniki
+          </button>
         </div>
+      </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -341,9 +500,9 @@ UBL URF: R U R' U'</pre>
     <script src="js/stats.js"></script>
     <script src="js/app.js"></script>
     <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js');
-        }
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("/sw.js");
+      }
     </script>
-</body>
+  </body>
 </html>

@@ -1,13 +1,30 @@
 class Game {
     constructor(algorithms, includeInverse = false) {
         this.algorithms = algorithms;
-        this.shuffled = this.shuffle([...algorithms]);
+        this.includeInverse = includeInverse;
+        this.pendingInverse = null;
+
+        let toShuffle = [...algorithms];
+        if (includeInverse) {
+            toShuffle = this.deduplicatePairs(toShuffle);
+        }
+        this.shuffled = this.shuffle(toShuffle);
         this.index = 0;
         this.results = new Map();
         this.startTime = null;
         this.isTiming = false;
-        this.includeInverse = includeInverse;
-        this.pendingInverse = null;
+    }
+
+    deduplicatePairs(algs) {
+        const seen = new Set();
+        return algs.filter(a => {
+            if (!a.target2) return true;
+            const key1 = `${a.target1}-${a.target2}`;
+            const key2 = `${a.target2}-${a.target1}`;
+            if (seen.has(key1) || seen.has(key2)) return false;
+            seen.add(key1);
+            return true;
+        });
     }
 
     shuffle(arr) {
@@ -60,6 +77,9 @@ class Game {
         if (this.includeInverse) {
             const alg = this.shuffled[this.index];
             if (alg && alg.target2) {
+                const inverseData = this.findInverseData(alg);
+                if (inverseData.lp) return inverseData.lp;
+                if (inverseData.memo) return inverseData.memo;
                 return `${alg.target2} ${alg.target1}`;
             }
         }
