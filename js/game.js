@@ -1,11 +1,13 @@
 class Game {
-    constructor(algorithms) {
+    constructor(algorithms, includeInverse = false) {
         this.algorithms = algorithms;
         this.shuffled = this.shuffle([...algorithms]);
         this.index = 0;
         this.results = new Map();
         this.startTime = null;
         this.isTiming = false;
+        this.includeInverse = includeInverse;
+        this.pendingInverse = null;
     }
 
     shuffle(arr) {
@@ -17,6 +19,11 @@ class Game {
     }
 
     getCurrentCase() {
+        if (this.pendingInverse) {
+            if (this.pendingInverse.inverseLp) return this.pendingInverse.inverseLp;
+            if (this.pendingInverse.inverseMemo) return this.pendingInverse.inverseMemo;
+            return `${this.pendingInverse.target2} ${this.pendingInverse.target1}`;
+        }
         if (this.index >= this.shuffled.length) return null;
         const alg = this.shuffled[this.index];
         if (alg.memo) return alg.memo;
@@ -26,16 +33,36 @@ class Game {
     }
 
     getCurrentAlg() {
+        if (this.pendingInverse) {
+            return this.pendingInverse.inverseAlg || '';
+        }
         if (this.index >= this.shuffled.length) return '';
         return this.shuffled[this.index].algorithms[0].alg;
     }
 
     getCurrentId() {
+        if (this.pendingInverse) {
+            return this.pendingInverse.id + '_inv';
+        }
         if (this.index >= this.shuffled.length) return null;
         return this.shuffled[this.index].id;
     }
 
     getNextCase() {
+        if (this.pendingInverse) {
+            if (this.index + 1 >= this.shuffled.length) return '';
+            const alg = this.shuffled[this.index + 1];
+            if (alg.memo) return alg.memo;
+            if (alg.lp) return alg.lp;
+            if (alg.target2) return `${alg.target1} ${alg.target2}`;
+            return alg.target1;
+        }
+        if (this.includeInverse) {
+            const alg = this.shuffled[this.index];
+            if (alg && alg.target2) {
+                return `${alg.target2} ${alg.target1}`;
+            }
+        }
         if (this.index + 1 >= this.shuffled.length) return '';
         const alg = this.shuffled[this.index + 1];
         if (alg.memo) return alg.memo;
@@ -45,6 +72,14 @@ class Game {
     }
 
     getProgress() {
+        if (this.includeInverse) {
+            const total = this.shuffled.filter(a => a.target2).length * 2 +
+                          this.shuffled.filter(a => !a.target2).length;
+            const done = this.shuffled.slice(0, this.index).reduce((count, a) => {
+                return count + (a.target2 ? 2 : 1);
+            }, 0) + (this.pendingInverse ? 1 : 0);
+            return `${done + 1}/${total}`;
+        }
         return `${this.index + 1}/${this.shuffled.length}`;
     }
 
@@ -84,12 +119,43 @@ class Game {
     }
 
     next() {
+        if (this.pendingInverse) {
+            this.pendingInverse = null;
+            this.index++;
+            return this.index < this.shuffled.length;
+        }
+
+        if (this.includeInverse) {
+            const alg = this.shuffled[this.index];
+            if (alg && alg.target2) {
+                const inverseData = this.findInverseData(alg);
+                this.pendingInverse = {
+                    ...alg,
+                    inverseAlg: inverseData.alg,
+                    inverseLp: inverseData.lp,
+                    inverseMemo: inverseData.memo
+                };
+                return true;
+            }
+        }
+
         this.index++;
         return this.index < this.shuffled.length;
     }
 
+    findInverseData(alg) {
+        const inverse = this.algorithms.find(a =>
+            a.target1 === alg.target2 && a.target2 === alg.target1
+        );
+        return {
+            alg: inverse?.algorithms?.[0]?.alg || '',
+            lp: inverse?.lp || '',
+            memo: inverse?.memo || ''
+        };
+    }
+
     isFinished() {
-        return this.index >= this.shuffled.length;
+        return this.index >= this.shuffled.length && !this.pendingInverse;
     }
 
     removeResult(id) {
@@ -100,12 +166,18 @@ class Game {
         const list = [];
         const source = this.allResults || this.results;
         for (const [id, time] of source) {
-            const alg = this.algorithms.find(a => a.id === id);
+            const isInverse = id.endsWith('_inv');
+            const baseId = isInverse ? id.slice(0, -4) : id;
+            const alg = this.algorithms.find(a => a.id === baseId);
             if (alg) {
                 let caseName;
                 if (alg.memo) caseName = alg.memo;
                 else if (alg.lp) caseName = alg.lp;
-                else if (alg.target2) caseName = `${alg.target1} ${alg.target2}`;
+                else if (alg.target2) {
+                    caseName = isInverse
+                        ? `${alg.target2} ${alg.target1}`
+                        : `${alg.target1} ${alg.target2}`;
+                }
                 else caseName = alg.target1;
                 list.push({
                     id,

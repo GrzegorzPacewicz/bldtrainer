@@ -214,7 +214,8 @@ Tryb do nauki nowych algorytmów bez presji czasu.
 1. Wybierz target z list rozwijanych
 2. Kliknij **+** aby dodać do selekcji
 3. Kliknij **−** aby usunąć z selekcji
-4. Checkbox **Z inwersją** dodaje automatycznie AB → BA
+4. **Reset** — wyczyść całą selekcję
+5. Checkbox **Z inwersją** — po każdym przypadku (np. KJ) od razu pojawia się jego inwersja (JK)
 
 ---
 
@@ -295,8 +296,10 @@ GitHub Pages + Cloudflare subdomain
 
 ## Changelog
 
-### v1.0 (2026-08-01)
+### v1.0 (2026-08-02)
 
+- Tryb "Z inwersją" — po każdym przypadku od razu pojawia się jego inwersja (AB → BA)
+- Przycisk Reset do czyszczenia selekcji przypadków
 - Sekcja "Brak algorytmu" w statystykach — widok przypadków bez algorytmu z możliwością dodania
 - Parity: nowy typ przypadków (jeden target)
 - Reset wyników dla poszczególnych przypadków

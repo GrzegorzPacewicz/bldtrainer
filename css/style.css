@@ -416,13 +416,33 @@ h3 {
     box-shadow: var(--focus-ring);
 }
 
+.selected-cases-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
 .selected-cases {
+    flex: 1;
     max-height: 8rem;
     overflow-y: auto;
     font-size: 0.9rem;
     color: var(--text-secondary);
     line-height: 1.6;
     text-align: center;
+}
+
+.btn-reset {
+    flex-shrink: 0;
+    height: 3rem;
+    padding: 0 1rem;
+    font-size: 0.9rem;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
 }
 
 .selected-preview {

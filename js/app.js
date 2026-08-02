@@ -179,6 +179,7 @@ async function selectBuffer(buffer) {
 
     document.getElementById('btn-add-target').onclick = modifySelection.bind(null, 'add');
     document.getElementById('btn-remove-target').onclick = modifySelection.bind(null, 'remove');
+    document.getElementById('btn-reset-selection').onclick = resetSelection;
 
     document.getElementById('btn-start-game').onclick = startGame;
 }
@@ -253,6 +254,11 @@ async function modifySelection(action) {
     updateSelectedCasesDisplay();
 }
 
+function resetSelection() {
+    selectedCases.clear();
+    updateSelectedCasesDisplay();
+}
+
 async function updateSelectedCasesDisplay() {
     const container = document.getElementById('selected-cases');
     if (selectedCases.size === 0) {
@@ -289,7 +295,8 @@ async function startGame() {
         return;
     }
 
-    currentGame = new Game(filtered);
+    const includeInverse = document.getElementById('include-inverse').checked;
+    currentGame = new Game(filtered, includeInverse);
 
     // Reset display before showing
     document.getElementById('game-case').textContent = '';
