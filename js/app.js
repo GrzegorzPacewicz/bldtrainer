@@ -2,8 +2,7 @@ let currentPieceType = null;
 let currentBuffer = null;
 let currentGame = null;
 let selectedCases = new Set();
-let resultsSortBy = 'time';
-let resultsSortAsc = false;
+let resultsSortBy = 'order'; // 'order' | 'time-best' | 'time-worst' | 'case-asc' | 'case-desc'
 let flashcardCases = [];
 let flashcardIndex = 0;
 let flashcardState = 'hidden'; // 'hidden' | 'revealed'
@@ -426,8 +425,7 @@ function updateGameDisplay() {
 }
 
 function endGame() {
-    resultsSortBy = 'time';
-    resultsSortAsc = false;
+    resultsSortBy = 'order';
 
     updateResultsSummary();
     renderResultsList();
@@ -458,15 +456,20 @@ function updateResultsSummary() {
 function renderResultsList() {
     const results = currentGame.getResultsList();
 
-    const sorted = [...results].sort((a, b) => {
-        let cmp;
-        if (resultsSortBy === 'case') {
-            cmp = a.case.localeCompare(b.case);
-        } else {
-            cmp = a.time - b.time;
-        }
-        return resultsSortAsc ? cmp : -cmp;
-    });
+    let sorted;
+    if (resultsSortBy === 'order') {
+        sorted = results;
+    } else if (resultsSortBy === 'time-best') {
+        sorted = [...results].sort((a, b) => a.time - b.time);
+    } else if (resultsSortBy === 'time-worst') {
+        sorted = [...results].sort((a, b) => b.time - a.time);
+    } else if (resultsSortBy === 'case-asc') {
+        sorted = [...results].sort((a, b) => a.case.localeCompare(b.case));
+    } else if (resultsSortBy === 'case-desc') {
+        sorted = [...results].sort((a, b) => b.case.localeCompare(a.case));
+    } else {
+        sorted = results;
+    }
 
     const listContainer = document.getElementById('results-list');
     listContainer.innerHTML = '';
@@ -545,11 +548,22 @@ function initResultsSorting() {
 }
 
 function toggleSort(column) {
-    if (resultsSortBy === column) {
-        resultsSortAsc = !resultsSortAsc;
-    } else {
-        resultsSortBy = column;
-        resultsSortAsc = column === 'case';
+    if (column === 'time') {
+        if (resultsSortBy === 'order' || resultsSortBy.startsWith('case')) {
+            resultsSortBy = 'time-best';
+        } else if (resultsSortBy === 'time-best') {
+            resultsSortBy = 'time-worst';
+        } else {
+            resultsSortBy = 'order';
+        }
+    } else if (column === 'case') {
+        if (resultsSortBy === 'order' || resultsSortBy.startsWith('time')) {
+            resultsSortBy = 'case-asc';
+        } else if (resultsSortBy === 'case-asc') {
+            resultsSortBy = 'case-desc';
+        } else {
+            resultsSortBy = 'order';
+        }
     }
     renderResultsList();
 }
@@ -558,11 +572,19 @@ function updateSortButtons() {
     const caseBtn = document.getElementById('sort-case');
     const timeBtn = document.getElementById('sort-time');
 
-    caseBtn.classList.toggle('active', resultsSortBy === 'case');
-    timeBtn.classList.toggle('active', resultsSortBy === 'time');
+    caseBtn.classList.toggle('active', resultsSortBy.startsWith('case'));
+    timeBtn.classList.toggle('active', resultsSortBy.startsWith('time'));
 
-    caseBtn.querySelector('.sort-arrow').textContent = resultsSortBy === 'case' ? (resultsSortAsc ? '↑' : '↓') : '';
-    timeBtn.querySelector('.sort-arrow').textContent = resultsSortBy === 'time' ? (resultsSortAsc ? '↑' : '↓') : '';
+    let caseArrow = '';
+    if (resultsSortBy === 'case-asc') caseArrow = '↑';
+    else if (resultsSortBy === 'case-desc') caseArrow = '↓';
+
+    let timeArrow = '';
+    if (resultsSortBy === 'time-best') timeArrow = '↓';
+    else if (resultsSortBy === 'time-worst') timeArrow = '↑';
+
+    caseBtn.querySelector('.sort-arrow').textContent = caseArrow;
+    timeBtn.querySelector('.sort-arrow').textContent = timeArrow;
 }
 
 function initImportHandlers() {
