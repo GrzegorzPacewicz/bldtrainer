@@ -36,15 +36,13 @@ function getPauseDuration() {
     return parseInt(localStorage.getItem('pauseDuration') ?? '2000', 10);
 }
 
-function showScreen(screenId, pushState = true, replaceState = false) {
+function showScreen(screenId, addToHistory = true) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(screenId).classList.add('active');
 
-    if (history.state?.screen === screenId) return;
-
-    if (replaceState) {
-        history.replaceState({ screen: screenId }, '', '');
-    } else if (pushState) {
+    if (screenId === 'menu-screen') {
+        history.replaceState({ screen: 'menu-screen' }, '', '');
+    } else if (addToHistory && history.state?.screen === 'menu-screen') {
         history.pushState({ screen: screenId }, '', '');
     }
 }
@@ -59,19 +57,17 @@ function initHistoryNavigation() {
             return;
         }
 
-        const screen = e.state?.screen || 'menu-screen';
-
-        if (gameState === 'timing' || gameState === 'countdown' || gameState === 'showingAlg') {
-            exitGame();
-            return;
+        if (currentGame) {
+            stopGameTimer();
+            currentGame = null;
+            gameState = 'idle';
         }
 
-        if (flashcardState === 'hidden' || flashcardState === 'revealed') {
-            exitFlashcard();
-            return;
+        if (flashcardState !== 'idle') {
+            flashcardState = 'idle';
         }
 
-        showScreen(screen, false);
+        showScreen('menu-screen', false);
     });
 }
 
@@ -433,11 +429,11 @@ function endGame() {
 
     document.getElementById('btn-save-results').onclick = async () => {
         await currentGame.saveAllResults();
-        showScreen('subset-screen', true, true);
+        showScreen('subset-screen');
     };
 
     document.getElementById('btn-discard-results').onclick = () => {
-        showScreen('subset-screen', true, true);
+        showScreen('subset-screen');
     };
 
     showScreen('results-screen');
@@ -692,16 +688,22 @@ function initThemeToggle() {
 
 function initHomeButtons() {
     document.querySelectorAll('.btn-logo').forEach(btn => {
-        btn.addEventListener('click', () => {
-            if (currentGame) {
-                stopGameTimer();
-                currentGame = null;
-                gameState = 'idle';
-            }
-            history.pushState({ screen: 'menu-screen' }, '', '');
-            showScreen('menu-screen', false);
-        });
+        btn.addEventListener('click', goToMenu);
     });
+
+    document.querySelectorAll('.btn-back').forEach(btn => {
+        btn.addEventListener('click', goToMenu);
+    });
+}
+
+function goToMenu() {
+    if (currentGame) {
+        stopGameTimer();
+        currentGame = null;
+        gameState = 'idle';
+    }
+    flashcardState = 'idle';
+    showScreen('menu-screen');
 }
 
 let timerInterval = null;
