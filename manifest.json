@@ -1,6 +1,6 @@
 {
-    "name": "BLD Trainer",
-    "short_name": "BLD Trainer",
+    "name": "BLD AlgDriller",
+    "short_name": "AlgDriller",
     "description": "Trening algorytmów blindcubing 3x3",
     "start_url": "/",
     "display": "standalone",
