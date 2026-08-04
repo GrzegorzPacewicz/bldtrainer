@@ -598,41 +598,47 @@ h3 {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.85);
+    background: var(--bg-primary);
     z-index: 100;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 3rem;
 }
 
 .pause-overlay.active {
     display: flex;
+    animation: fadeIn 0.2s ease;
 }
 
 .pause-menu {
-    background: var(--bg-secondary);
-    padding: 2rem;
-    border-radius: 1rem;
-    text-align: center;
-    min-width: 250px;
-}
-
-.pause-menu h3 {
-    color: var(--text-primary);
-    margin-bottom: 1.5rem;
-    font-size: 1.5rem;
-}
-
-.pause-menu .btn {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3rem;
     width: 100%;
-    margin-bottom: 0.75rem;
+    max-width: 20rem;
+    padding: 2rem;
 }
 
-.pause-menu .btn:last-child {
-    margin-bottom: 0;
+.pause-icon {
+    font-size: 6rem;
+    color: var(--accent);
+    line-height: 1;
 }
 
-.pause-menu .btn:disabled {
+.pause-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+.pause-buttons .btn {
+    width: 100%;
+}
+
+.pause-buttons .btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
 }

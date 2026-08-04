@@ -833,10 +833,10 @@ function closeEditModal(skipHistory = false) {
 
 function startGameTimer() {
     const timerEl = document.getElementById('game-timer');
-    const startTime = performance.now();
 
     timerInterval = setInterval(() => {
-        const elapsed = (performance.now() - startTime) / 1000;
+        if (!currentGame || !currentGame.isTiming) return;
+        const elapsed = (performance.now() - currentGame.startTime) / 1000;
         timerEl.textContent = elapsed.toFixed(1) + 's';
     }, 100);
 }
