@@ -269,7 +269,12 @@ Po zakończeniu sesji:
 
 ## Nawigacja
 
-- **BLD Trainer** (na górze każdego ekranu) → powrót do menu
+- **BLD AlgDriller** (na górze każdego ekranu) → powrót do menu
+- **⏸** (w trakcie gry) → pauza z opcjami:
+  - **Kontynuuj** — wznawia grę (timer kontynuuje od miejsca pauzy)
+  - **Zakończ z zapisem** — kończy grę i zapisuje dotychczasowe wyniki
+  - **Anuluj grę** — wychodzi bez zapisywania
+- **Systemowy back** (Android) → otwiera pauzę w grze / cofa na poprzedni ekran
 - **?** (na ekranie głównym) → instrukcja w aplikacji
 
 ---
