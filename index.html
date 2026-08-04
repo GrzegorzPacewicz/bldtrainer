@@ -175,8 +175,8 @@
       <div id="game-screen" class="screen">
         <button class="btn-logo btn-logo-small">BLD AlgDriller</button>
         <div class="game-top">
-          <button id="btn-game-back" class="btn btn-small btn-secondary">
-            ← Wróć
+          <button id="btn-game-pause" class="btn btn-small btn-secondary">
+            ⏸
           </button>
           <span id="game-progress">1/20</span>
           <span id="game-avg"></span>
@@ -188,6 +188,14 @@
         </div>
         <div id="game-tap-area" class="game-tap-area">
           <div id="game-timer" class="game-timer"></div>
+        </div>
+        <div id="pause-overlay" class="pause-overlay">
+          <div class="pause-menu">
+            <h3>Pauza</h3>
+            <button id="btn-pause-resume" class="btn btn-primary">Kontynuuj</button>
+            <button id="btn-pause-finish" class="btn btn-success">Zakończ z zapisem</button>
+            <button id="btn-pause-cancel" class="btn btn-danger">Anuluj grę</button>
+          </div>
         </div>
       </div>
 

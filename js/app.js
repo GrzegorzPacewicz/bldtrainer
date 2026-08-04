@@ -57,10 +57,17 @@ function initHistoryNavigation() {
             return;
         }
 
+        const pauseOverlay = document.getElementById('pause-overlay');
+        if (pauseOverlay.classList.contains('active')) {
+            resumeGame();
+            history.pushState({ screen: 'game-screen' }, '', '');
+            return;
+        }
+
         if (currentGame) {
-            stopGameTimer();
-            currentGame = null;
-            gameState = 'idle';
+            pauseGame();
+            history.pushState({ screen: 'game-screen' }, '', '');
+            return;
         }
 
         if (flashcardState !== 'idle') {
@@ -353,7 +360,10 @@ function initGameHandlers() {
     const tapArea = document.getElementById('game-tap-area');
     const gameScreen = document.getElementById('game-screen');
 
-    document.getElementById('btn-game-back').addEventListener('click', exitGame);
+    document.getElementById('btn-game-pause').addEventListener('click', pauseGame);
+    document.getElementById('btn-pause-resume').addEventListener('click', resumeGame);
+    document.getElementById('btn-pause-finish').addEventListener('click', finishGameWithResults);
+    document.getElementById('btn-pause-cancel').addEventListener('click', cancelGame);
 
     const handleTap = (e) => {
         e.preventDefault();
@@ -401,13 +411,45 @@ function initGameHandlers() {
         }
         if (e.code === 'Escape' && document.getElementById('game-screen').classList.contains('active')) {
             e.preventDefault();
-            exitGame();
+            pauseGame();
         }
     });
 
 }
 
-function exitGame() {
+let pausedState = null;
+
+function pauseGame() {
+    if (!currentGame || gameState === 'paused') return;
+
+    pausedState = gameState;
+    gameState = 'paused';
+    stopGameTimer();
+
+    const hasResults = currentGame.getCompletedCount() > 0;
+    document.getElementById('btn-pause-finish').disabled = !hasResults;
+    document.getElementById('pause-overlay').classList.add('active');
+}
+
+function resumeGame() {
+    document.getElementById('pause-overlay').classList.remove('active');
+    gameState = pausedState;
+    pausedState = null;
+
+    if (gameState === 'timing') {
+        currentGame.resumeTimer();
+        startGameTimer();
+    }
+}
+
+function finishGameWithResults() {
+    document.getElementById('pause-overlay').classList.remove('active');
+    endGame();
+    gameState = 'idle';
+}
+
+function cancelGame() {
+    document.getElementById('pause-overlay').classList.remove('active');
     gameState = 'idle';
     stopGameTimer();
     currentGame = null;

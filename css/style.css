@@ -509,6 +509,8 @@ h3 {
     padding: 0.5rem 1rem;
     color: var(--text-secondary);
     font-size: 0.9rem;
+    position: relative;
+    z-index: 10;
 }
 
 .game-timer {
@@ -587,6 +589,52 @@ h3 {
 
 #game-screen.timing .game-case {
     color: var(--text-primary);
+}
+
+.pause-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+}
+
+.pause-overlay.active {
+    display: flex;
+}
+
+.pause-menu {
+    background: var(--bg-secondary);
+    padding: 2rem;
+    border-radius: 1rem;
+    text-align: center;
+    min-width: 250px;
+}
+
+.pause-menu h3 {
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+.pause-menu .btn {
+    display: block;
+    width: 100%;
+    margin-bottom: 0.75rem;
+}
+
+.pause-menu .btn:last-child {
+    margin-bottom: 0;
+}
+
+.pause-menu .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 /* Results Screen */

@@ -124,9 +124,19 @@ class Game {
 
     stopTimer() {
         if (!this.isTiming) return null;
-        const elapsed = (performance.now() - this.startTime) / 1000;
+        this.elapsedBeforePause = (performance.now() - this.startTime) / 1000;
         this.isTiming = false;
-        return elapsed;
+        return this.elapsedBeforePause;
+    }
+
+    resumeTimer() {
+        if (this.isTiming) return;
+        this.startTime = performance.now() - (this.elapsedBeforePause || 0) * 1000;
+        this.isTiming = true;
+    }
+
+    getCompletedCount() {
+        return this.results ? this.results.size : 0;
     }
 
     saveResult(time) {
