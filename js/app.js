@@ -79,6 +79,7 @@ function initMenuHandlers() {
     document.getElementById('btn-corners').addEventListener('click', () => selectPieceType('corners'));
     document.getElementById('btn-parity').addEventListener('click', () => selectPieceType('parity'));
     document.getElementById('btn-import').addEventListener('click', () => showScreen('import-screen'));
+    document.getElementById('btn-export-menu').addEventListener('click', exportToExcel);
     document.getElementById('btn-stats').addEventListener('click', showStats);
     document.getElementById('btn-help').addEventListener('click', openHelpModal);
     document.getElementById('help-modal-close').addEventListener('click', closeHelpModal);
@@ -612,16 +613,11 @@ let currentStatsTab = 'global';
 
 async function showStats() {
     initStatsTabs();
-    initExportButton();
     document.querySelectorAll('.stats-tab').forEach(t => t.classList.remove('active'));
     document.querySelector('.stats-tab[data-tab="global"]').classList.add('active');
     currentStatsTab = 'global';
     await renderStatsTab('global');
     showScreen('stats-screen');
-}
-
-function initExportButton() {
-    document.getElementById('btn-export').onclick = exportToExcel;
 }
 
 function initStatsTabs() {
