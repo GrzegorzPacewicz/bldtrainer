@@ -390,7 +390,10 @@ function initGameHandlers() {
                 gameState = 'idle';
             }
         } else {
-            setTimeout(() => {
+            algPauseRemaining = pause;
+            algPauseStartedAt = performance.now();
+            algPauseTimeout = setTimeout(() => {
+                algPauseTimeout = null;
                 if (currentGame.next()) {
                     startNextCase();
                 } else {
@@ -418,6 +421,9 @@ function initGameHandlers() {
 }
 
 let pausedState = null;
+let algPauseTimeout = null;
+let algPauseRemaining = 0;
+let algPauseStartedAt = 0;
 
 function pauseGame() {
     if (!currentGame || gameState === 'paused') return;
@@ -425,6 +431,12 @@ function pauseGame() {
     pausedState = gameState;
     gameState = 'paused';
     stopGameTimer();
+
+    if (algPauseTimeout) {
+        clearTimeout(algPauseTimeout);
+        algPauseRemaining = Math.max(0, algPauseRemaining - (performance.now() - algPauseStartedAt));
+        algPauseTimeout = null;
+    }
 
     const hasResults = currentGame.getCompletedCount() > 0;
     document.getElementById('btn-pause-finish').disabled = !hasResults;
@@ -439,11 +451,26 @@ function resumeGame() {
     if (gameState === 'timing') {
         currentGame.resumeTimer();
         startGameTimer();
+    } else if (gameState === 'showingAlg' && algPauseRemaining > 0) {
+        algPauseStartedAt = performance.now();
+        algPauseTimeout = setTimeout(() => {
+            algPauseTimeout = null;
+            if (currentGame.next()) {
+                startNextCase();
+            } else {
+                endGame();
+                gameState = 'idle';
+            }
+        }, algPauseRemaining);
     }
 }
 
 function finishGameWithResults() {
     document.getElementById('pause-overlay').classList.remove('active');
+    if (algPauseTimeout) {
+        clearTimeout(algPauseTimeout);
+        algPauseTimeout = null;
+    }
     endGame();
     gameState = 'idle';
 }
@@ -452,6 +479,10 @@ function cancelGame() {
     document.getElementById('pause-overlay').classList.remove('active');
     gameState = 'idle';
     stopGameTimer();
+    if (algPauseTimeout) {
+        clearTimeout(algPauseTimeout);
+        algPauseTimeout = null;
+    }
     currentGame = null;
     showScreen('subset-screen');
 }
