@@ -129,6 +129,12 @@ class Game {
         return this.elapsedBeforePause;
     }
 
+    pauseTimer() {
+        if (!this.isTiming) return;
+        this.elapsedBeforePause = (performance.now() - this.startTime) / 1000;
+        this.isTiming = false;
+    }
+
     resumeTimer() {
         if (this.isTiming) return;
         this.startTime = performance.now() - (this.elapsedBeforePause || 0) * 1000;

@@ -455,17 +455,26 @@ function resumeGame() {
     if (gameState === 'timing') {
         currentGame.resumeTimer();
         startGameTimer();
-    } else if (gameState === 'showingAlg' && algPauseRemaining > 0) {
-        algPauseStartedAt = performance.now();
-        algPauseTimeout = setTimeout(() => {
-            algPauseTimeout = null;
+    } else if (gameState === 'showingAlg') {
+        if (algPauseRemaining > 0) {
+            algPauseStartedAt = performance.now();
+            algPauseTimeout = setTimeout(() => {
+                algPauseTimeout = null;
+                if (currentGame.next()) {
+                    startNextCase();
+                } else {
+                    endGame();
+                    gameState = 'idle';
+                }
+            }, algPauseRemaining);
+        } else {
             if (currentGame.next()) {
                 startNextCase();
             } else {
                 endGame();
                 gameState = 'idle';
             }
-        }, algPauseRemaining);
+        }
     }
 }
 
