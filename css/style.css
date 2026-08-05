@@ -267,6 +267,15 @@ h3 {
     min-height: 3rem;
 }
 
+#btn-game-pause {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    min-height: auto;
+}
+
 .target-selectors .btn-small {
     background: var(--accent);
     color: white;

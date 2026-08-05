@@ -42,7 +42,7 @@ function showScreen(screenId, addToHistory = true) {
 
     if (screenId === 'menu-screen') {
         history.replaceState({ screen: 'menu-screen' }, '', '');
-    } else if (addToHistory && history.state?.screen === 'menu-screen') {
+    } else if (addToHistory && history.state?.screen !== screenId) {
         history.pushState({ screen: screenId }, '', '');
     }
 }
@@ -74,7 +74,8 @@ function initHistoryNavigation() {
             flashcardState = 'idle';
         }
 
-        showScreen('menu-screen', false);
+        const targetScreen = e.state?.screen || 'menu-screen';
+        showScreen(targetScreen, false);
     });
 }
 
@@ -431,6 +432,9 @@ function pauseGame() {
     pausedState = gameState;
     gameState = 'paused';
     stopGameTimer();
+    if (pausedState === 'timing') {
+        currentGame.pauseTimer();
+    }
 
     if (algPauseTimeout) {
         clearTimeout(algPauseTimeout);
