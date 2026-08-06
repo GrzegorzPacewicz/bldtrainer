@@ -361,7 +361,7 @@ function initGameHandlers() {
     const tapArea = document.getElementById('game-tap-area');
     const gameScreen = document.getElementById('game-screen');
 
-    document.getElementById('btn-game-pause').addEventListener('click', pauseGame);
+    document.getElementById('btn-pause').addEventListener('click', pauseGame);
     document.getElementById('btn-pause-resume').addEventListener('click', resumeGame);
     document.getElementById('btn-pause-finish').addEventListener('click', finishGameWithResults);
     document.getElementById('btn-pause-cancel').addEventListener('click', cancelGame);

@@ -269,7 +269,7 @@ h3 {
     min-height: 3rem;
 }
 
-#btn-game-pause {
+#btn-pause {
     background: transparent;
     border: 1px solid var(--border);
     color: var(--text-secondary);
