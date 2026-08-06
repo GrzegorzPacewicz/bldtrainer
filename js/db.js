@@ -83,9 +83,14 @@ async function saveAlgorithms(algs) {
             const getReq = store.get(newAlg.id);
             getReq.onsuccess = () => {
                 const existing = getReq.result;
+                const importedResults = newAlg.algorithms[0]?.results || [];
                 if (existing) {
                     const existingResults = existing.algorithms[0]?.results || [];
-                    newAlg.algorithms[0].results = existingResults;
+                    if (importedResults.length > 0) {
+                        newAlg.algorithms[0].results = importedResults;
+                    } else {
+                        newAlg.algorithms[0].results = existingResults;
+                    }
                     if (existing.difficult) newAlg.difficult = true;
                 }
                 store.put(newAlg);

@@ -673,7 +673,7 @@ async function exportToExcel() {
             const cases = await getDetailedCaseStats(pieceType, buffer);
             const caseMap = new Map(cases.map(c => [c.id, c]));
 
-            const rows = [['Case', 'Algorithm', 'Exec', 'Avg', 'Best', 'Worst', 'Category']];
+            const rows = [['Case', 'Target1', 'Target2', 'Algorithm', 'Exec', 'Avg', 'Best', 'Worst', 'Category', 'Results']];
 
             const sorted = [...algs]
                 .filter(a => !a.target2 || a.target1 !== a.target2)
@@ -690,26 +690,35 @@ async function exportToExcel() {
                 else if (alg.target2) caseName = `${alg.target1}${alg.target2}`;
                 else caseName = alg.target1;
 
+                const results = alg.algorithms[0]?.results || [];
+                const resultsStr = results.map(r => r.toFixed(2)).join(';');
+
                 rows.push([
                     caseName,
+                    alg.target1,
+                    alg.target2 || '',
                     alg.algorithms[0]?.alg || '',
                     stats.executions || 0,
                     stats.avg ? stats.avg.toFixed(2) : '',
                     stats.best ? stats.best.toFixed(2) : '',
                     stats.worst ? stats.worst.toFixed(2) : '',
-                    stats.category || 'new'
+                    stats.category || 'new',
+                    resultsStr
                 ]);
             }
 
             const sheet = XLSX.utils.aoa_to_sheet(rows);
             sheet['!cols'] = [
                 { wch: 6 },   // Case
+                { wch: 6 },   // Target1
+                { wch: 6 },   // Target2
                 { wch: 40 },  // Algorithm
                 { wch: 5 },   // Exec
                 { wch: 6 },   // Avg
                 { wch: 6 },   // Best
                 { wch: 6 },   // Worst
-                { wch: 10 }   // Category
+                { wch: 10 },  // Category
+                { wch: 50 }   // Results
             ];
             XLSX.utils.book_append_sheet(workbook, sheet, `${pieceType}_${buffer}`);
         }

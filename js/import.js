@@ -41,6 +41,56 @@ function parseSheet(rows, pieceType, buffer) {
     }
 
     const isParity = pieceType.toLowerCase() === 'parity';
+    const header = rows[0];
+    const resultsColIdx = header.findIndex(h => String(h).toLowerCase() === 'results');
+    const target1ColIdx = header.findIndex(h => String(h).toLowerCase() === 'target1');
+    const target2ColIdx = header.findIndex(h => String(h).toLowerCase() === 'target2');
+    const algColIdx = header.findIndex(h => String(h).toLowerCase() === 'algorithm');
+    const isExportFormat = header[0] === 'Case' && (header[1] === 'Algorithm' || header[1] === 'Target1');
+
+    if (isExportFormat) {
+        const hasTargetCols = target1ColIdx >= 0;
+        const actualAlgColIdx = algColIdx >= 0 ? algColIdx : 1;
+
+        for (let rowIdx = 1; rowIdx < rows.length; rowIdx++) {
+            const row = rows[rowIdx];
+            if (!row || !row[0]) continue;
+
+            const caseName = String(row[0]);
+            const algText = String(row[actualAlgColIdx] || '');
+            const resultsStr = resultsColIdx >= 0 ? String(row[resultsColIdx] || '') : '';
+            const results = parseResultsString(resultsStr);
+
+            if (isParity) {
+                let target, lp;
+                if (hasTargetCols) {
+                    target = String(row[target1ColIdx] || '');
+                    lp = caseName.length === 1 ? caseName : '';
+                } else {
+                    const parsed = parseCaseNameParity(caseName);
+                    target = parsed.target;
+                    lp = parsed.lp;
+                }
+                const alg = parseParityAlgorithm(pieceType, buffer, target, algText, lp, results);
+                if (alg) algorithms.push(alg);
+            } else {
+                let target1, target2, lp;
+                if (hasTargetCols) {
+                    target1 = String(row[target1ColIdx] || '');
+                    target2 = String(row[target2ColIdx] || '');
+                    lp = caseName;
+                } else {
+                    const parsed = parseCaseName(caseName);
+                    target1 = parsed.target1;
+                    target2 = parsed.target2;
+                    lp = parsed.lp;
+                }
+                const alg = parseAlgorithm(pieceType, buffer, target1, target2, algText, '', '', lp, results);
+                if (alg) algorithms.push(alg);
+            }
+        }
+        return algorithms;
+    }
 
     if (isParity) {
         for (let rowIdx = 1; rowIdx < rows.length; rowIdx++) {
@@ -51,7 +101,7 @@ function parseSheet(rows, pieceType, buffer) {
             const lp = extractLp(String(row[0]));
             const algText = String(row[1]);
 
-            const alg = parseParityAlgorithm(pieceType, buffer, target, algText, lp);
+            const alg = parseParityAlgorithm(pieceType, buffer, target, algText, lp, []);
             if (alg) algorithms.push(alg);
         }
         return algorithms;
@@ -89,7 +139,9 @@ function parseSheet(rows, pieceType, buffer) {
                     secondTarget,
                     String(cellValue),
                     firstLp,
-                    secondLp
+                    secondLp,
+                    '',
+                    []
                 );
                 if (alg) algorithms.push(alg);
             }
@@ -111,13 +163,40 @@ function parseSheet(rows, pieceType, buffer) {
                 secondTarget,
                 String(row[2]),
                 firstLp,
-                secondLp
+                secondLp,
+                '',
+                []
             );
             if (alg) algorithms.push(alg);
         }
     }
 
     return algorithms;
+}
+
+function parseResultsString(str) {
+    if (!str || !str.trim()) return [];
+    return str.split(';').map(s => parseFloat(s.trim())).filter(n => !isNaN(n));
+}
+
+function parseCaseName(caseName) {
+    const lpMatch = caseName.match(/^([A-Z]{2})([A-Z]{2})$/);
+    if (lpMatch) {
+        return { target1: lpMatch[1], target2: lpMatch[2], lp: caseName };
+    }
+    const targetMatch = caseName.match(/^([A-Z]{2,3})([A-Z]{2,3})$/);
+    if (targetMatch) {
+        return { target1: targetMatch[1], target2: targetMatch[2], lp: '' };
+    }
+    return { target1: caseName, target2: '', lp: '' };
+}
+
+function parseCaseNameParity(caseName) {
+    const lpMatch = caseName.match(/^([A-Z])\s*\(([^)]+)\)$/);
+    if (lpMatch) {
+        return { target: lpMatch[2], lp: lpMatch[1] };
+    }
+    return { target: caseName, lp: '' };
 }
 
 function extractTarget(text) {
@@ -154,7 +233,7 @@ function canonicalRepresentation(pieceName) {
     return active + rest.join('');
 }
 
-function parseAlgorithm(pieceType, buffer, target1, target2, algText, lp1, lp2) {
+function parseAlgorithm(pieceType, buffer, target1, target2, algText, lp1, lp2, lpOverride, results) {
     const canonBuffer = canonicalRepresentation(buffer);
     const canonT1 = canonicalRepresentation(target1);
     const canonT2 = canonicalRepresentation(target2);
@@ -169,7 +248,7 @@ function parseAlgorithm(pieceType, buffer, target1, target2, algText, lp1, lp2) 
         cleanAlg = algText.replace(/💩/g, '').trim();
     }
 
-    const lp = (lp1 && lp2) ? `${lp1}${lp2}` : '';
+    const lp = lpOverride || ((lp1 && lp2) ? `${lp1}${lp2}` : '');
 
     return {
         id: `${pieceType}_${canonBuffer};${canonT1};${canonT2}`,
@@ -179,7 +258,7 @@ function parseAlgorithm(pieceType, buffer, target1, target2, algText, lp1, lp2) 
         target2: canonT2,
         algorithms: [{
             alg: cleanAlg,
-            results: []
+            results: results || []
         }],
         lp,
         memo: '',
@@ -188,7 +267,7 @@ function parseAlgorithm(pieceType, buffer, target1, target2, algText, lp1, lp2) 
     };
 }
 
-function parseParityAlgorithm(pieceType, buffer, target, algText, lp) {
+function parseParityAlgorithm(pieceType, buffer, target, algText, lp, results) {
     const canonBuffer = canonicalRepresentation(buffer);
     const canonTarget = canonicalRepresentation(target);
 
@@ -210,7 +289,7 @@ function parseParityAlgorithm(pieceType, buffer, target, algText, lp) {
         target2: null,
         algorithms: [{
             alg: cleanAlg,
-            results: []
+            results: results || []
         }],
         lp: lp || '',
         memo: '',
