@@ -1,13 +1,13 @@
-const CACHE_NAME = 'bldtrainer-v11';
+const CACHE_NAME = 'bldtrainer-v13';
 const ASSETS = [
     '/',
     '/index.html',
-    '/css/style.css',
-    '/js/db.js',
-    '/js/game.js',
-    '/js/import.js',
-    '/js/stats.js',
-    '/js/app.js',
+    '/css/style.css?v=13',
+    '/js/db.js?v=13',
+    '/js/game.js?v=13',
+    '/js/import.js?v=13',
+    '/js/stats.js?v=13',
+    '/js/app.js?v=13',
     '/manifest.json'
 ];
 
@@ -37,7 +37,7 @@ self.addEventListener('fetch', (e) => {
     }
 
     e.respondWith(
-        fetch(e.request)
+        fetch(e.request, { cache: 'no-store' })
             .then(response => {
                 const clone = response.clone();
                 caches.open(CACHE_NAME).then(cache => {

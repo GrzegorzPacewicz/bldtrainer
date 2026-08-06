@@ -15,7 +15,7 @@
     <link rel="icon" type="image/png" href="icons/icon-192.png" />
     <link rel="apple-touch-icon" href="icons/icon-192.png" />
     <title>BLD AlgDriller</title>
-    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/style.css?v=13" />
   </head>
   <body>
     <div id="app">
@@ -37,7 +37,7 @@
         </div>
         <button id="btn-help" class="btn btn-help">?</button>
         <div class="version">
-          <div>v1.10 | 2026-08-06</div>
+          <div>v1.13 | 2026-08-06</div>
           <div class="copyright">
             © 2026
             <a href="https://grzegorzpacewicz.pl" target="_blank" rel="noopener"
@@ -175,7 +175,7 @@
       <div id="game-screen" class="screen">
         <button class="btn-logo btn-logo-small">BLD AlgDriller</button>
         <div class="game-top">
-          <button id="btn-pause" class="btn btn-small btn-secondary">⏸</button>
+          <button id="btn-pause" class="btn btn-small btn-secondary"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg></button>
           <span id="game-progress">1/20</span>
           <span id="game-avg"></span>
         </div>
@@ -189,7 +189,7 @@
         </div>
         <div id="pause-overlay" class="pause-overlay">
           <div class="pause-menu">
-            <div class="pause-icon">⏸</div>
+            <div class="pause-icon"><svg viewBox="0 0 24 24" width="96" height="96" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg></div>
             <div class="pause-buttons">
               <button id="btn-pause-resume" class="btn btn-primary">
                 Kontynuuj
@@ -519,11 +519,11 @@ UBL URF: R U R' U'</pre
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    <script src="js/db.js"></script>
-    <script src="js/game.js"></script>
-    <script src="js/import.js"></script>
-    <script src="js/stats.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/db.js?v=13"></script>
+    <script src="js/game.js?v=13"></script>
+    <script src="js/import.js?v=13"></script>
+    <script src="js/stats.js?v=13"></script>
+    <script src="js/app.js?v=13"></script>
     <script>
       if ("serviceWorker" in navigator) {
         navigator.serviceWorker.register("/sw.js");

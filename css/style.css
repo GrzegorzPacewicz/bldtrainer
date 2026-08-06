@@ -531,9 +531,13 @@ h3 {
 .game-timer {
     font-size: 3rem;
     font-weight: 700;
-    color: white;
+    color: var(--text-heading);
     text-align: center;
     text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+[data-theme="light"] .game-timer {
+    text-shadow: none;
 }
 
 .game-main {
@@ -603,7 +607,7 @@ h3 {
 }
 
 #game-screen.timing .game-case {
-    color: var(--text-primary);
+    color: var(--text-heading);
 }
 
 .pause-overlay {
@@ -637,9 +641,11 @@ h3 {
 }
 
 .pause-icon {
-    font-size: 6rem;
     color: var(--accent);
     line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .pause-buttons {
