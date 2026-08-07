@@ -1275,6 +1275,10 @@ h3 {
     max-height: 85vh;
 }
 
+.modal-help .btn {
+    margin-top: 1rem;
+}
+
 .help-content {
     max-height: 60vh;
     overflow-y: auto;
