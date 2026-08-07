@@ -516,14 +516,16 @@ function endGame() {
 
     document.getElementById('btn-save-results').onclick = async () => {
         await currentGame.saveAllResults();
-        showScreen('subset-screen');
+        currentGame = null;
+        showScreen('menu-screen');
     };
 
     document.getElementById('btn-discard-results').onclick = () => {
-        showScreen('subset-screen');
+        currentGame = null;
+        showScreen('menu-screen');
     };
 
-    showScreen('results-screen');
+    showScreen('results-screen', false);
 }
 
 function updateResultsSummary() {

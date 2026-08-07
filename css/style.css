@@ -25,8 +25,8 @@
     --text-primary: #eee;
     --text-secondary: #aaa;
     --text-heading: #fff;
-    --success: #22c55e;
-    --success-text: #000;
+    --success: #15803d;
+    --success-text: #fff;
     --warning: #fbbf24;
     --link: #6bb3ff;
 }
@@ -552,7 +552,7 @@ h3 {
 .game-case {
     font-size: 4rem;
     font-weight: 700;
-    color: var(--accent);
+    color: var(--text-heading);
     text-align: center;
 }
 
@@ -599,7 +599,7 @@ h3 {
 }
 
 .game-tap-area.timing {
-    background: linear-gradient(to top, var(--accent) 0%, transparent 100%);
+    background: linear-gradient(to top, var(--bg-card) 0%, transparent 100%);
 }
 
 #game-screen.timing {
@@ -607,7 +607,7 @@ h3 {
 }
 
 #game-screen.timing .game-case {
-    color: var(--text-heading);
+    color: var(--text-primary);
 }
 
 .pause-overlay {
@@ -711,7 +711,7 @@ h3 {
 .session-summary .avg {
     font-size: 2rem;
     font-weight: 700;
-    color: var(--accent);
+    color: var(--text-primary);
 }
 
 .results-list {
@@ -966,7 +966,10 @@ h3 {
 
 .case-row.cat-fast .trend-improving,
 .case-row.cat-fast .trend-stable,
-.case-row.cat-fast .trend-declining,
+.case-row.cat-fast .trend-declining {
+    color: var(--success-text);
+}
+
 .case-row.cat-slow .trend-improving,
 .case-row.cat-slow .trend-stable,
 .case-row.cat-slow .trend-declining,
@@ -975,10 +978,7 @@ h3 {
 .case-row.cat-unstable .trend-declining,
 .case-row.cat-regressing .trend-improving,
 .case-row.cat-regressing .trend-stable,
-.case-row.cat-regressing .trend-declining,
-.case-row.cat-new .trend-improving,
-.case-row.cat-new .trend-stable,
-.case-row.cat-new .trend-declining {
+.case-row.cat-regressing .trend-declining {
     color: white;
 }
 

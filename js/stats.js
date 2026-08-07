@@ -692,12 +692,14 @@ async function exportToExcel() {
 
                 const results = alg.algorithms[0]?.results || [];
                 const resultsStr = results.map(r => r.toFixed(2)).join(';');
+                const algText = alg.algorithms[0]?.alg || '';
+                const algWithDifficult = alg.difficult ? `${algText} 💩` : algText;
 
                 rows.push([
                     caseName,
                     alg.target1,
                     alg.target2 || '',
-                    alg.algorithms[0]?.alg || '',
+                    algWithDifficult,
                     stats.executions || 0,
                     stats.avg ? stats.avg.toFixed(2) : '',
                     stats.best ? stats.best.toFixed(2) : '',

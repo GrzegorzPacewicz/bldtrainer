@@ -37,7 +37,7 @@
         </div>
         <button id="btn-help" class="btn btn-help">?</button>
         <div class="version">
-          <div>v1.14 | 2026-08-06</div>
+          <div>v1.14 | 2026-08-07</div>
           <div class="copyright">
             © 2026
             <a href="https://grzegorzpacewicz.pl" target="_blank" rel="noopener"
@@ -541,7 +541,7 @@ UBL URF: R U R' U'</pre
     <script src="js/app.js?v=13"></script>
     <script>
       if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("/sw.js");
+        navigator.serviceWorker.register("/sw.js", { updateViaCache: "none" });
       }
     </script>
   </body>
