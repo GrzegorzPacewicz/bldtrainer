@@ -1406,7 +1406,7 @@ h3 {
 .flashcard-case {
     font-size: 5rem;
     font-weight: 700;
-    color: var(--accent);
+    color: var(--text-heading);
     text-align: center;
 }
 
