@@ -1,7 +1,12 @@
 #!/usr/bin/env node
 // Sprawdza kontrast WCAG dla par kolorów zdefiniowanych w palecie BLD AlgDriller.
 // Uruchom: node check-contrast.js
-// Exit code 1, jeśli którakolwiek para nie spełnia progu AA -> wygodne w CI / pre-commit.
+// Exit code 1, jeśli którakolwiek para nie spełnia oczekiwanego wyniku -> wygodne w CI / pre-commit.
+//
+// To jest "źródło prawdy" dla docelowej palety (włącznie z poprawkami
+// ustalonymi podczas audytu) — niezależnie od tego, czy CSS w repo już
+// je wdrożył. Jeśli implementacja jeszcze nie nadąża, uruchom ten skrypt,
+// żeby zobaczyć dokładnie co jest jeszcze do zrobienia.
 
 function hexToRgb(hex) {
   const h = hex.replace("#", "");
@@ -23,10 +28,13 @@ function contrastRatio(hex1, hex2) {
   return (lighter + 0.05) / (darker + 0.05);
 }
 
-// theme: dark | light
-// type: 'text' (próg 4.5:1) | 'large' (próg 3:1, duży tekst / ikony / obwódki UI)
+// type: 'text'    -> zwykły tekst, próg 4.5:1
+//       'large'   -> duży tekst (≥24px), próg 3:1
+//       'nontext' -> granice komponentów UI wg WCAG 1.4.11 (bordery, ikony), próg 3:1
+// expectFail: true -> ten wpis CELOWO nie powinien spełniać progu (dokumentuje
+//                      odrzucony wariant albo błąd, który naprawiliśmy)
 const pairs = [
-  // ---- DARK ----
+  // ==================== DARK — tekst ====================
   {
     theme: "dark",
     label: "text-primary / bg",
@@ -60,6 +68,13 @@ const pairs = [
     label: "badge szybkie",
     fg: "#4ADE80",
     bg: "#0B2A18",
+    type: "text",
+  },
+  {
+    theme: "dark",
+    label: "badge srednie",
+    fg: "#9096A8",
+    bg: "#262A33",
     type: "text",
   },
   {
@@ -98,7 +113,7 @@ const pairs = [
     type: "large",
   },
 
-  // ---- LIGHT ----
+  // ==================== LIGHT — tekst ====================
   {
     theme: "light",
     label: "text-primary / bg",
@@ -129,16 +144,24 @@ const pairs = [
   },
   {
     theme: "light",
-    label: "white text / accent OLD (regression check)",
+    label: "REGRESJA: white text / accent OLD (stare tło przycisku)",
     fg: "#FFFFFF",
     bg: "#5B8CFF",
     type: "text",
+    expectFail: true,
   },
   {
     theme: "light",
     label: "badge szybkie",
     fg: "#27500A",
     bg: "#E8FBEF",
+    type: "text",
+  },
+  {
+    theme: "light",
+    label: "badge srednie",
+    fg: "#5A5F6E",
+    bg: "#EEF0F3",
     type: "text",
   },
   {
@@ -176,9 +199,135 @@ const pairs = [
     bg: "#EDEFF3",
     type: "large",
   },
+
+  // ==================== NON-TEXT — btn-secondary border ====================
+  {
+    theme: "light",
+    label: "btn-secondary border (#5A5F6E) vs page bg",
+    fg: "#5A5F6E",
+    bg: "#F7F8FA",
+    type: "nontext",
+  },
+  {
+    theme: "light",
+    label: "btn-secondary border (#5A5F6E) vs card white",
+    fg: "#5A5F6E",
+    bg: "#FFFFFF",
+    type: "nontext",
+  },
+  {
+    theme: "dark",
+    label: "btn-secondary border (--text-secondary #9096A8) vs card #1E212B",
+    fg: "#9096A8",
+    bg: "#1E212B",
+    type: "nontext",
+  },
+
+  {
+    theme: "light",
+    label:
+      "REGRESJA: btn-secondary bez bordera, wariant 1 (tło #D8DCE5) vs page bg",
+    fg: "#D8DCE5",
+    bg: "#F7F8FA",
+    type: "nontext",
+    expectFail: true,
+  },
+  {
+    theme: "light",
+    label:
+      "REGRESJA: btn-secondary bez bordera, wariant 2 (border #C0C4CE) vs page bg",
+    fg: "#C0C4CE",
+    bg: "#F7F8FA",
+    type: "nontext",
+    expectFail: true,
+  },
+  {
+    theme: "light",
+    label:
+      "REGRESJA: btn-secondary bez bordera, wariant 2 hover (#A0A4AE) vs page bg",
+    fg: "#A0A4AE",
+    bg: "#F7F8FA",
+    type: "nontext",
+    expectFail: true,
+  },
+  {
+    theme: "dark",
+    label:
+      "REGRESJA: btn-secondary bez bordera, tylko tło (#2A2E3A) vs card (#1E212B)",
+    fg: "#2A2E3A",
+    bg: "#1E212B",
+    type: "nontext",
+    expectFail: true,
+  },
+
+  // ==================== NON-TEXT — border-left w przyciskach trybu ====================
+  // vs surface-raised (tło przycisku): dark #2A2E3A, light #EDEFF3
+  {
+    theme: "dark",
+    label: "border-left 'Słabe punkty' (#F87171) vs surface-raised",
+    fg: "#F87171",
+    bg: "#2A2E3A",
+    type: "nontext",
+  },
+  {
+    theme: "dark",
+    label: "border-left 'Utrzymanie' (#4ADE80) vs surface-raised",
+    fg: "#4ADE80",
+    bg: "#2A2E3A",
+    type: "nontext",
+  },
+  {
+    theme: "dark",
+    label: "border-left 'Nowe' (#5B8CFF) vs surface-raised",
+    fg: "#5B8CFF",
+    bg: "#2A2E3A",
+    type: "nontext",
+  },
+
+  {
+    theme: "light",
+    label: "border-left 'Słabe punkty' (#E24B4A) vs surface-raised",
+    fg: "#E24B4A",
+    bg: "#EDEFF3",
+    type: "nontext",
+  },
+  {
+    theme: "light",
+    label: "border-left 'Utrzymanie' (#4D7315, poprawka) vs surface-raised",
+    fg: "#4D7315",
+    bg: "#EDEFF3",
+    type: "nontext",
+  },
+  {
+    theme: "light",
+    label:
+      "border-left 'Nowe' (#3568D6, poprawka = accent-button) vs surface-raised",
+    fg: "#3568D6",
+    bg: "#EDEFF3",
+    type: "nontext",
+  },
+
+  {
+    theme: "light",
+    label:
+      "REGRESJA: border-left 'Utrzymanie' STARY kolor (#639922) vs surface-raised",
+    fg: "#639922",
+    bg: "#EDEFF3",
+    type: "nontext",
+    expectFail: true,
+  },
+  {
+    theme: "light",
+    label:
+      "REGRESJA: border-left 'Nowe' STARY kolor (#5B8CFF) vs surface-raised",
+    fg: "#5B8CFF",
+    bg: "#EDEFF3",
+    type: "nontext",
+    expectFail: true,
+  },
 ];
 
-const THRESH = { text: 4.5, large: 3.0 };
+const THRESH = { text: 4.5, large: 3.0, nontext: 3.0 };
 
 let allPass = true;
 console.log("Kontrast WCAG — BLD AlgDriller\n");
@@ -188,17 +337,26 @@ console.log("-------|-------|-------|--------|-----");
 for (const p of pairs) {
   const ratio = contrastRatio(p.fg, p.bg);
   const threshold = THRESH[p.type];
-  const pass = ratio >= threshold;
+  const meetsThreshold = ratio >= threshold;
+  // Dla wpisów oznaczonych expectFail chcemy, żeby NIE spełniały progu
+  // (to są odrzucone warianty / naprawione błędy — test potwierdza, że
+  // słusznie je odrzuciliśmy / naprawiliśmy).
+  const pass = p.expectFail ? !meetsThreshold : meetsThreshold;
   if (!pass) allPass = false;
+  const statusLabel = p.expectFail
+    ? (pass ? " OK   " : " FAIL ") + " (oczekiwano FAIL)"
+    : pass
+      ? " OK   "
+      : " FAIL ";
   console.log(
-    `${p.theme.padEnd(6)} | ${ratio.toFixed(2).padStart(5)} | ${threshold.toFixed(1).padStart(5)} | ${pass ? " OK   " : " FAIL "} | ${p.label}`,
+    `${p.theme.padEnd(6)} | ${ratio.toFixed(2).padStart(5)} | ${threshold.toFixed(1).padStart(5)} | ${statusLabel} | ${p.label}`,
   );
 }
 
 console.log(
   "\n" +
     (allPass
-      ? "✓ Wszystkie pary spełniają WCAG AA."
-      : "✗ Są pary poniżej progu AA — patrz FAIL powyżej."),
+      ? "✓ Wszystkie pary spełniają oczekiwany wynik (AA / non-text / regresje)."
+      : "✗ Coś nie zgadza się z oczekiwaniami — patrz FAIL powyżej."),
 );
 process.exit(allPass ? 0 : 1);

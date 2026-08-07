@@ -43,6 +43,10 @@
     --cat-nowe-bg: #0E1A33;
     --cat-trudne-border: #9096A8;
 
+    /* Mode button borders - dark */
+    --btn-maintain-border: #4ADE80;
+    --btn-new-border: #5B8CFF;
+
     /* Legacy mappings */
     --success: #4ADE80;
     --success-text: #14161C;
@@ -76,6 +80,10 @@
     --cat-nowe-text: #0C447C;
     --cat-nowe-bg: #E9EFFC;
     --cat-trudne-border: #5A5F6E;
+
+    /* Mode button borders - light (darker for WCAG contrast) */
+    --btn-maintain-border: #4D7315;
+    --btn-new-border: #3568D6;
 
     /* Legacy mappings */
     --success: #22C55E;
@@ -268,10 +276,17 @@ h3 {
 .btn-secondary {
     background: var(--bg-card);
     color: var(--text-primary);
+    border: 1px solid var(--text-secondary);
 }
 
 .btn-secondary:hover, .btn-secondary:active {
     background: var(--bg-secondary);
+}
+
+[data-theme="light"] .btn-secondary:hover,
+[data-theme="light"] .btn-secondary:active {
+    background: #E5E7EB;
+    border-color: var(--text-primary);
 }
 
 
@@ -406,11 +421,11 @@ h3 {
 }
 
 .btn-success {
-    border-left: 3px solid var(--cat-szybkie-text);
+    border-left: 3px solid var(--btn-maintain-border);
 }
 
 .btn-warning {
-    border-left: 3px solid var(--cat-nowe-text);
+    border-left: 3px solid var(--btn-new-border);
 }
 
 .subset-buttons {
