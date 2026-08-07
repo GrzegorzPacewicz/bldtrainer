@@ -301,6 +301,16 @@ GitHub Pages + Cloudflare subdomain
 
 ## Changelog
 
+### v2.0 (2026-08-07)
+
+- Nowy system kolorów — czysta paleta z niebieskim akcentem (#5B8CFF)
+- Oddzielne kolory dla każdej kategorii (szybkie, wolne, niestabilne, regres, nowe, trudne)
+- Kategoria "Trudne" z obramowaniem zamiast wypełnienia
+- Przyciski trybów (Słabe punkty, Utrzymanie, Nowe) z kolorowym border-left
+- Ikona motywu: SVG słońce/księżyc zamiast emoji
+- Kontrast przycisków spełnia WCAG AA (4.5:1)
+- Skrypt check-contrast.js do weryfikacji kontrastu
+
 ### v1.0 (2026-08-02)
 
 - Tryb "Z inwersją" — po każdym przypadku od razu pojawia się jego inwersja (AB → BA)

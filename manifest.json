@@ -4,8 +4,8 @@
     "description": "Trening algorytmów blindcubing 3x3",
     "start_url": "/",
     "display": "standalone",
-    "background_color": "#1a1a2e",
-    "theme_color": "#1a1a2e",
+    "background_color": "#14161C",
+    "theme_color": "#14161C",
     "orientation": "portrait",
     "icons": [
         {

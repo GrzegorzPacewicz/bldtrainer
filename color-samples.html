@@ -1,0 +1,1251 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BLD AlgDriller - Color Samples</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        display: flex;
+        flex-wrap: wrap;
+      }
+
+      .theme {
+        width: 50%;
+        min-width: 400px;
+        min-height: 100vh;
+        padding: 1.5rem;
+      }
+
+      .theme-label {
+        text-align: center;
+        font-size: 0.85rem;
+        opacity: 0.6;
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+      }
+
+      .screen {
+        max-width: 380px;
+        margin: 0 auto 2rem;
+        border-radius: 1rem;
+        overflow: hidden;
+      }
+
+      .screen-label {
+        font-size: 0.75rem;
+        opacity: 0.5;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+      }
+
+      .screen-content {
+        padding: 1.25rem;
+        border-radius: 0.75rem;
+      }
+
+      /* Buttons */
+      .btn {
+        padding: 0.875rem 1.5rem;
+        border: none;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .btn-small {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+      }
+
+      .btn-large {
+        padding: 1.125rem 2rem;
+        font-size: 1.1rem;
+      }
+
+      .menu-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .menu-buttons.secondary {
+        flex-direction: row;
+      }
+
+      .menu-buttons.secondary .btn {
+        flex: 1;
+      }
+
+      /* Badges */
+      .badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 1rem;
+      }
+
+      .badge {
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.375rem;
+        font-size: 0.85rem;
+        font-weight: 500;
+      }
+
+      /* Mode buttons grid */
+      .mode-buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .mode-buttons .btn {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.9rem;
+      }
+
+      /* Game screen */
+      .game-case {
+        font-size: 4rem;
+        font-weight: 700;
+        text-align: center;
+        margin: 1.5rem 0;
+      }
+
+      .game-timer {
+        font-size: 2.5rem;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 1rem;
+      }
+
+      .game-alg {
+        text-align: center;
+        font-size: 1rem;
+        opacity: 0.7;
+        margin-bottom: 1rem;
+      }
+
+      .game-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+      }
+
+      /* Results list */
+      .results-list {
+        margin: 1rem 0;
+      }
+
+      .result-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.625rem 0.75rem;
+        border-radius: 0.375rem;
+        margin-bottom: 0.375rem;
+      }
+
+      .result-case {
+        font-weight: 600;
+      }
+
+      .result-time {
+        opacity: 0.7;
+      }
+
+      /* Stats table */
+      .stats-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.85rem;
+        margin-top: 0.75rem;
+      }
+
+      .stats-table th,
+      .stats-table td {
+        padding: 0.5rem 0.375rem;
+        text-align: center;
+      }
+
+      .stats-table th {
+        font-weight: 600;
+        opacity: 0.7;
+      }
+
+      .stats-row td:first-child {
+        text-align: left;
+        font-weight: 600;
+      }
+
+      /* Header */
+      h1 {
+        font-size: 1.75rem;
+        text-align: center;
+        margin-bottom: 1.5rem;
+      }
+
+      h2 {
+        font-size: 1.25rem;
+        text-align: center;
+        margin-bottom: 1rem;
+      }
+
+      h3 {
+        font-size: 1rem;
+        margin-bottom: 0.75rem;
+      }
+
+      /* Theme toggle */
+      .theme-toggle {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+        width: 2.25rem;
+        height: 2.25rem;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* Theme toggle variants preview */
+      .toggle-variants {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .toggle-variant {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .toggle-variant span {
+        font-size: 0.7rem;
+        opacity: 0.6;
+      }
+
+      .toggle-btn {
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .dark .toggle-btn {
+        background: #2a2e3a;
+        color: #9096a8;
+      }
+
+      .light .toggle-btn {
+        background: #edeff3;
+        color: #5a5f6e;
+      }
+
+      .toggle-btn svg {
+        width: 1.25rem;
+        height: 1.25rem;
+      }
+
+      /* Section card */
+      .section-card {
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 0.75rem;
+      }
+
+      /* Subset custom */
+      .subset-custom {
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .target-selectors {
+        display: flex;
+        gap: 0.75rem;
+        justify-content: center;
+        margin-bottom: 0.75rem;
+      }
+
+      .target-selectors select {
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        border: none;
+        font-size: 1rem;
+      }
+
+      /* Pause overlay */
+      .pause-overlay {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2rem;
+        padding: 2rem;
+      }
+
+      .pause-icon {
+        font-size: 4rem;
+      }
+
+      .pause-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        width: 100%;
+        max-width: 200px;
+      }
+
+      /* Session summary */
+      .session-summary {
+        text-align: center;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .session-avg {
+        font-size: 2rem;
+        font-weight: 700;
+      }
+
+      /* Flashcard */
+      .flashcard-case {
+        font-size: 5rem;
+        font-weight: 700;
+        text-align: center;
+        margin: 2rem 0;
+      }
+
+      .flashcard-alg {
+        font-size: 1.25rem;
+        text-align: center;
+        font-family: monospace;
+        opacity: 0.8;
+      }
+
+      .flashcard-buttons {
+        display: flex;
+        gap: 0.75rem;
+        margin-top: 2rem;
+      }
+
+      .flashcard-buttons .btn {
+        flex: 1;
+      }
+
+      /* ==================== DARK THEME ==================== */
+      .dark {
+        background: #14161c;
+        color: #e8e9ed;
+      }
+
+      .dark .screen-content {
+        background: #1e212b;
+      }
+
+      .dark .btn-primary {
+        background: #5b8cff;
+        color: #052047;
+      }
+
+      .dark .btn-secondary {
+        background: #2a2e3a;
+        color: #e8e9ed;
+      }
+
+      .dark .theme-toggle {
+        background: #2a2e3a;
+        color: #9096a8;
+      }
+
+      .dark .section-card {
+        background: #2a2e3a;
+      }
+
+      .dark .subset-custom {
+        background: #2a2e3a;
+      }
+
+      .dark .target-selectors select {
+        background: #1e212b;
+        color: #e8e9ed;
+      }
+
+      .dark .result-item {
+        background: #2a2e3a;
+      }
+
+      .dark .session-summary {
+        background: #2a2e3a;
+      }
+
+      .dark .stats-row {
+        border-bottom: 1px solid #2a2e3a;
+      }
+
+      .dark h3,
+      .dark .text-secondary {
+        color: #9096a8;
+      }
+
+      /* Dark badges */
+      .dark .badge-szybkie {
+        background: #0b2a18;
+        color: #4ade80;
+      }
+      .dark .badge-srednie {
+        background: #262a33;
+        color: #9096a8;
+      }
+      .dark .badge-wolne {
+        background: #1f1a08;
+        color: #fbbf24;
+      }
+      .dark .badge-niestabilne {
+        background: #241407;
+        color: #fb923c;
+      }
+      .dark .badge-regres {
+        background: #2a1010;
+        color: #f87171;
+      }
+      .dark .badge-nowe {
+        background: #0e1a33;
+        color: #5b8cff;
+      }
+      .dark .badge-trudne {
+        background: transparent;
+        border: 1px solid #9096a8;
+        color: #9096a8;
+      }
+
+      /* Dark mode buttons */
+      .dark .btn-weak {
+        background: #2a2e3a;
+        color: #e8e9ed;
+        border-left: 3px solid #f87171;
+        border-radius: 0 6px 6px 0;
+        text-align: left;
+        padding-left: 0.75rem;
+      }
+      .dark .btn-maintain {
+        background: #2a2e3a;
+        color: #e8e9ed;
+        border-left: 3px solid #4ade80;
+        border-radius: 0 6px 6px 0;
+        text-align: left;
+        padding-left: 0.75rem;
+      }
+      .dark .btn-new {
+        background: #2a2e3a;
+        color: #e8e9ed;
+        border-left: 3px solid #5b8cff;
+        border-radius: 0 6px 6px 0;
+        text-align: left;
+        padding-left: 0.75rem;
+      }
+
+      /* Dark stats row colors */
+      .dark .stats-row.cat-szybkie {
+        background: #0b2a18;
+        color: #4ade80;
+      }
+      .dark .stats-row.cat-wolne {
+        background: #1f1a08;
+        color: #fbbf24;
+      }
+      .dark .stats-row.cat-niestabilne {
+        background: #241407;
+        color: #fb923c;
+      }
+      .dark .stats-row.cat-regres {
+        background: #2a1010;
+        color: #f87171;
+      }
+      .dark .stats-row.cat-nowe {
+        background: #0e1a33;
+        color: #5b8cff;
+      }
+
+      /* ==================== LIGHT THEME ==================== */
+      .light {
+        background: #f7f8fa;
+        color: #14161c;
+      }
+
+      .light .screen-content {
+        background: #ffffff;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      }
+
+      .light .btn-primary {
+        background: #5b8cff;
+        color: #ffffff;
+      }
+
+      .light .btn-secondary {
+        background: #edeff3;
+        color: #14161c;
+      }
+
+      .light .theme-toggle {
+        background: #edeff3;
+        color: #5a5f6e;
+      }
+
+      .light .section-card {
+        background: #edeff3;
+      }
+
+      .light .subset-custom {
+        background: #edeff3;
+      }
+
+      .light .target-selectors select {
+        background: #ffffff;
+        color: #14161c;
+        border: 1px solid #edeff3;
+      }
+
+      .light .result-item {
+        background: #edeff3;
+      }
+
+      .light .session-summary {
+        background: #edeff3;
+      }
+
+      .light .stats-row {
+        border-bottom: 1px solid #edeff3;
+      }
+
+      .light h3,
+      .light .text-secondary {
+        color: #5a5f6e;
+      }
+
+      /* Light badges */
+      .light .badge-szybkie {
+        background: #e8fbef;
+        color: #27500a;
+      }
+      .light .badge-srednie {
+        background: #eef0f3;
+        color: #5a5f6e;
+      }
+      .light .badge-wolne {
+        background: #fef6e0;
+        color: #633806;
+      }
+      .light .badge-niestabilne {
+        background: #feeee0;
+        color: #712b13;
+      }
+      .light .badge-regres {
+        background: #fdeaea;
+        color: #791f1f;
+      }
+      .light .badge-nowe {
+        background: #e9effc;
+        color: #0c447c;
+      }
+      .light .badge-trudne {
+        background: transparent;
+        border: 1px solid #5a5f6e;
+        color: #5a5f6e;
+      }
+
+      /* Light mode buttons */
+      .light .btn-weak {
+        background: #edeff3;
+        color: #14161c;
+        border-left: 3px solid #e24b4a;
+        border-radius: 0 6px 6px 0;
+        text-align: left;
+        padding-left: 0.75rem;
+      }
+      .light .btn-maintain {
+        background: #edeff3;
+        color: #14161c;
+        border-left: 3px solid #639922;
+        border-radius: 0 6px 6px 0;
+        text-align: left;
+        padding-left: 0.75rem;
+      }
+      .light .btn-new {
+        background: #edeff3;
+        color: #14161c;
+        border-left: 3px solid #5b8cff;
+        border-radius: 0 6px 6px 0;
+        text-align: left;
+        padding-left: 0.75rem;
+      }
+
+      /* Light stats row colors */
+      .light .stats-row.cat-szybkie {
+        background: #e8fbef;
+        color: #27500a;
+      }
+      .light .stats-row.cat-wolne {
+        background: #fef6e0;
+        color: #633806;
+      }
+      .light .stats-row.cat-niestabilne {
+        background: #feeee0;
+        color: #712b13;
+      }
+      .light .stats-row.cat-regres {
+        background: #fdeaea;
+        color: #791f1f;
+      }
+      .light .stats-row.cat-nowe {
+        background: #e9effc;
+        color: #0c447c;
+      }
+
+      @media (max-width: 850px) {
+        .theme {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- DARK THEME -->
+    <div class="theme dark">
+      <div class="theme-label">Dark Theme (domyślny)</div>
+
+      <!-- Menu with variant 1: Pół-okrąg -->
+      <div class="screen">
+        <div class="screen-label">Wariant 1: Pół-okrąg (uniwersalny)</div>
+        <div class="screen-content" style="position: relative">
+          <button class="theme-toggle" style="font-size: 1.25rem">◐</button>
+          <h1>BLD AlgDriller</h1>
+          <div class="menu-buttons">
+            <button class="btn btn-primary">Krawędzie</button>
+            <button class="btn btn-primary">Rogi</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Menu with variant 2+3: Słońce (w dark) -->
+      <div class="screen">
+        <div class="screen-label">Wariant 2+3: Słońce → przełącz na light</div>
+        <div class="screen-content" style="position: relative">
+          <button class="theme-toggle">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              style="width: 1.25rem; height: 1.25rem"
+            >
+              <circle cx="12" cy="12" r="5" />
+              <path
+                d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
+              />
+            </svg>
+          </button>
+          <h1>BLD AlgDriller</h1>
+          <div class="menu-buttons">
+            <button class="btn btn-primary">Krawędzie</button>
+            <button class="btn btn-primary">Rogi</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Menu with variant 4: Kontrast -->
+      <div class="screen">
+        <div class="screen-label">Wariant 4: Kontrast (uniwersalny)</div>
+        <div class="screen-content" style="position: relative">
+          <button class="theme-toggle">
+            <svg
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              style="width: 1.25rem; height: 1.25rem"
+            >
+              <path
+                d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zm0 16V5a7 7 0 0 1 0 14z"
+              />
+            </svg>
+          </button>
+          <h1>BLD AlgDriller</h1>
+          <div class="menu-buttons">
+            <button class="btn btn-primary">Krawędzie</button>
+            <button class="btn btn-primary">Rogi</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Menu Screen -->
+      <div class="screen">
+        <div class="screen-label">Pełne menu (wariant 2+3)</div>
+        <div class="screen-content" style="position: relative">
+          <button class="theme-toggle">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              style="width: 1.25rem; height: 1.25rem"
+            >
+              <circle cx="12" cy="12" r="5" />
+              <path
+                d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
+              />
+            </svg>
+          </button>
+          <h1>BLD AlgDriller</h1>
+          <div class="menu-buttons">
+            <button class="btn btn-primary">Krawędzie</button>
+            <button class="btn btn-primary">Rogi</button>
+            <button class="btn btn-primary">Parity</button>
+          </div>
+          <div class="menu-buttons secondary">
+            <button class="btn btn-secondary">Import</button>
+            <button class="btn btn-secondary">Export</button>
+            <button class="btn btn-secondary">Statystyki</button>
+          </div>
+          <div
+            style="text-align: center; margin-top: 2rem; font-size: 0.75rem"
+            class="text-secondary"
+          >
+            v1.15 | 2026-08-07
+          </div>
+        </div>
+      </div>
+
+      <!-- Subset Screen -->
+      <div class="screen">
+        <div class="screen-label">Wybór trybu</div>
+        <div class="screen-content">
+          <h2>Krawędzie › UF</h2>
+          <button
+            class="btn btn-primary"
+            style="width: 100%; margin-bottom: 0.75rem"
+          >
+            Wszystkie (142)
+          </button>
+          <div class="mode-buttons">
+            <button class="btn btn-weak">Słabe punkty</button>
+            <button class="btn btn-maintain">Utrzymanie</button>
+            <button class="btn btn-new">Nowe</button>
+          </div>
+          <div class="mode-buttons">
+            <button class="btn btn-secondary">Szybkie</button>
+            <button class="btn btn-secondary">Średnie</button>
+            <button class="btn btn-secondary">Wolne</button>
+            <button class="btn btn-secondary">Niestabilne</button>
+            <button class="btn btn-secondary">Regres</button>
+            <button class="btn btn-secondary">Trudne</button>
+          </div>
+          <div class="subset-custom">
+            <h3>Custom</h3>
+            <div class="target-selectors">
+              <select>
+                <option>AB</option>
+              </select>
+              <select>
+                <option>CD</option>
+              </select>
+              <button class="btn btn-small btn-primary">+</button>
+            </div>
+          </div>
+          <div style="display: flex; gap: 0.75rem">
+            <button class="btn btn-primary btn-large" style="flex: 1">
+              Start
+            </button>
+            <button class="btn btn-secondary btn-large" style="flex: 1">
+              Nauka
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Game Screen -->
+      <div class="screen">
+        <div class="screen-label">Ekran gry</div>
+        <div class="screen-content">
+          <div class="game-top">
+            <span class="text-secondary">12/20</span>
+            <button class="btn btn-small btn-secondary">⏸</button>
+          </div>
+          <div class="game-timer">2.45</div>
+          <div class="game-case">AB</div>
+          <div class="game-alg">R U R' U' R' F R2 U' R' U' R U R' F'</div>
+        </div>
+      </div>
+
+      <!-- Pause Overlay -->
+      <div class="screen">
+        <div class="screen-label">Pauza</div>
+        <div class="screen-content pause-overlay">
+          <div class="pause-icon" style="color: #5b8cff">⏸</div>
+          <div class="pause-buttons">
+            <button class="btn btn-primary">Kontynuuj</button>
+            <button class="btn btn-secondary">Zakończ z zapisem</button>
+            <button class="btn btn-secondary">Anuluj</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Screen -->
+      <div class="screen">
+        <div class="screen-label">Wyniki sesji</div>
+        <div class="screen-content">
+          <h2>Wyniki</h2>
+          <div class="session-summary">
+            <div class="session-avg">2.34s</div>
+            <div class="text-secondary">średnia z 20 przypadków</div>
+          </div>
+          <div class="results-list">
+            <div class="result-item">
+              <span class="result-case">AB</span>
+              <span class="result-time">1.89s</span>
+            </div>
+            <div class="result-item">
+              <span class="result-case">CD</span>
+              <span class="result-time">2.45s</span>
+            </div>
+            <div class="result-item">
+              <span class="result-case">EF</span>
+              <span class="result-time">3.12s</span>
+            </div>
+          </div>
+          <div style="display: flex; gap: 0.75rem">
+            <button class="btn btn-primary" style="flex: 1">Zapisz</button>
+            <button class="btn btn-secondary" style="flex: 1">Anuluj</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Screen -->
+      <div class="screen">
+        <div class="screen-label">Statystyki</div>
+        <div class="screen-content">
+          <h2>Statystyki › Krawędzie</h2>
+          <div class="section-card">
+            <h3>Podsumowanie</h3>
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 0.5rem;
+              "
+            >
+              <span class="text-secondary">Przypadków</span>
+              <span>142</span>
+            </div>
+            <div style="display: flex; justify-content: space-between">
+              <span class="text-secondary">Średnia</span>
+              <span>2.34s</span>
+            </div>
+          </div>
+          <div class="section-card">
+            <h3>Kategorie</h3>
+            <div class="badges">
+              <span class="badge badge-szybkie">Szybkie: 45</span>
+              <span class="badge badge-srednie">Średnie: 32</span>
+              <span class="badge badge-wolne">Wolne: 18</span>
+              <span class="badge badge-niestabilne">Niestabilne: 12</span>
+              <span class="badge badge-regres">Regres: 8</span>
+              <span class="badge badge-nowe">Nowe: 22</span>
+              <span class="badge badge-trudne">Trudne: 5</span>
+            </div>
+          </div>
+          <div class="section-card">
+            <h3>Szczegóły</h3>
+            <table class="stats-table">
+              <thead>
+                <tr>
+                  <th style="text-align: left">Case</th>
+                  <th>Avg</th>
+                  <th>Best</th>
+                  <th>Exec</th>
+                  <th>Trend</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="stats-row cat-szybkie">
+                  <td>AB</td>
+                  <td>1.45</td>
+                  <td>1.12</td>
+                  <td>24</td>
+                  <td>↑</td>
+                </tr>
+                <tr class="stats-row cat-wolne">
+                  <td>CD</td>
+                  <td>3.89</td>
+                  <td>2.98</td>
+                  <td>18</td>
+                  <td>↓</td>
+                </tr>
+                <tr class="stats-row cat-niestabilne">
+                  <td>EF</td>
+                  <td>2.67</td>
+                  <td>1.45</td>
+                  <td>15</td>
+                  <td>~</td>
+                </tr>
+                <tr class="stats-row cat-nowe">
+                  <td>GH</td>
+                  <td>4.23</td>
+                  <td>3.56</td>
+                  <td>3</td>
+                  <td>—</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Flashcard Screen -->
+      <div class="screen">
+        <div class="screen-label">Tryb nauki</div>
+        <div class="screen-content">
+          <div class="game-top">
+            <button class="btn btn-small btn-secondary">← Wróć</button>
+            <span class="text-secondary">5/20</span>
+            <button class="btn btn-small btn-secondary">✎</button>
+          </div>
+          <div class="flashcard-case">AB</div>
+          <div class="flashcard-alg">R U R' U' R' F R2 U' R'</div>
+          <div class="flashcard-buttons">
+            <button class="btn btn-weak">Nie znam</button>
+            <button class="btn btn-maintain">Znam</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LIGHT THEME -->
+    <div class="theme light">
+      <div class="theme-label">Light Theme</div>
+
+      <!-- Menu with variant 1: Pół-okrąg -->
+      <div class="screen">
+        <div class="screen-label">Wariant 1: Pół-okrąg (uniwersalny)</div>
+        <div class="screen-content" style="position: relative">
+          <button class="theme-toggle" style="font-size: 1.25rem">◐</button>
+          <h1>BLD AlgDriller</h1>
+          <div class="menu-buttons">
+            <button class="btn btn-primary">Krawędzie</button>
+            <button class="btn btn-primary">Rogi</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Menu with variant 2+3: Księżyc (w light) -->
+      <div class="screen">
+        <div class="screen-label">Wariant 2+3: Księżyc → przełącz na dark</div>
+        <div class="screen-content" style="position: relative">
+          <button class="theme-toggle">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              style="width: 1.25rem; height: 1.25rem"
+            >
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+          </button>
+          <h1>BLD AlgDriller</h1>
+          <div class="menu-buttons">
+            <button class="btn btn-primary">Krawędzie</button>
+            <button class="btn btn-primary">Rogi</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Menu with variant 4: Kontrast -->
+      <div class="screen">
+        <div class="screen-label">Wariant 4: Kontrast (uniwersalny)</div>
+        <div class="screen-content" style="position: relative">
+          <button class="theme-toggle">
+            <svg
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              style="width: 1.25rem; height: 1.25rem"
+            >
+              <path
+                d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zm0 16V5a7 7 0 0 1 0 14z"
+              />
+            </svg>
+          </button>
+          <h1>BLD AlgDriller</h1>
+          <div class="menu-buttons">
+            <button class="btn btn-primary">Krawędzie</button>
+            <button class="btn btn-primary">Rogi</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Menu Screen -->
+      <div class="screen">
+        <div class="screen-label">Pełne menu (wariant 2+3)</div>
+        <div class="screen-content" style="position: relative">
+          <button class="theme-toggle">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              style="width: 1.25rem; height: 1.25rem"
+            >
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+          </button>
+          <h1>BLD AlgDriller</h1>
+          <div class="menu-buttons">
+            <button class="btn btn-primary">Krawędzie</button>
+            <button class="btn btn-primary">Rogi</button>
+            <button class="btn btn-primary">Parity</button>
+          </div>
+          <div class="menu-buttons secondary">
+            <button class="btn btn-secondary">Import</button>
+            <button class="btn btn-secondary">Export</button>
+            <button class="btn btn-secondary">Statystyki</button>
+          </div>
+          <div
+            style="text-align: center; margin-top: 2rem; font-size: 0.75rem"
+            class="text-secondary"
+          >
+            v1.15 | 2026-08-07
+          </div>
+        </div>
+      </div>
+
+      <!-- Subset Screen -->
+      <div class="screen">
+        <div class="screen-label">Wybór trybu</div>
+        <div class="screen-content">
+          <h2>Krawędzie › UF</h2>
+          <button
+            class="btn btn-primary"
+            style="width: 100%; margin-bottom: 0.75rem"
+          >
+            Wszystkie (142)
+          </button>
+          <div class="mode-buttons">
+            <button class="btn btn-weak">Słabe punkty</button>
+            <button class="btn btn-maintain">Utrzymanie</button>
+            <button class="btn btn-new">Nowe</button>
+          </div>
+          <div class="mode-buttons">
+            <button class="btn btn-secondary">Szybkie</button>
+            <button class="btn btn-secondary">Średnie</button>
+            <button class="btn btn-secondary">Wolne</button>
+            <button class="btn btn-secondary">Niestabilne</button>
+            <button class="btn btn-secondary">Regres</button>
+            <button class="btn btn-secondary">Trudne</button>
+          </div>
+          <div class="subset-custom">
+            <h3>Custom</h3>
+            <div class="target-selectors">
+              <select>
+                <option>AB</option>
+              </select>
+              <select>
+                <option>CD</option>
+              </select>
+              <button class="btn btn-small btn-primary">+</button>
+            </div>
+          </div>
+          <div style="display: flex; gap: 0.75rem">
+            <button class="btn btn-primary btn-large" style="flex: 1">
+              Start
+            </button>
+            <button class="btn btn-secondary btn-large" style="flex: 1">
+              Nauka
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Game Screen -->
+      <div class="screen">
+        <div class="screen-label">Ekran gry</div>
+        <div class="screen-content">
+          <div class="game-top">
+            <span class="text-secondary">12/20</span>
+            <button class="btn btn-small btn-secondary">⏸</button>
+          </div>
+          <div class="game-timer">2.45</div>
+          <div class="game-case">AB</div>
+          <div class="game-alg">R U R' U' R' F R2 U' R' U' R U R' F'</div>
+        </div>
+      </div>
+
+      <!-- Pause Overlay -->
+      <div class="screen">
+        <div class="screen-label">Pauza</div>
+        <div class="screen-content pause-overlay">
+          <div class="pause-icon" style="color: #5b8cff">⏸</div>
+          <div class="pause-buttons">
+            <button class="btn btn-primary">Kontynuuj</button>
+            <button class="btn btn-secondary">Zakończ z zapisem</button>
+            <button class="btn btn-secondary">Anuluj</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Screen -->
+      <div class="screen">
+        <div class="screen-label">Wyniki sesji</div>
+        <div class="screen-content">
+          <h2>Wyniki</h2>
+          <div class="session-summary">
+            <div class="session-avg">2.34s</div>
+            <div class="text-secondary">średnia z 20 przypadków</div>
+          </div>
+          <div class="results-list">
+            <div class="result-item">
+              <span class="result-case">AB</span>
+              <span class="result-time">1.89s</span>
+            </div>
+            <div class="result-item">
+              <span class="result-case">CD</span>
+              <span class="result-time">2.45s</span>
+            </div>
+            <div class="result-item">
+              <span class="result-case">EF</span>
+              <span class="result-time">3.12s</span>
+            </div>
+          </div>
+          <div style="display: flex; gap: 0.75rem">
+            <button class="btn btn-primary" style="flex: 1">Zapisz</button>
+            <button class="btn btn-secondary" style="flex: 1">Anuluj</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Screen -->
+      <div class="screen">
+        <div class="screen-label">Statystyki</div>
+        <div class="screen-content">
+          <h2>Statystyki › Krawędzie</h2>
+          <div class="section-card">
+            <h3>Podsumowanie</h3>
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 0.5rem;
+              "
+            >
+              <span class="text-secondary">Przypadków</span>
+              <span>142</span>
+            </div>
+            <div style="display: flex; justify-content: space-between">
+              <span class="text-secondary">Średnia</span>
+              <span>2.34s</span>
+            </div>
+          </div>
+          <div class="section-card">
+            <h3>Kategorie</h3>
+            <div class="badges">
+              <span class="badge badge-szybkie">Szybkie: 45</span>
+              <span class="badge badge-srednie">Średnie: 32</span>
+              <span class="badge badge-wolne">Wolne: 18</span>
+              <span class="badge badge-niestabilne">Niestabilne: 12</span>
+              <span class="badge badge-regres">Regres: 8</span>
+              <span class="badge badge-nowe">Nowe: 22</span>
+              <span class="badge badge-trudne">Trudne: 5</span>
+            </div>
+          </div>
+          <div class="section-card">
+            <h3>Szczegóły</h3>
+            <table class="stats-table">
+              <thead>
+                <tr>
+                  <th style="text-align: left">Case</th>
+                  <th>Avg</th>
+                  <th>Best</th>
+                  <th>Exec</th>
+                  <th>Trend</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="stats-row cat-szybkie">
+                  <td>AB</td>
+                  <td>1.45</td>
+                  <td>1.12</td>
+                  <td>24</td>
+                  <td>↑</td>
+                </tr>
+                <tr class="stats-row cat-wolne">
+                  <td>CD</td>
+                  <td>3.89</td>
+                  <td>2.98</td>
+                  <td>18</td>
+                  <td>↓</td>
+                </tr>
+                <tr class="stats-row cat-niestabilne">
+                  <td>EF</td>
+                  <td>2.67</td>
+                  <td>1.45</td>
+                  <td>15</td>
+                  <td>~</td>
+                </tr>
+                <tr class="stats-row cat-nowe">
+                  <td>GH</td>
+                  <td>4.23</td>
+                  <td>3.56</td>
+                  <td>3</td>
+                  <td>—</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Flashcard Screen -->
+      <div class="screen">
+        <div class="screen-label">Tryb nauki</div>
+        <div class="screen-content">
+          <div class="game-top">
+            <button class="btn btn-small btn-secondary">← Wróć</button>
+            <span class="text-secondary">5/20</span>
+            <button class="btn btn-small btn-secondary">✎</button>
+          </div>
+          <div class="flashcard-case">AB</div>
+          <div class="flashcard-alg">R U R' U' R' F R2 U' R'</div>
+          <div class="flashcard-buttons">
+            <button class="btn btn-weak">Nie znam</button>
+            <button class="btn btn-maintain">Znam</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
