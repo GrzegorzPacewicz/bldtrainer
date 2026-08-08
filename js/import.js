@@ -46,6 +46,7 @@ function parseSheet(rows, pieceType, buffer) {
     const target1ColIdx = header.findIndex(h => String(h).toLowerCase() === 'target1');
     const target2ColIdx = header.findIndex(h => String(h).toLowerCase() === 'target2');
     const algColIdx = header.findIndex(h => String(h).toLowerCase() === 'algorithm');
+    const difficultColIdx = header.findIndex(h => String(h).toLowerCase() === 'difficult');
     const isExportFormat = header[0] === 'Case' && (header[1] === 'Algorithm' || header[1] === 'Target1');
 
     if (isExportFormat) {
@@ -60,6 +61,7 @@ function parseSheet(rows, pieceType, buffer) {
             const algText = String(row[actualAlgColIdx] || '');
             const resultsStr = resultsColIdx >= 0 ? String(row[resultsColIdx] || '') : '';
             const results = parseResultsString(resultsStr);
+            const difficultVal = difficultColIdx >= 0 ? row[difficultColIdx] : undefined;
 
             if (isParity) {
                 let target, lp;
@@ -71,7 +73,7 @@ function parseSheet(rows, pieceType, buffer) {
                     target = parsed.target;
                     lp = parsed.lp;
                 }
-                const alg = parseParityAlgorithm(pieceType, buffer, target, algText, lp, results);
+                const alg = parseParityAlgorithm(pieceType, buffer, target, algText, lp, results, difficultVal);
                 if (alg) algorithms.push(alg);
             } else {
                 let target1, target2, lp;
@@ -85,7 +87,7 @@ function parseSheet(rows, pieceType, buffer) {
                     target2 = parsed.target2;
                     lp = parsed.lp;
                 }
-                const alg = parseAlgorithm(pieceType, buffer, target1, target2, algText, '', '', lp, results);
+                const alg = parseAlgorithm(pieceType, buffer, target1, target2, algText, '', '', lp, results, difficultVal);
                 if (alg) algorithms.push(alg);
             }
         }
@@ -233,14 +235,14 @@ function canonicalRepresentation(pieceName) {
     return active + rest.join('');
 }
 
-function parseAlgorithm(pieceType, buffer, target1, target2, algText, lp1, lp2, lpOverride, results) {
+function parseAlgorithm(pieceType, buffer, target1, target2, algText, lp1, lp2, lpOverride, results, difficultOverride) {
     const canonBuffer = canonicalRepresentation(buffer);
     const canonT1 = canonicalRepresentation(target1);
     const canonT2 = canonicalRepresentation(target2);
 
     if (!canonT1 || !canonT2 || canonT1 === canonT2) return null;
 
-    let difficult = false;
+    let difficult = difficultOverride === true || difficultOverride === 1;
     let cleanAlg = algText;
 
     if (algText.includes('💩')) {
@@ -267,13 +269,13 @@ function parseAlgorithm(pieceType, buffer, target1, target2, algText, lp1, lp2, 
     };
 }
 
-function parseParityAlgorithm(pieceType, buffer, target, algText, lp, results) {
+function parseParityAlgorithm(pieceType, buffer, target, algText, lp, results, difficultOverride) {
     const canonBuffer = canonicalRepresentation(buffer);
     const canonTarget = canonicalRepresentation(target);
 
     if (!canonTarget) return null;
 
-    let difficult = false;
+    let difficult = difficultOverride === true || difficultOverride === 1;
     let cleanAlg = algText;
 
     if (algText.includes('💩')) {

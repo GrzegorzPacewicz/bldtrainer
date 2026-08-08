@@ -486,9 +486,10 @@ function renderCasesTable(cases, buffer) {
         const trendIcon = trendIcons[c.trend] || '';
         const catLabel = categoryLabels[c.category] || '';
         const difficultMark = c.difficult ? '!' : '';
+        const difficultClass = c.difficult ? ' cat-difficult' : '';
 
         return `
-            <tr class="case-row cat-${c.category}" data-id="${c.id}" data-case="${c.case}">
+            <tr class="case-row cat-${c.category}${difficultClass}" data-id="${c.id}" data-case="${c.case}">
                 <td class="case-name">${c.case}${difficultMark}</td>
                 <td class="case-exec">${c.executions}</td>
                 <td class="case-avg">${avgStr}</td>
@@ -707,7 +708,7 @@ async function exportToExcel() {
             const cases = await getDetailedCaseStats(pieceType, buffer);
             const caseMap = new Map(cases.map(c => [c.id, c]));
 
-            const rows = [['Case', 'Target1', 'Target2', 'Algorithm', 'Exec', 'Avg', 'Best', 'Worst', 'Category', 'Results']];
+            const rows = [['Case', 'Target1', 'Target2', 'Algorithm', 'Difficult', 'Exec', 'Avg', 'Best', 'Worst', 'Category', 'Results']];
 
             const sorted = [...algs]
                 .filter(a => !a.target2 || a.target1 !== a.target2)
@@ -727,13 +728,13 @@ async function exportToExcel() {
                 const results = alg.algorithms[0]?.results || [];
                 const resultsStr = results.map(r => r.toFixed(2)).join(';');
                 const algText = alg.algorithms[0]?.alg || '';
-                const algWithDifficult = alg.difficult ? `${algText} 💩` : algText;
 
                 rows.push([
                     caseName,
                     alg.target1,
                     alg.target2 || '',
-                    algWithDifficult,
+                    algText,
+                    alg.difficult ? 1 : 0,
                     stats.executions || 0,
                     stats.avg ? stats.avg.toFixed(2) : '',
                     stats.best ? stats.best.toFixed(2) : '',
@@ -749,6 +750,7 @@ async function exportToExcel() {
                 { wch: 6 },   // Target1
                 { wch: 6 },   // Target2
                 { wch: 40 },  // Algorithm
+                { wch: 4 },   // Difficult
                 { wch: 5 },   // Exec
                 { wch: 6 },   // Avg
                 { wch: 6 },   // Best

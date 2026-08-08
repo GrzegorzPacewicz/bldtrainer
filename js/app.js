@@ -599,7 +599,7 @@ function renderResultsList() {
             item.classList.add('removed');
         }
 
-        const isDifficult = currentGame.difficultCases?.has(r.id) || false;
+        const isDifficult = r.difficult || currentGame.difficultCases?.has(r.id) || false;
 
         item.innerHTML = `
             <span class="case">${r.case}</span>

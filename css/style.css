@@ -1020,6 +1020,18 @@ h3 {
     box-shadow: 0 0 0 2px white, 0 0 0 4px var(--accent);
 }
 
+.trend-badge[data-filter-trend] {
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.trend-badge[data-filter-trend]:hover {
+    transform: scale(1.05);
+}
+
+.trend-badge[data-filter-trend].active {
+    box-shadow: 0 0 0 2px white, 0 0 0 4px var(--accent);
+}
+
 .trend-improving,
 .trend-stable,
 .trend-declining {

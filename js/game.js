@@ -215,7 +215,8 @@ class Game {
                 list.push({
                     id,
                     case: caseName,
-                    time
+                    time,
+                    difficult: alg.difficult || false
                 });
             }
         }
