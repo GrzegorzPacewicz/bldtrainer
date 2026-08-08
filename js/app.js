@@ -91,17 +91,50 @@ function initMenuHandlers() {
     document.getElementById('btn-stats').addEventListener('click', showStats);
     document.getElementById('btn-help').addEventListener('click', openHelpModal);
     document.getElementById('help-modal-close').addEventListener('click', closeHelpModal);
+    document.getElementById('help-modal-close-x').addEventListener('click', closeHelpModal);
     document.getElementById('help-modal').addEventListener('click', (e) => {
         if (e.target.id === 'help-modal') closeHelpModal();
     });
+    document.getElementById('help-modal').addEventListener('keydown', handleHelpModalKeydown);
 }
 
+let helpModalTrigger = null;
+
 function openHelpModal() {
-    document.getElementById('help-modal').classList.add('active');
+    helpModalTrigger = document.activeElement;
+    const modal = document.getElementById('help-modal');
+    modal.classList.add('active');
+    const closeX = document.getElementById('help-modal-close-x');
+    closeX.focus();
 }
 
 function closeHelpModal() {
     document.getElementById('help-modal').classList.remove('active');
+    if (helpModalTrigger && helpModalTrigger.focus) {
+        helpModalTrigger.focus();
+    }
+    helpModalTrigger = null;
+}
+
+function handleHelpModalKeydown(e) {
+    if (e.key === 'Escape') {
+        closeHelpModal();
+        return;
+    }
+    if (e.key === 'Tab') {
+        const modal = document.getElementById('help-modal');
+        const focusable = modal.querySelectorAll('button, [tabindex="0"]');
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+        }
+    }
 }
 
 async function selectPieceType(pieceType) {
@@ -743,6 +776,7 @@ async function renderStatsTab(tab) {
         initCaseRowClicks();
         initTableSorting();
         initCategoryFilter();
+        initTrendFilter();
         initDetailsLock();
     }
 }
@@ -824,6 +858,7 @@ function initEditModal() {
             initCaseRowClicks();
             initTableSorting();
             initCategoryFilter();
+            initTrendFilter();
             initDetailsLock();
         }
     });

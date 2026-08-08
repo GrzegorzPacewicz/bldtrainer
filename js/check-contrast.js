@@ -52,14 +52,14 @@ const pairs = [
   {
     theme: "dark",
     label: "text-secondary / surface",
-    fg: "#9096A8",
+    fg: "#a0a6b8",
     bg: "#1E212B",
     type: "text",
   },
   {
     theme: "dark",
     label: "accent-on / accent-button (btn primary)",
-    fg: "#052047",
+    fg: "#020a1f",
     bg: "#5B8CFF",
     type: "text",
   },
@@ -73,7 +73,7 @@ const pairs = [
   {
     theme: "dark",
     label: "badge srednie",
-    fg: "#9096A8",
+    fg: "#a0a6b8",
     bg: "#262A33",
     type: "text",
   },
@@ -101,14 +101,14 @@ const pairs = [
   {
     theme: "dark",
     label: "badge nowe",
-    fg: "#5B8CFF",
+    fg: "#8fb0ff",
     bg: "#0E1A33",
     type: "text",
   },
   {
     theme: "dark",
     label: "cat-trudne border / surface-raised",
-    fg: "#9096A8",
+    fg: "#a0a6b8",
     bg: "#2A2E3A",
     type: "large",
   },
@@ -139,7 +139,7 @@ const pairs = [
     theme: "light",
     label: "white text / accent-button (btn primary)",
     fg: "#FFFFFF",
-    bg: "#3568D6",
+    bg: "#2a53ad",
     type: "text",
   },
   {
@@ -217,8 +217,8 @@ const pairs = [
   },
   {
     theme: "dark",
-    label: "btn-secondary border (--text-secondary #9096A8) vs card #1E212B",
-    fg: "#9096A8",
+    label: "btn-secondary border (--text-secondary #a0a6b8) vs card #1E212B",
+    fg: "#a0a6b8",
     bg: "#1E212B",
     type: "nontext",
   },
@@ -301,8 +301,8 @@ const pairs = [
   {
     theme: "light",
     label:
-      "border-left 'Nowe' (#3568D6, poprawka = accent-button) vs surface-raised",
-    fg: "#3568D6",
+      "border-left 'Nowe' (#2a53ad, poprawka = accent-button) vs surface-raised",
+    fg: "#2a53ad",
     bg: "#EDEFF3",
     type: "nontext",
   },

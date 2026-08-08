@@ -300,10 +300,11 @@
     </div>
 
     <!-- Help Modal -->
-    <div id="help-modal" class="modal">
+    <div id="help-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="help-modal-title">
       <div class="modal-content modal-help">
-        <h3>Instrukcja</h3>
-        <div class="help-content">
+        <button id="help-modal-close-x" class="modal-close-x" aria-label="Zamknij">&times;</button>
+        <h3 id="help-modal-title">Instrukcja</h3>
+        <div class="help-content" tabindex="0">
           <section>
             <h4>Import algorytmów</h4>
             <p>Kliknij <strong>Import</strong> i wybierz plik.</p>

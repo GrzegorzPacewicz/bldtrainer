@@ -395,9 +395,9 @@ function renderBufferStats(buffer, stats) {
         .join(' ');
 
     const trendHtml = `
-        <span class="trend-badge trend-improving">↑ ${trends.improving}</span>
-        <span class="trend-badge trend-stable">→ ${trends.stable}</span>
-        <span class="trend-badge trend-declining">↓ ${trends.declining}</span>
+        <span class="trend-badge trend-improving" data-filter-trend="improving" style="cursor:pointer">↑ ${trends.improving}</span>
+        <span class="trend-badge trend-stable" data-filter-trend="stable" style="cursor:pointer">→ ${trends.stable}</span>
+        <span class="trend-badge trend-declining" data-filter-trend="declining" style="cursor:pointer">↓ ${trends.declining}</span>
     `;
 
     return `
@@ -555,6 +555,8 @@ function initCategoryFilter() {
             const rows = table.querySelectorAll('tbody tr');
             const isActive = badge.classList.contains('active');
 
+            section.querySelectorAll('.trend-badge[data-filter-trend]').forEach(b => b.classList.remove('active'));
+
             if (isActive) {
                 rows.forEach(row => row.style.display = '');
                 badge.classList.remove('active');
@@ -567,6 +569,38 @@ function initCategoryFilter() {
                     }
                 });
                 section.querySelectorAll('.cat-badge[data-filter-cat]').forEach(b => b.classList.remove('active'));
+                badge.classList.add('active');
+            }
+        });
+    });
+}
+
+function initTrendFilter() {
+    document.querySelectorAll('.trend-badge[data-filter-trend]').forEach(badge => {
+        badge.addEventListener('click', () => {
+            const trend = badge.dataset.filterTrend;
+            const section = badge.closest('.stats-section');
+            const table = section.querySelector('.cases-table');
+            if (!table) return;
+
+            const rows = table.querySelectorAll('tbody tr');
+            const isActive = badge.classList.contains('active');
+
+            section.querySelectorAll('.cat-badge[data-filter-cat]').forEach(b => b.classList.remove('active'));
+
+            if (isActive) {
+                rows.forEach(row => row.style.display = '');
+                badge.classList.remove('active');
+            } else {
+                rows.forEach(row => {
+                    const trendCell = row.querySelector('.case-trend');
+                    if (trendCell && trendCell.classList.contains(`trend-${trend}`)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+                section.querySelectorAll('.trend-badge[data-filter-trend]').forEach(b => b.classList.remove('active'));
                 badge.classList.add('active');
             }
         });

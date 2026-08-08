@@ -23,15 +23,15 @@
     --accent: #5B8CFF;
     --accent-button: #5B8CFF;
     --accent-hover: #7BA3FF;
-    --accent-on: #052047;
+    --accent-on: #020a1f;
     --text-primary: #E8E9ED;
-    --text-secondary: #9096A8;
+    --text-secondary: #a0a6b8;
     --text-heading: #fff;
 
     /* Category colors - dark */
     --cat-szybkie-text: #4ADE80;
     --cat-szybkie-bg: #0B2A18;
-    --cat-srednie-text: #9096A8;
+    --cat-srednie-text: #a0a6b8;
     --cat-srednie-bg: #262A33;
     --cat-wolne-text: #FBBF24;
     --cat-wolne-bg: #1F1A08;
@@ -39,9 +39,9 @@
     --cat-niestabilne-bg: #241407;
     --cat-regres-text: #F87171;
     --cat-regres-bg: #2A1010;
-    --cat-nowe-text: #5B8CFF;
+    --cat-nowe-text: #8fb0ff;
     --cat-nowe-bg: #0E1A33;
-    --cat-trudne-border: #9096A8;
+    --cat-trudne-border: #a0a6b8;
 
     /* Mode button borders - dark */
     --btn-maintain-border: #4ADE80;
@@ -59,7 +59,7 @@
     --bg-secondary: #FFFFFF;
     --bg-card: #EDEFF3;
     --accent: #5B8CFF;
-    --accent-button: #3568D6;
+    --accent-button: #2a53ad;
     --accent-hover: #2A56B8;
     --accent-on: #FFFFFF;
     --text-primary: #14161C;
@@ -83,7 +83,7 @@
 
     /* Mode button borders - light (darker for WCAG contrast) */
     --btn-maintain-border: #4D7315;
-    --btn-new-border: #3568D6;
+    --btn-new-border: #2a53ad;
 
     /* Legacy mappings */
     --success: #22C55E;
@@ -174,10 +174,10 @@ h3 {
     padding: 0.5rem;
     border-radius: 50%;
     cursor: pointer;
-    font-size: 1.25rem;
+    font-size: 1.375rem;
     line-height: 1;
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 2.75rem;
+    height: 2.75rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -346,9 +346,13 @@ h3 {
     background: transparent;
     border: 1px solid var(--border);
     color: var(--text-secondary);
-    padding: 0.5rem 0.75rem;
-    font-size: 0.875rem;
-    min-height: auto;
+    padding: 0;
+    font-size: 1rem;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .target-selectors .btn-small {
@@ -1254,10 +1258,10 @@ h3 {
     right: 0;
     background: var(--bg-secondary);
     color: var(--text-secondary);
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 2.75rem;
+    height: 2.75rem;
     padding: 0;
-    font-size: 1.2rem;
+    font-size: 1.25rem;
     font-weight: 700;
     border-radius: 50%;
     display: flex;
@@ -1273,10 +1277,41 @@ h3 {
 /* Help modal */
 .modal-help {
     max-height: 85vh;
+    position: relative;
 }
 
 .modal-help .btn {
     margin-top: 1rem;
+}
+
+.modal-close-x {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.5rem;
+    line-height: 1;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.25rem;
+    transition: color 0.2s, background 0.2s;
+}
+
+.modal-close-x:hover {
+    color: var(--text-primary);
+    background: var(--bg-card);
+}
+
+.modal-close-x:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
 }
 
 .help-content {
@@ -1285,6 +1320,16 @@ h3 {
     text-align: left;
     font-size: 0.9rem;
     line-height: 1.5;
+}
+
+.help-content:focus {
+    outline: none;
+}
+
+.help-content:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 0.25rem;
 }
 
 .help-content section {
@@ -1487,7 +1532,12 @@ h3 {
     color: var(--text-secondary);
     font-size: 1.25rem;
     cursor: pointer;
-    padding: 0.5rem;
+    padding: 0;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .btn-flashcard-edit:hover {
