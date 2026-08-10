@@ -87,7 +87,13 @@ function initMenuHandlers() {
     document.getElementById('btn-corners').addEventListener('click', () => selectPieceType('corners'));
     document.getElementById('btn-parity').addEventListener('click', () => selectPieceType('parity'));
     document.getElementById('btn-import').addEventListener('click', () => showScreen('import-screen'));
-    document.getElementById('btn-export-menu').addEventListener('click', exportToExcel);
+    document.getElementById('btn-export-menu').addEventListener('click', openExportModal);
+    document.getElementById('btn-export-stats').addEventListener('click', () => { closeExportModal(); exportToExcel(); });
+    document.getElementById('btn-export-algs').addEventListener('click', () => { closeExportModal(); exportAlgorithmsNxN(); });
+    document.getElementById('export-modal-cancel').addEventListener('click', closeExportModal);
+    document.getElementById('export-modal').addEventListener('click', (e) => {
+        if (e.target.id === 'export-modal') closeExportModal();
+    });
     document.getElementById('btn-stats').addEventListener('click', showStats);
     document.getElementById('btn-help').addEventListener('click', openHelpModal);
     document.getElementById('help-modal-close').addEventListener('click', closeHelpModal);
@@ -114,6 +120,14 @@ function closeHelpModal() {
         helpModalTrigger.focus();
     }
     helpModalTrigger = null;
+}
+
+function openExportModal() {
+    document.getElementById('export-modal').classList.add('active');
+}
+
+function closeExportModal() {
+    document.getElementById('export-modal').classList.remove('active');
 }
 
 function handleHelpModalKeydown(e) {

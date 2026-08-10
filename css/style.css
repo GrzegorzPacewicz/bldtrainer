@@ -1231,6 +1231,23 @@ h3 {
     margin-top: 1rem;
 }
 
+.export-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.export-options .btn {
+    width: 100%;
+}
+
+.export-desc {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    margin: 0 0 1rem 0;
+    text-align: center;
+}
+
 .modal-actions .btn {
     flex: 1;
     font-size: 0.875rem;

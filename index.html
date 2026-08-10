@@ -62,7 +62,7 @@
         </div>
         <button id="btn-help" class="btn btn-help">?</button>
         <div class="version">
-          <div>v2.02 | 2026-08-09</div>
+          <div>v2.03 | 2026-08-10</div>
           <div class="copyright">
             © 2026
             <a href="https://grzegorzpacewicz.pl" target="_blank" rel="noopener"
@@ -556,6 +556,28 @@ UBL URF: R U R' U'</pre
       </div>
     </div>
 
+    <!-- Export Modal -->
+    <div id="export-modal" class="modal">
+      <div class="modal-content">
+        <h3>Eksport</h3>
+        <div class="export-options">
+          <button id="btn-export-stats" class="btn btn-primary">
+            Algorytmy i statystyki
+          </button>
+          <p class="export-desc">Pełne dane: algorytmy, wyniki, kategorie, trendy</p>
+          <button id="btn-export-algs" class="btn btn-primary">
+            Tylko algorytmy
+          </button>
+          <p class="export-desc">Tabela NxN — format zgodny z importem</p>
+        </div>
+        <div class="modal-actions">
+          <button id="export-modal-cancel" class="btn btn-secondary">
+            Anuluj
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Edit Algorithm Modal -->
     <div id="edit-modal" class="modal">
       <div class="modal-content">
@@ -583,11 +605,11 @@ UBL URF: R U R' U'</pre
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    <script src="js/db.js?v=20"></script>
-    <script src="js/game.js?v=20"></script>
-    <script src="js/import.js?v=20"></script>
-    <script src="js/stats.js?v=20"></script>
-    <script src="js/app.js?v=20"></script>
+    <script src="js/db.js?v=21"></script>
+    <script src="js/game.js?v=21"></script>
+    <script src="js/import.js?v=21"></script>
+    <script src="js/stats.js?v=21"></script>
+    <script src="js/app.js?v=21"></script>
     <script>
       if ("serviceWorker" in navigator) {
         navigator.serviceWorker.register("/sw.js", { updateViaCache: "none" });

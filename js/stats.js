@@ -805,3 +805,96 @@ async function exportToExcel() {
     const date = new Date().toISOString().slice(0, 10);
     XLSX.writeFile(workbook, `bldtrainer_export_${date}.xlsx`);
 }
+
+async function exportAlgorithmsNxN() {
+    const workbook = XLSX.utils.book_new();
+
+    for (const pieceType of ['edges', 'corners']) {
+        const buffers = await getBuffersForPiece(pieceType);
+
+        for (const buffer of buffers) {
+            const algs = await getAlgorithmsByPieceAndBuffer(pieceType, buffer);
+
+            const targetInfoMap = new Map();
+            for (const alg of algs) {
+                if (alg.target1 && alg.target2 && alg.lp) {
+                    const lp1 = alg.lp.substring(0, 1);
+                    const lp2 = alg.lp.substring(1, 2);
+                    if (lp1 && !targetInfoMap.has(alg.target1)) {
+                        targetInfoMap.set(alg.target1, lp1);
+                    }
+                    if (lp2 && !targetInfoMap.has(alg.target2)) {
+                        targetInfoMap.set(alg.target2, lp2);
+                    }
+                }
+            }
+
+            const targets = new Set();
+            for (const alg of algs) {
+                if (alg.target1) targets.add(alg.target1);
+                if (alg.target2) targets.add(alg.target2);
+            }
+
+            const sortedTargets = [...targets].sort((a, b) => {
+                const lpA = targetInfoMap.get(a) || '';
+                const lpB = targetInfoMap.get(b) || '';
+                return lpA.localeCompare(lpB) || a.localeCompare(b);
+            });
+
+            const formatHeader = (target) => {
+                const lp = targetInfoMap.get(target);
+                return lp ? `${lp} (${target})` : target;
+            };
+
+            const algMap = new Map();
+            for (const alg of algs) {
+                if (alg.target1 && alg.target2) {
+                    const key = `${alg.target1}|${alg.target2}`;
+                    algMap.set(key, alg.algorithms[0]?.alg || '');
+                }
+            }
+
+            const headers = sortedTargets.map(formatHeader);
+            const rows = [['', ...headers]];
+            for (const t1 of sortedTargets) {
+                const row = [formatHeader(t1)];
+                for (const t2 of sortedTargets) {
+                    if (t1 === t2) {
+                        row.push('-');
+                    } else {
+                        row.push(algMap.get(`${t1}|${t2}`) || '');
+                    }
+                }
+                rows.push(row);
+            }
+
+            const sheet = XLSX.utils.aoa_to_sheet(rows);
+            XLSX.utils.book_append_sheet(workbook, sheet, `${pieceType}_${buffer}`);
+        }
+    }
+
+    const parityBuffers = await getBuffersForPiece('parity');
+    for (const buffer of parityBuffers) {
+        const algs = await getAlgorithmsByPieceAndBuffer('parity', buffer);
+
+        const rows = [['LP', 'Algorytm']];
+        const sorted = [...algs].sort((a, b) => {
+            const lpA = a.lp || a.target1 || '';
+            const lpB = b.lp || b.target1 || '';
+            return lpA.localeCompare(lpB);
+        });
+
+        for (const alg of sorted) {
+            const lpLabel = alg.lp ? `${alg.lp} (${alg.target1})` : alg.target1;
+            const algText = alg.algorithms[0]?.alg || '';
+            rows.push([lpLabel, algText]);
+        }
+
+        const sheet = XLSX.utils.aoa_to_sheet(rows);
+        sheet['!cols'] = [{ wch: 12 }, { wch: 50 }];
+        XLSX.utils.book_append_sheet(workbook, sheet, `parity_${buffer}`);
+    }
+
+    const date = new Date().toISOString().slice(0, 10);
+    XLSX.writeFile(workbook, `bldtrainer_algs_${date}.xlsx`);
+}
