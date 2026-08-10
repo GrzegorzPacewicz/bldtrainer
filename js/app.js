@@ -550,12 +550,12 @@ function endGame() {
     document.getElementById('btn-save-results').onclick = async () => {
         await currentGame.saveAllResults();
         currentGame = null;
-        showScreen('menu-screen');
+        showScreen('subset-screen');
     };
 
     document.getElementById('btn-discard-results').onclick = () => {
         currentGame = null;
-        showScreen('menu-screen');
+        showScreen('subset-screen');
     };
 
     showScreen('results-screen', false);
@@ -847,6 +847,17 @@ function initEditModal() {
 
         await updateAlgorithmText(currentEditId, newAlg);
         await setDifficult(currentEditId, difficult);
+
+        if (currentGame?.allAlgorithms) {
+            const alg = currentGame.allAlgorithms.find(a => a.id === currentEditId);
+            if (alg) {
+                alg.difficult = difficult;
+                if (alg.algorithms?.[0]) {
+                    alg.algorithms[0].alg = newAlg;
+                }
+            }
+        }
+
         closeEditModal();
 
         if (document.getElementById('flashcard-screen').classList.contains('active')) {
@@ -855,11 +866,10 @@ function initEditModal() {
 
         if (document.getElementById('stats-screen').classList.contains('active')) {
             await renderStatsTab(currentStatsTab);
-            initCaseRowClicks();
-            initTableSorting();
-            initCategoryFilter();
-            initTrendFilter();
-            initDetailsLock();
+        }
+
+        if (document.getElementById('results-screen').classList.contains('active') && currentGame) {
+            renderResultsList();
         }
     });
 
