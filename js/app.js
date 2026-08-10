@@ -440,6 +440,7 @@ function initGameHandlers() {
         } else {
             algPauseRemaining = pause;
             algPauseStartedAt = performance.now();
+            document.getElementById('game-alg').classList.remove('visible');
             algPauseTimeout = setTimeout(() => {
                 algPauseTimeout = null;
                 if (currentGame.next()) {
