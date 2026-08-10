@@ -1171,6 +1171,12 @@ h3 {
     margin-bottom: 7rem;
 }
 
+@media (max-width: 600px) {
+    .modal-content {
+        margin-bottom: 8rem;
+    }
+}
+
 .modal-content h3 {
     color: var(--text-heading);
     margin-bottom: 1rem;
