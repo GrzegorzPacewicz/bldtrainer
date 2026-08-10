@@ -1,3 +1,5 @@
+const activeFilters = {};
+
 function mean(arr) {
     if (!arr || arr.length === 0) return NaN;
     return arr.reduce((a, b) => a + b, 0) / arr.length;
@@ -550,6 +552,7 @@ function initCategoryFilter() {
         badge.addEventListener('click', () => {
             const cat = badge.dataset.filterCat;
             const section = badge.closest('.stats-section');
+            const buffer = section.querySelector('h3')?.textContent || 'default';
             const table = section.querySelector('.cases-table');
             if (!table) return;
 
@@ -561,6 +564,7 @@ function initCategoryFilter() {
             if (isActive) {
                 rows.forEach(row => row.style.display = '');
                 badge.classList.remove('active');
+                delete activeFilters[buffer];
             } else {
                 rows.forEach(row => {
                     if (row.classList.contains(`cat-${cat}`)) {
@@ -571,6 +575,7 @@ function initCategoryFilter() {
                 });
                 section.querySelectorAll('.cat-badge[data-filter-cat]').forEach(b => b.classList.remove('active'));
                 badge.classList.add('active');
+                activeFilters[buffer] = { type: 'cat', value: cat };
             }
         });
     });
@@ -581,6 +586,7 @@ function initTrendFilter() {
         badge.addEventListener('click', () => {
             const trend = badge.dataset.filterTrend;
             const section = badge.closest('.stats-section');
+            const buffer = section.querySelector('h3')?.textContent || 'default';
             const table = section.querySelector('.cases-table');
             if (!table) return;
 
@@ -592,6 +598,7 @@ function initTrendFilter() {
             if (isActive) {
                 rows.forEach(row => row.style.display = '');
                 badge.classList.remove('active');
+                delete activeFilters[buffer];
             } else {
                 rows.forEach(row => {
                     const trendCell = row.querySelector('.case-trend');
@@ -603,8 +610,41 @@ function initTrendFilter() {
                 });
                 section.querySelectorAll('.trend-badge[data-filter-trend]').forEach(b => b.classList.remove('active'));
                 badge.classList.add('active');
+                activeFilters[buffer] = { type: 'trend', value: trend };
             }
         });
+    });
+}
+
+function restoreActiveFilters() {
+    document.querySelectorAll('.stats-section').forEach(section => {
+        const buffer = section.querySelector('h3')?.textContent || 'default';
+        const filter = activeFilters[buffer];
+        if (!filter) return;
+
+        const table = section.querySelector('.cases-table');
+        if (!table) return;
+
+        const rows = table.querySelectorAll('tbody tr');
+
+        if (filter.type === 'cat') {
+            const badge = section.querySelector(`.cat-badge[data-filter-cat="${filter.value}"]`);
+            if (badge) {
+                badge.classList.add('active');
+                rows.forEach(row => {
+                    row.style.display = row.classList.contains(`cat-${filter.value}`) ? '' : 'none';
+                });
+            }
+        } else if (filter.type === 'trend') {
+            const badge = section.querySelector(`.trend-badge[data-filter-trend="${filter.value}"]`);
+            if (badge) {
+                badge.classList.add('active');
+                rows.forEach(row => {
+                    const trendCell = row.querySelector('.case-trend');
+                    row.style.display = trendCell?.classList.contains(`trend-${filter.value}`) ? '' : 'none';
+                });
+            }
+        }
     });
 }
 

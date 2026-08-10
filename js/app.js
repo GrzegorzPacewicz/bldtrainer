@@ -778,6 +778,7 @@ async function renderStatsTab(tab) {
         initCategoryFilter();
         initTrendFilter();
         initDetailsLock();
+        restoreActiveFilters();
     }
 }
 
