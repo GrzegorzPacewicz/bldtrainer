@@ -240,11 +240,13 @@ async function getBufferStats(pieceType, buffer) {
     const stdDev = std(allTimes);
 
     const categoryCount = {
+        weak: 0,
+        maintain: 0,
+        new: 0,
         fast: 0,
         average: 0,
         slow: 0,
         unstable: 0,
-        new: 0,
         regressing: 0,
         difficult: 0
     };
@@ -255,6 +257,12 @@ async function getBufferStats(pieceType, buffer) {
         }
         if (c.difficult) {
             categoryCount.difficult++;
+        }
+        if (c.category === 'slow' || c.category === 'unstable' || c.category === 'regressing' || c.difficult) {
+            categoryCount.weak++;
+        }
+        if (c.category === 'fast' || c.category === 'average') {
+            categoryCount.maintain++;
         }
     }
 
@@ -376,14 +384,18 @@ function renderBufferStats(buffer, stats) {
     const trends = stats.trendCount;
 
     const categoryLabels = {
+        weak: 'Słabe punkty',
+        maintain: 'Utrzymanie',
+        new: 'Nowe',
         fast: 'Szybkie',
         average: 'Średnie',
         slow: 'Wolne',
         unstable: 'Niestabilne',
-        new: 'Nowe',
         regressing: 'Regres',
         difficult: 'Trudne'
     };
+
+    const categoryOrder = ['weak', 'maintain', 'new', 'fast', 'average', 'slow', 'unstable', 'regressing', 'difficult'];
 
     const trendIcons = {
         improving: '↑',
@@ -391,9 +403,9 @@ function renderBufferStats(buffer, stats) {
         stable: '→'
     };
 
-    const categoryHtml = Object.entries(cats)
-        .filter(([_, count]) => count > 0)
-        .map(([cat, count]) => `<span class="cat-badge cat-${cat}" data-filter-cat="${cat}" style="cursor:pointer">${categoryLabels[cat]}: ${count}</span>`)
+    const categoryHtml = categoryOrder
+        .filter(cat => cats[cat] > 0)
+        .map(cat => `<span class="cat-badge cat-${cat}" data-filter-cat="${cat}" style="cursor:pointer">${categoryLabels[cat]}: ${cats[cat]}</span>`)
         .join(' ');
 
     const trendHtml = `

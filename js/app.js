@@ -545,7 +545,8 @@ function cancelGame() {
         algPauseTimeout = null;
     }
     currentGame = null;
-    showScreen('subset-screen');
+    showScreen('subset-screen', false);
+    history.replaceState({ screen: 'subset-screen' }, '', '');
 }
 
 function updateGameDisplay() {
@@ -565,12 +566,14 @@ function endGame() {
     document.getElementById('btn-save-results').onclick = async () => {
         await currentGame.saveAllResults();
         currentGame = null;
-        showScreen('subset-screen');
+        showScreen('subset-screen', false);
+        history.replaceState({ screen: 'subset-screen' }, '', '');
     };
 
     document.getElementById('btn-discard-results').onclick = () => {
         currentGame = null;
-        showScreen('subset-screen');
+        showScreen('subset-screen', false);
+        history.replaceState({ screen: 'subset-screen' }, '', '');
     };
 
     showScreen('results-screen', false);

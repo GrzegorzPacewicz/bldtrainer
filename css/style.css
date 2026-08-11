@@ -333,6 +333,10 @@ h3 {
     .btn-back {
         display: none;
     }
+
+    .missing-algs-list {
+        grid-template-columns: repeat(5, 1fr);
+    }
 }
 
 
@@ -980,10 +984,16 @@ h3 {
     padding: 0.5rem 0;
 }
 
-.cat-badges,
+.cat-badges {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.375rem;
+    margin-top: 0.25rem;
+}
+
 .trend-badges {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 0.375rem;
     margin-top: 0.25rem;
 }
@@ -996,15 +1006,19 @@ h3 {
     background: var(--bg-card);
     color: var(--text-primary);
     min-height: 2.5rem;
-    display: inline-flex;
+    display: flex;
     align-items: center;
+    justify-content: center;
+    text-align: center;
 }
 
+.cat-badge.cat-weak { background: var(--bg-card); border-left: 3px solid var(--cat-regres-text); }
+.cat-badge.cat-maintain { background: var(--bg-card); border-left: 3px solid var(--btn-maintain-border); }
+.cat-badge.cat-new { background: var(--cat-nowe-bg); color: var(--cat-nowe-text); }
 .cat-badge.cat-fast { background: var(--cat-szybkie-bg); color: var(--cat-szybkie-text); }
 .cat-badge.cat-average { background: var(--cat-srednie-bg); color: var(--cat-srednie-text); }
 .cat-badge.cat-slow { background: var(--cat-wolne-bg); color: var(--cat-wolne-text); }
 .cat-badge.cat-unstable { background: var(--cat-niestabilne-bg); color: var(--cat-niestabilne-text); }
-.cat-badge.cat-new { background: var(--cat-nowe-bg); color: var(--cat-nowe-text); }
 .cat-badge.cat-regressing { background: var(--cat-regres-bg); color: var(--cat-regres-text); }
 .cat-badge.cat-difficult { background: transparent; color: var(--cat-trudne-border); border: 1px solid var(--cat-trudne-border); }
 
@@ -1118,8 +1132,8 @@ h3 {
 }
 
 .missing-algs-list {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
     gap: 0.4rem;
     margin-top: 0.5rem;
 }
@@ -1133,6 +1147,7 @@ h3 {
     color: var(--text-secondary);
     border: 1px solid var(--text-secondary);
     transition: all 0.15s;
+    text-align: center;
 }
 
 .missing-alg-item:hover {
