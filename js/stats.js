@@ -560,6 +560,9 @@ function initCaseRowClicks() {
 }
 
 function initCategoryFilter() {
+    const weakCategories = ['cat-slow', 'cat-unstable', 'cat-regressing', 'cat-difficult'];
+    const maintainCategories = ['cat-fast', 'cat-average'];
+
     document.querySelectorAll('.cat-badge[data-filter-cat]').forEach(badge => {
         badge.addEventListener('click', () => {
             const cat = badge.dataset.filterCat;
@@ -579,11 +582,15 @@ function initCategoryFilter() {
                 delete activeFilters[buffer];
             } else {
                 rows.forEach(row => {
-                    if (row.classList.contains(`cat-${cat}`)) {
-                        row.style.display = '';
+                    let matches = false;
+                    if (cat === 'weak') {
+                        matches = weakCategories.some(c => row.classList.contains(c));
+                    } else if (cat === 'maintain') {
+                        matches = maintainCategories.some(c => row.classList.contains(c));
                     } else {
-                        row.style.display = 'none';
+                        matches = row.classList.contains(`cat-${cat}`);
                     }
+                    row.style.display = matches ? '' : 'none';
                 });
                 section.querySelectorAll('.cat-badge[data-filter-cat]').forEach(b => b.classList.remove('active'));
                 badge.classList.add('active');
