@@ -251,7 +251,9 @@ async function getBufferStats(pieceType, buffer) {
         difficult: 0
     };
 
-    for (const c of cases) {
+    const casesWithAlg = cases.filter(c => c.hasAlg);
+
+    for (const c of casesWithAlg) {
         if (categoryCount.hasOwnProperty(c.category)) {
             categoryCount[c.category]++;
         }
@@ -266,9 +268,9 @@ async function getBufferStats(pieceType, buffer) {
         }
     }
 
-    const improving = cases.filter(c => c.trend === 'improving').length;
-    const declining = cases.filter(c => c.trend === 'declining').length;
-    const stable = cases.filter(c => c.trend === 'stable').length;
+    const improving = casesWithAlg.filter(c => c.trend === 'improving').length;
+    const declining = casesWithAlg.filter(c => c.trend === 'declining').length;
+    const stable = casesWithAlg.filter(c => c.trend === 'stable').length;
 
     return {
         totalCases: cases.length,
