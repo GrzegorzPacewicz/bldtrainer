@@ -64,6 +64,13 @@ function initHistoryNavigation() {
             return;
         }
 
+        const resultsScreen = document.getElementById('results-screen');
+        if (resultsScreen.classList.contains('active') && currentGame) {
+            currentGame = null;
+            showScreen('subset-screen', false);
+            return;
+        }
+
         if (currentGame) {
             pauseGame();
             history.pushState({ screen: 'game-screen' }, '', '');
@@ -577,6 +584,7 @@ function endGame() {
     };
 
     showScreen('results-screen', false);
+    history.pushState({ screen: 'results-screen' }, '', '');
 }
 
 function updateResultsSummary() {
