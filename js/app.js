@@ -573,18 +573,16 @@ function endGame() {
     document.getElementById('btn-save-results').onclick = async () => {
         await currentGame.saveAllResults();
         currentGame = null;
-        showScreen('subset-screen', false);
-        history.replaceState({ screen: 'subset-screen' }, '', '');
+        history.back();
     };
 
     document.getElementById('btn-discard-results').onclick = () => {
         currentGame = null;
-        showScreen('subset-screen', false);
-        history.replaceState({ screen: 'subset-screen' }, '', '');
+        history.back();
     };
 
     showScreen('results-screen', false);
-    history.pushState({ screen: 'results-screen' }, '', '');
+    history.replaceState({ screen: 'results-screen' }, '', '');
 }
 
 function updateResultsSummary() {
