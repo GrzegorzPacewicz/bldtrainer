@@ -6,6 +6,7 @@ let resultsSortBy = 'order'; // 'order' | 'time-best' | 'time-worst' | 'case-asc
 let flashcardCases = [];
 let flashcardIndex = 0;
 let flashcardState = 'hidden'; // 'hidden' | 'revealed'
+let closingEditModal = false;
 
 document.addEventListener('DOMContentLoaded', async () => {
     await initDB();
@@ -54,6 +55,12 @@ function initHistoryNavigation() {
         const editModal = document.getElementById('edit-modal');
         if (editModal.classList.contains('active')) {
             closeEditModal(true);
+            return;
+        }
+
+        // Modal was just closed via history.back() - stay on current screen
+        if (closingEditModal) {
+            closingEditModal = false;
             return;
         }
 
@@ -873,13 +880,23 @@ function initEditModal() {
         await updateAlgorithmText(currentEditId, newAlg);
         await setDifficult(currentEditId, difficult);
 
-        if (currentGame?.allAlgorithms) {
-            const alg = currentGame.allAlgorithms.find(a => a.id === currentEditId);
-            if (alg) {
-                alg.difficult = difficult;
-                if (alg.algorithms?.[0]) {
-                    alg.algorithms[0].alg = newAlg;
+        if (currentGame) {
+            if (currentGame.allAlgorithms) {
+                const alg = currentGame.allAlgorithms.find(a => a.id === currentEditId);
+                if (alg) {
+                    alg.difficult = difficult;
+                    if (alg.algorithms?.[0]) {
+                        alg.algorithms[0].alg = newAlg;
+                    }
                 }
+            }
+            if (!currentGame.difficultCases) {
+                currentGame.difficultCases = new Set();
+            }
+            if (difficult) {
+                currentGame.difficultCases.add(currentEditId);
+            } else {
+                currentGame.difficultCases.delete(currentEditId);
             }
         }
 
@@ -928,7 +945,8 @@ async function openEditModal(id, caseName) {
 
     const alg = await getAlgorithmById(id);
     algInput.value = alg?.algorithms[0]?.alg || '';
-    difficultCheckbox.checked = alg?.difficult || false;
+    const isDifficultInGame = currentGame?.difficultCases?.has(id);
+    difficultCheckbox.checked = isDifficultInGame ?? alg?.difficult ?? false;
 
     history.pushState({ modal: 'edit' }, '', '');
     modal.classList.add('active');
@@ -943,6 +961,7 @@ function closeEditModal(skipHistory = false) {
     currentEditId = null;
 
     if (!skipHistory && history.state?.modal === 'edit') {
+        closingEditModal = true;
         history.back();
     }
 }
