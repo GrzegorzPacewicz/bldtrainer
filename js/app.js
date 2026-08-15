@@ -343,21 +343,24 @@ async function updateSelectedCasesDisplay() {
     let totalCount;
     if (includeInverse) {
         const seen = new Set();
-        let uniquePairs = 0;
-        let singles = 0;
+        let count = 0;
         for (const a of selected) {
             if (!a.target2) {
-                singles++;
+                count++;
             } else {
                 const key1 = `${a.target1}-${a.target2}`;
                 const key2 = `${a.target2}-${a.target1}`;
                 if (!seen.has(key1) && !seen.has(key2)) {
                     seen.add(key1);
-                    uniquePairs++;
+                    count++;
+                    const inverse = algs.find(x => x.target1 === a.target2 && x.target2 === a.target1);
+                    if (inverse && hasAlgorithm(inverse)) {
+                        count++;
+                    }
                 }
             }
         }
-        totalCount = uniquePairs * 2 + singles;
+        totalCount = count;
     } else {
         totalCount = selected.length;
     }

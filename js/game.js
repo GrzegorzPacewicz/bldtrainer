@@ -79,9 +79,11 @@ class Game {
             const alg = this.shuffled[this.index];
             if (alg && alg.target2) {
                 const inverseData = this.findInverseData(alg);
-                if (inverseData.lp) return inverseData.lp;
-                if (inverseData.memo) return inverseData.memo;
-                return `${alg.target2} ${alg.target1}`;
+                if (inverseData.alg) {
+                    if (inverseData.lp) return inverseData.lp;
+                    if (inverseData.memo) return inverseData.memo;
+                    return `${alg.target2} ${alg.target1}`;
+                }
             }
         }
         if (this.index + 1 >= this.shuffled.length) return '';
@@ -166,14 +168,16 @@ class Game {
             const alg = this.shuffled[this.index];
             if (alg && alg.target2) {
                 const inverseData = this.findInverseData(alg);
-                this.pendingInverse = {
-                    ...alg,
-                    inverseId: inverseData.id,
-                    inverseAlg: inverseData.alg,
-                    inverseLp: inverseData.lp,
-                    inverseMemo: inverseData.memo
-                };
-                return true;
+                if (inverseData.alg) {
+                    this.pendingInverse = {
+                        ...alg,
+                        inverseId: inverseData.id,
+                        inverseAlg: inverseData.alg,
+                        inverseLp: inverseData.lp,
+                        inverseMemo: inverseData.memo
+                    };
+                    return true;
+                }
             }
         }
 
