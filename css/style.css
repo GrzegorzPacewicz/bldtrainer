@@ -825,19 +825,22 @@ h3 {
     background: var(--bg-card);
     border: none;
     color: var(--text-secondary);
-    width: 1.75rem;
-    height: 1.75rem;
+    min-width: 2.5rem;
+    min-height: 2.5rem;
     border-radius: 0.25rem;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 1rem;
     font-weight: 700;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.2s;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 }
 
-.btn-difficult-toggle:hover {
+.btn-difficult-toggle:hover,
+.btn-difficult-toggle:active {
     background: var(--warning);
     color: white;
 }
@@ -847,7 +850,8 @@ h3 {
     color: white;
 }
 
-.btn-remove-result:hover {
+.btn-remove-result:hover,
+.btn-remove-result:active {
     background: var(--accent);
     color: white;
 }
