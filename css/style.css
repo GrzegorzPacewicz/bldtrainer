@@ -806,6 +806,8 @@ h3 {
 
 .result-item .case {
     font-weight: 600;
+    display: flex;
+    align-items: center;
 }
 
 .result-actions {
@@ -1302,18 +1304,21 @@ h3 {
     background: var(--bg-card);
     border: none;
     color: var(--text-secondary);
-    width: 1.75rem;
-    height: 1.75rem;
+    min-width: 2.5rem;
+    min-height: 2.5rem;
     border-radius: 0.25rem;
     cursor: pointer;
-    font-size: 0.8rem;
+    font-size: 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.2s;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 }
 
-.btn-edit-alg:hover {
+.btn-edit-alg:hover,
+.btn-edit-alg:active {
     background: var(--accent);
     color: white;
 }

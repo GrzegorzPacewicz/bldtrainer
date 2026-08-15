@@ -340,9 +340,27 @@ async function updateSelectedCasesDisplay() {
         : labels.slice(0, 20).join(', ') + ` ... (+${labels.length - 20})`;
 
     const includeInverse = document.getElementById('include-inverse').checked;
-    const pairsCount = selected.filter(a => a.target2).length;
-    const singlesCount = selected.length - pairsCount;
-    const totalCount = includeInverse ? (pairsCount * 2 + singlesCount) : selected.length;
+    let totalCount;
+    if (includeInverse) {
+        const seen = new Set();
+        let uniquePairs = 0;
+        let singles = 0;
+        for (const a of selected) {
+            if (!a.target2) {
+                singles++;
+            } else {
+                const key1 = `${a.target1}-${a.target2}`;
+                const key2 = `${a.target2}-${a.target1}`;
+                if (!seen.has(key1) && !seen.has(key2)) {
+                    seen.add(key1);
+                    uniquePairs++;
+                }
+            }
+        }
+        totalCount = uniquePairs * 2 + singles;
+    } else {
+        totalCount = selected.length;
+    }
 
     container.innerHTML = `<strong>Wybrano: ${totalCount}</strong><div class="selected-preview">${preview}</div>`;
 }
