@@ -54,6 +54,9 @@
     --success: #4ADE80;
     --success-text: #14161C;
     --warning: #FBBF24;
+    --warning-text: #14161C;
+    --warning-hover: #FBBF24;
+    --accent-icon: #5B8CFF;
     --link: #5B8CFF;
 }
 
@@ -95,6 +98,9 @@
     --success: #22C55E;
     --success-text: #FFFFFF;
     --warning: #F59E0B;
+    --warning-text: #14161C;
+    --warning-hover: #B45309;
+    --accent-icon: #2A56B8;
     --link: #5B8CFF;
 }
 
@@ -841,18 +847,28 @@ h3 {
     touch-action: manipulation;
 }
 
-.btn-difficult-toggle:hover,
-.btn-difficult-toggle:active {
-    background: var(--warning);
-    color: white;
+@media (hover: hover) {
+    .btn-difficult-toggle:hover {
+        background: var(--bg-card-hover);
+        color: var(--warning-hover);
+    }
+
+    .btn-remove-result:hover {
+        background: var(--bg-card-hover);
+        color: var(--accent-icon);
+    }
+
+    .btn-edit-alg:hover {
+        background: var(--bg-card-hover);
+        color: var(--accent-icon);
+    }
 }
 
 .btn-difficult-toggle.active {
     background: var(--warning);
-    color: white;
+    color: var(--warning-text);
 }
 
-.btn-remove-result:hover,
 .btn-remove-result:active {
     background: var(--accent);
     color: white;
@@ -1317,7 +1333,6 @@ h3 {
     touch-action: manipulation;
 }
 
-.btn-edit-alg:hover,
 .btn-edit-alg:active {
     background: var(--accent);
     color: white;
