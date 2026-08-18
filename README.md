@@ -175,13 +175,15 @@ Tryb do nauki nowych algorytmów bez presji czasu.
 1. Wybierz przypadek'y i kliknij **Nauka**
 2. Widzisz przypadek — przypomnij sobie algorytm
 3. Dotknij ekran (lub spacja) aby zobaczyć algorytm
-4. Oceń: **Znam** (✓) lub **Nie znam** (✗)
-5. "Nie znam" automatycznie oznacza przypadek jako trudny
+4. Oceń: **Łatwe** lub **Trudne**
+5. "Trudne" dodaje przypadkowi badge "Trudne" — pojawi się w trybie Słabe punkty
+
+Nazwy przycisków odpowiadają badge'om: kliknięcie "Trudne" = oznaczenie przypadku jako trudnego do dalszej pracy.
 
 **Skróty klawiszowe:**
-- Spacja — odkryj algorytm / następny (jeśli znam)
-- ← lub 1 — Nie znam
-- → lub 2 — Znam
+- Spacja — odkryj algorytm / następny (jeśli łatwe)
+- ← lub 1 — Trudne
+- → lub 2 — Łatwe
 
 **Dodatkowe opcje:**
 - ✎ — edytuj algorytm w trakcie nauki
@@ -321,7 +323,7 @@ GitHub Pages + Cloudflare subdomain
 - Re-import zachowuje istniejące wyniki
 - Ulepszone UI: większe elementy dotykowe (~48px), custom strzałka w selectach
 - Zaktualizowane instrukcje
-- Tryb Nauka (flashcards) z oceną Znam/Nie znam
+- Tryb Nauka (flashcards) z oceną Łatwe/Trudne
 - Checkbox "trudny" w modalu edycji algorytmu
 - Pomijanie przypadków bez algorytmów (pusty alg = wyłączony przypadek)
 - Sortowalna tabela przypadków w statystykach
