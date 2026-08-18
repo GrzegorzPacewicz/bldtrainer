@@ -84,8 +84,11 @@ function initHistoryNavigation() {
             return;
         }
 
-        if (flashcardState !== 'idle') {
+        const flashcardScreen = document.getElementById('flashcard-screen');
+        if (flashcardScreen.classList.contains('active')) {
             flashcardState = 'idle';
+            showScreen('subset-screen', false);
+            return;
         }
 
         const targetScreen = e.state?.screen || 'menu-screen';
@@ -1105,7 +1108,8 @@ async function flashcardAnswer(known) {
 
 function exitFlashcard() {
     flashcardState = 'idle';
-    showScreen('menu-screen');
+    showScreen('subset-screen', false);
+    history.replaceState({ screen: 'subset-screen' }, '', '');
 }
 
 function openFlashcardEdit() {
