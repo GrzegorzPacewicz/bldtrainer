@@ -1555,6 +1555,7 @@ h3 {
     min-height: 3rem;
     opacity: 0;
     transition: opacity 0.3s;
+    white-space: pre-wrap;
 }
 
 .flashcard-alg.visible {
