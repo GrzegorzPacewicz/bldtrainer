@@ -2,7 +2,7 @@
 
 PWA do treningu algorytmów blindcubing (3BLD) na Rubika 3x3.
 
-**Live:** https://bldtrainer.grzegorzpacewicz.pl
+**Live:** https://driller.grzegorzpacewicz.pl
 
 **Repo:** https://github.com/GrzegorzPacewicz/bldtrainer
 
@@ -302,6 +302,17 @@ GitHub Pages + Cloudflare subdomain
 ---
 
 ## Changelog
+
+### v2.1 (2026-08-25)
+
+- Nowa subdomena: driller.grzegorzpacewicz.pl
+- Ujednolicone kategorie w statystykach — 9 kategorii w siatce 3x3, tak jak w grze
+- Filtry "Słabe punkty" i "Utrzymanie" dodane do widoku statystyk
+- Poprawki nawigacji: Android back button działa poprawnie po zakończeniu gry i w trybie nauki
+- Wyjście z trybu nauki wraca do wyboru trybu (nie do menu głównego)
+- Przyciski w flashcards przemianowane na Łatwe/Trudne (zamiast Znam/Nie znam)
+- Poprawki kontrastu WCAG AA dla przycisków wyników
+- Poprawki algorytmów inwersji
 
 ### v2.0 (2026-08-07)
 
