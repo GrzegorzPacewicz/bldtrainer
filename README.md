@@ -202,11 +202,13 @@ Nazwy przycisków odpowiadają badge'om: kliknięcie "Trudne" = oznaczenie przyp
 
 ### Kategorie szczegółowe
 
+Kategoryzacja oparta na **ao12** (średnia z ostatnich 12 wyników z odrzuceniem best/worst) per bufor:
+
 | Kategoria | Logika |
 |-----------|--------|
-| **Szybkie** | Średnia < 80% globalnej średniej bufora |
-| **Wolne** | Średnia > 120% globalnej średniej bufora |
-| **Niestabilne** | Odch. std. > 150% globalnego |
+| **Szybkie** | ao12 < 80% średniego ao12 bufora |
+| **Wolne** | ao12 > 120% średniego ao12 bufora |
+| **Niestabilne** | Odch. std. ostatnich 12 > 150% średniego dla bufora |
 | **Regres** | Ostatnie 5 wyników gorsze od poprzednich 5 o >15% |
 | **Nowe** | Mniej niż 5 wykonań |
 | **Trudne** | Ręcznie oznaczone (💩 lub przycisk !) |
