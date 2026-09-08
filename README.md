@@ -160,7 +160,7 @@ Przyp. zostanie oznaczony jako "Trudny" i pojawi się w trybie **Słabe punkty**
 
 1. Wybierz typ: **Krawędzie**, **Rogi** lub **Parity**
 2. Wybierz bufor (jeśli masz kilka)
-3. Wybierz tryb lub konkretne przypadek'y
+3. Wybierz tryb lub konkretne przypadek
 4. Kliknij **Start** (trening z timerem) lub **Nauka** (flashcards)
 5. Po odliczaniu 3-2-1 wykonaj algorytm i dotknij ekran
 6. Timer pokazuje czas w trakcie wykonania
@@ -172,7 +172,7 @@ Przyp. zostanie oznaczony jako "Trudny" i pojawi się w trybie **Słabe punkty**
 
 Tryb do nauki nowych algorytmów bez presji czasu.
 
-1. Wybierz przypadek'y i kliknij **Nauka**
+1. Wybierz przypadek i kliknij **Nauka**
 2. Widzisz przypadek — przypomnij sobie algorytm
 3. Dotknij ekran (lub spacja) aby zobaczyć algorytm
 4. Oceń: **Łatwe** lub **Trudne**
@@ -195,10 +195,10 @@ Nazwy przycisków odpowiadają badge'om: kliknięcie "Trudne" = oznaczenie przyp
 
 | Tryb | Opis |
 |------|------|
-| **Wszystkie** | Wszystkie przypadek'y dla bufora |
+| **Wszystkie** | Wszystkie przypadki dla bufora |
 | **Słabe punkty** | Wolne + niestabilne + regres + trudne |
 | **Utrzymanie** | Szybkie + średnie (utrzymanie formy) |
-| **Nowe** | Przyp.'y z <5 wykonań |
+| **Nowe** | Przypadki z <5 wykonań |
 
 ### Kategorie szczegółowe
 
