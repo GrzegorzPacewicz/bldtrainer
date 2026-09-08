@@ -947,7 +947,7 @@ function initEditModal() {
         closeEditModal();
 
         if (document.getElementById('stats-screen').classList.contains('active')) {
-            await showStats();
+            await renderStatsTab(currentStatsTab);
         }
     });
 

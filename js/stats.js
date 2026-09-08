@@ -12,6 +12,15 @@ function std(arr) {
     return Math.sqrt(mean(squareDiffs));
 }
 
+function ao12(arr) {
+    if (!arr || arr.length === 0) return NaN;
+    const last12 = arr.slice(-12);
+    if (last12.length < 3) return mean(last12);
+    const sorted = [...last12].sort((a, b) => a - b);
+    const trimmed = sorted.slice(1, -1);
+    return mean(trimmed);
+}
+
 async function getGlobalStats() {
     const all = await getAllAlgorithms();
 
@@ -91,14 +100,15 @@ async function getDifficultCases(pieceType, buffer) {
     return algs.filter(a => a.difficult);
 }
 
-function categorizeCase(results, globalStats) {
+function categorizeCase(results, bufferStats) {
     if (results.length < 5) {
         return 'new';
     }
 
-    const avg = mean(results);
-    const stdDev = std(results);
-    const { avgTime, stdDevGlobal } = globalStats;
+    const caseAo12 = ao12(results);
+    const last12 = results.slice(-12);
+    const caseStdDev = std(last12);
+    const { avgAo12, stdDevAo12 } = bufferStats;
 
     if (results.length >= 10) {
         const last5 = mean(results.slice(-5));
@@ -108,13 +118,13 @@ function categorizeCase(results, globalStats) {
         }
     }
 
-    if (stdDevGlobal > 0 && stdDev > stdDevGlobal * 1.5) {
+    if (stdDevAo12 > 0 && caseStdDev > stdDevAo12 * 1.5) {
         return 'unstable';
     }
 
-    if (avg <= avgTime * 0.8) {
+    if (caseAo12 <= avgAo12 * 0.8) {
         return 'fast';
-    } else if (avg >= avgTime * 1.2) {
+    } else if (caseAo12 >= avgAo12 * 1.2) {
         return 'slow';
     }
 
@@ -137,17 +147,20 @@ function getTrend(results) {
 async function getDetailedCaseStats(pieceType, buffer) {
     const algs = await getAlgorithmsByPieceAndBuffer(pieceType, buffer);
 
-    let allTimes = [];
+    const ao12Values = [];
+    const stdDevValues = [];
     for (const alg of algs) {
         const results = alg.algorithms[0]?.results || [];
         if (results.length >= 5) {
-            allTimes.push(...results);
+            ao12Values.push(ao12(results));
+            const last12 = results.slice(-12);
+            stdDevValues.push(std(last12));
         }
     }
 
-    const avgTime = allTimes.length > 0 ? mean(allTimes) : 2;
-    const stdDevGlobal = allTimes.length > 0 ? std(allTimes) : 0.5;
-    const globalStats = { avgTime, stdDevGlobal };
+    const avgAo12 = ao12Values.length > 0 ? mean(ao12Values) : 2;
+    const stdDevAo12 = stdDevValues.length > 0 ? mean(stdDevValues) : 0.5;
+    const bufferStats = { avgAo12, stdDevAo12 };
 
     const cases = [];
 
@@ -158,7 +171,7 @@ async function getDetailedCaseStats(pieceType, buffer) {
         const executions = results.length;
         const avg = executions > 0 ? mean(results) : null;
         const stdDev = executions > 1 ? std(results) : null;
-        const category = executions > 0 ? categorizeCase(results, globalStats) : 'new';
+        const category = executions > 0 ? categorizeCase(results, bufferStats) : 'new';
         const trend = getTrend(results);
         const best = executions > 0 ? Math.min(...results) : null;
         const worst = executions > 0 ? Math.max(...results) : null;
