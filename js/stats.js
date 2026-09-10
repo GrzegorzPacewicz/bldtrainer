@@ -184,7 +184,8 @@ async function getDetailedCaseStats(pieceType, buffer) {
         const results = alg.algorithms[0]?.results || [];
         const executions = results.length;
         const avg = executions > 0 ? mean(results) : null;
-        const stdDev = executions > 1 ? std(results) : null;
+        const last12 = results.slice(-12);
+        const stdDev = last12.length > 1 ? std(last12) : null;
         const category = executions > 0 ? categorizeCase(results, bufferStats) : 'new';
         const trend = getTrend(results);
         const caseAo5 = ao5(results);

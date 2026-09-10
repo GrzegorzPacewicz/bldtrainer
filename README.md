@@ -251,7 +251,7 @@ Pod tabelą wyświetlana jest sekcja z przypadkami bez algorytmu. Kliknij na prz
 | Przyp. | Letter pair (! = trudny) |
 | Wyk. | Liczba wykonań |
 | Avg | Średni czas |
-| Std | Odchylenie standardowe |
+| Std | Odchylenie standardowe (ostatnie 12) |
 | ao5 | Średnia z ostatnich 5 (bez best/worst) |
 | ao12 | Średnia z ostatnich 12 (bez best/worst) |
 | Kat. | S=szybki, Ś=średni, W=wolny, N=niestabilny, ?=nowy, R=regres |
