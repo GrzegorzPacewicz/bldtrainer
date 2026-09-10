@@ -62,7 +62,7 @@
         </div>
         <button id="btn-help" class="btn btn-help">?</button>
         <div class="version">
-          <div>v2.07 | 2026-09-08</div>
+          <div>v2.08 | 2026-09-10</div>
           <div class="copyright">
             © 2026
             <a href="https://grzegorzpacewicz.pl" target="_blank" rel="noopener"
@@ -471,12 +471,14 @@ UBL URF: R U R' U'</pre
 
           <section>
             <h4>Kategorie</h4>
+            <p>
+              Kategorie obliczane na podstawie ao12 (lub ao5 jeśli 5-11 wykonań)
+              względem "Aktualnego tempa" bufora.
+            </p>
             <ul>
-              <li>
-                <strong>Szybkie</strong> — avg &lt; 80% globalnej średniej
-              </li>
+              <li><strong>Szybkie</strong> — ao &lt; 80% aktualnego tempa</li>
               <li><strong>Średnie</strong> — między 80-120%</li>
-              <li><strong>Wolne</strong> — avg &gt; 120% globalnej średniej</li>
+              <li><strong>Wolne</strong> — ao &gt; 120% aktualnego tempa</li>
               <li><strong>Niestabilne</strong> — wysokie odchylenie std.</li>
               <li>
                 <strong>Regres</strong> — ostatnie 5 gorsze od poprzednich 5
@@ -493,10 +495,17 @@ UBL URF: R U R' U'</pre
               <strong>Ogólne</strong> — podsumowanie + statystyki dzienne
               (ostatnie 7 dni).
             </p>
-            <p>Per bufor: średnia, odch. std., rozkład kategorii, trendy.</p>
             <p>
-              <strong>Avg</strong> — średnia arytmetyczna wszystkich czasów dla
-              case'a.
+              Per bufor: średnia, aktualne tempo, odch. std., rozkład kategorii,
+              trendy.
+            </p>
+            <p>
+              <strong>Aktualne tempo</strong> — średnia ao12/ao5 wszystkich
+              case'ów bufora (punkt odniesienia dla kategoryzacji).
+            </p>
+            <p>
+              <strong>ao5/ao12</strong> — średnia z ostatnich 5/12 czasów z
+              obciętym najlepszym i najgorszym wynikiem.
             </p>
             <p><strong>Trendy</strong> (wymagają min. 6 wykonań):</p>
             <ul>

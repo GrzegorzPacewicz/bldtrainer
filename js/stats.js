@@ -12,10 +12,17 @@ function std(arr) {
     return Math.sqrt(mean(squareDiffs));
 }
 
+function ao5(arr) {
+    if (!arr || arr.length < 5) return NaN;
+    const last5 = arr.slice(-5);
+    const sorted = [...last5].sort((a, b) => a - b);
+    const trimmed = sorted.slice(1, -1);
+    return mean(trimmed);
+}
+
 function ao12(arr) {
-    if (!arr || arr.length === 0) return NaN;
+    if (!arr || arr.length < 12) return NaN;
     const last12 = arr.slice(-12);
-    if (last12.length < 3) return mean(last12);
     const sorted = [...last12].sort((a, b) => a - b);
     const trimmed = sorted.slice(1, -1);
     return mean(trimmed);
@@ -105,10 +112,10 @@ function categorizeCase(results, bufferStats) {
         return 'new';
     }
 
-    const caseAo12 = ao12(results);
-    const last12 = results.slice(-12);
-    const caseStdDev = std(last12);
-    const { avgAo12, stdDevAo12 } = bufferStats;
+    const caseAo = getCurrentAo(results);
+    const lastN = results.slice(-12);
+    const caseStdDev = std(lastN);
+    const { currentTempo, avgStdDev } = bufferStats;
 
     if (results.length >= 10) {
         const last5 = mean(results.slice(-5));
@@ -118,13 +125,13 @@ function categorizeCase(results, bufferStats) {
         }
     }
 
-    if (stdDevAo12 > 0 && caseStdDev > stdDevAo12 * 1.5) {
+    if (avgStdDev > 0 && caseStdDev > avgStdDev * 1.5) {
         return 'unstable';
     }
 
-    if (caseAo12 <= avgAo12 * 0.8) {
+    if (caseAo <= currentTempo * 0.8) {
         return 'fast';
-    } else if (caseAo12 >= avgAo12 * 1.2) {
+    } else if (caseAo >= currentTempo * 1.2) {
         return 'slow';
     }
 
@@ -144,23 +151,30 @@ function getTrend(results) {
     return 'stable';
 }
 
+function getCurrentAo(results) {
+    if (results.length >= 12) return ao12(results);
+    if (results.length >= 5) return ao5(results);
+    return NaN;
+}
+
 async function getDetailedCaseStats(pieceType, buffer) {
     const algs = await getAlgorithmsByPieceAndBuffer(pieceType, buffer);
 
-    const ao12Values = [];
+    const currentAoValues = [];
     const stdDevValues = [];
     for (const alg of algs) {
         const results = alg.algorithms[0]?.results || [];
-        if (results.length >= 5) {
-            ao12Values.push(ao12(results));
-            const last12 = results.slice(-12);
-            stdDevValues.push(std(last12));
+        const currentAo = getCurrentAo(results);
+        if (!isNaN(currentAo)) {
+            currentAoValues.push(currentAo);
+            const lastN = results.slice(-12);
+            stdDevValues.push(std(lastN));
         }
     }
 
-    const avgAo12 = ao12Values.length > 0 ? mean(ao12Values) : 2;
-    const stdDevAo12 = stdDevValues.length > 0 ? mean(stdDevValues) : 0.5;
-    const bufferStats = { avgAo12, stdDevAo12 };
+    const currentTempo = currentAoValues.length > 0 ? mean(currentAoValues) : 2;
+    const avgStdDev = stdDevValues.length > 0 ? mean(stdDevValues) : 0.5;
+    const bufferStats = { currentTempo, avgStdDev };
 
     const cases = [];
 
@@ -173,8 +187,8 @@ async function getDetailedCaseStats(pieceType, buffer) {
         const stdDev = executions > 1 ? std(results) : null;
         const category = executions > 0 ? categorizeCase(results, bufferStats) : 'new';
         const trend = getTrend(results);
-        const best = executions > 0 ? Math.min(...results) : null;
-        const worst = executions > 0 ? Math.max(...results) : null;
+        const caseAo5 = ao5(results);
+        const caseAo12 = ao12(results);
 
         let caseName;
         if (alg.lp) caseName = alg.lp;
@@ -191,8 +205,8 @@ async function getDetailedCaseStats(pieceType, buffer) {
             executions,
             avg,
             stdDev,
-            best,
-            worst,
+            ao5: isNaN(caseAo5) ? null : caseAo5,
+            ao12: isNaN(caseAo12) ? null : caseAo12,
             category,
             trend,
             difficult: alg.difficult || false,
@@ -235,6 +249,7 @@ async function getBufferStats(pieceType, buffer) {
     let totalCount = 0;
     let casesWithResults = 0;
     let allTimes = [];
+    const currentAoValues = [];
 
     for (const c of cases) {
         if (c.executions > 0) {
@@ -246,11 +261,16 @@ async function getBufferStats(pieceType, buffer) {
                     allTimes.push(c.avg);
                 }
             }
+            const aoVal = c.ao12 !== null ? c.ao12 : c.ao5;
+            if (aoVal !== null) {
+                currentAoValues.push(aoVal);
+            }
         }
     }
 
     const avgTime = totalCount > 0 ? totalTime / totalCount : 0;
     const stdDev = std(allTimes);
+    const currentTempo = currentAoValues.length > 0 ? mean(currentAoValues) : null;
 
     const categoryCount = {
         weak: 0,
@@ -291,6 +311,7 @@ async function getBufferStats(pieceType, buffer) {
         totalExecutions: totalCount,
         avgTime: avgTime.toFixed(2),
         stdDev: isNaN(stdDev) ? '-' : stdDev.toFixed(2),
+        currentTempo: currentTempo !== null ? currentTempo.toFixed(2) : '-',
         categoryCount,
         trendCount: { improving, declining, stable },
         cases
@@ -445,6 +466,10 @@ function renderBufferStats(buffer, stats) {
                 <span class="stat-value">${stats.avgTime}s</span>
             </div>
             <div class="stat-row">
+                <span class="stat-label">Aktualne tempo</span>
+                <span class="stat-value">${stats.currentTempo}s</span>
+            </div>
+            <div class="stat-row">
                 <span class="stat-label">Odch. std.</span>
                 <span class="stat-value">${stats.stdDev}</span>
             </div>
@@ -510,8 +535,8 @@ function renderCasesTable(cases, buffer) {
     const rows = sortedCases.map(c => {
         const avgStr = c.avg !== null ? c.avg.toFixed(2) : '-';
         const stdStr = c.stdDev !== null ? c.stdDev.toFixed(2) : '-';
-        const bestStr = c.best !== null ? c.best.toFixed(2) : '-';
-        const worstStr = c.worst !== null ? c.worst.toFixed(2) : '-';
+        const ao5Str = c.ao5 !== null ? c.ao5.toFixed(2) : '-';
+        const ao12Str = c.ao12 !== null ? c.ao12.toFixed(2) : '-';
         const trendIcon = trendIcons[c.trend] || '';
         const catLabel = categoryLabels[c.category] || '';
         const difficultMark = c.difficult ? '!' : '';
@@ -523,8 +548,8 @@ function renderCasesTable(cases, buffer) {
                 <td class="case-exec">${c.executions}</td>
                 <td class="case-avg">${avgStr}</td>
                 <td class="case-std">${stdStr}</td>
-                <td class="case-best">${bestStr}</td>
-                <td class="case-worst">${worstStr}</td>
+                <td class="case-ao5">${ao5Str}</td>
+                <td class="case-ao12">${ao12Str}</td>
                 <td class="case-cat">${catLabel}</td>
                 <td class="case-trend trend-${c.trend}">${trendIcon}</td>
             </tr>
@@ -539,8 +564,8 @@ function renderCasesTable(cases, buffer) {
                     <th data-sort="exec">Wyk.</th>
                     <th data-sort="avg">Avg</th>
                     <th data-sort="std">Std</th>
-                    <th data-sort="best">Best</th>
-                    <th data-sort="worst">Worst</th>
+                    <th data-sort="ao5">ao5</th>
+                    <th data-sort="ao12">ao12</th>
                     <th data-sort="cat">Kat.</th>
                     <th data-sort="trend">Tr.</th>
                 </tr>
@@ -726,8 +751,8 @@ function sortTable(table, column, direction) {
             case 'exec': return parseFloat(cells[1].textContent) || 0;
             case 'avg': return cells[2].textContent === '-' ? null : parseFloat(cells[2].textContent);
             case 'std': return cells[3].textContent === '-' ? null : parseFloat(cells[3].textContent);
-            case 'best': return cells[4].textContent === '-' ? null : parseFloat(cells[4].textContent);
-            case 'worst': return cells[5].textContent === '-' ? null : parseFloat(cells[5].textContent);
+            case 'ao5': return cells[4].textContent === '-' ? null : parseFloat(cells[4].textContent);
+            case 'ao12': return cells[5].textContent === '-' ? null : parseFloat(cells[5].textContent);
             case 'cat': return cells[6].textContent;
             case 'trend': return cells[7].textContent;
             default: return '';
@@ -782,7 +807,7 @@ async function exportToExcel() {
             const cases = await getDetailedCaseStats(pieceType, buffer);
             const caseMap = new Map(cases.map(c => [c.id, c]));
 
-            const rows = [['Case', 'Target1', 'Target2', 'Algorithm', 'Difficult', 'Exec', 'Avg', 'Best', 'Worst', 'Category', 'Results']];
+            const rows = [['Case', 'Target1', 'Target2', 'Algorithm', 'Difficult', 'Exec', 'Avg', 'ao5', 'ao12', 'Category', 'Results']];
 
             const sorted = [...algs]
                 .filter(a => !a.target2 || a.target1 !== a.target2)
@@ -811,8 +836,8 @@ async function exportToExcel() {
                     alg.difficult ? 1 : 0,
                     stats.executions || 0,
                     stats.avg ? stats.avg.toFixed(2) : '',
-                    stats.best ? stats.best.toFixed(2) : '',
-                    stats.worst ? stats.worst.toFixed(2) : '',
+                    stats.ao5 ? stats.ao5.toFixed(2) : '',
+                    stats.ao12 ? stats.ao12.toFixed(2) : '',
                     stats.category || 'new',
                     resultsStr
                 ]);
@@ -827,8 +852,8 @@ async function exportToExcel() {
                 { wch: 4 },   // Difficult
                 { wch: 5 },   // Exec
                 { wch: 6 },   // Avg
-                { wch: 6 },   // Best
-                { wch: 6 },   // Worst
+                { wch: 6 },   // ao5
+                { wch: 6 },   // ao12
                 { wch: 10 },  // Category
                 { wch: 50 }   // Results
             ];

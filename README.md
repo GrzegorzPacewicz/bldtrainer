@@ -202,12 +202,15 @@ Nazwy przycisków odpowiadają badge'om: kliknięcie "Trudne" = oznaczenie przyp
 
 ### Kategorie szczegółowe
 
-Kategoryzacja oparta na **ao12** (średnia z ostatnich 12 wyników z odrzuceniem best/worst) per bufor:
+Kategoryzacja oparta na **"Aktualnym tempie"** bufora — średnia ao12/ao5 wszystkich przypadków:
+
+- ao12 używane gdy przypadek ma ≥12 wykonań
+- ao5 używane gdy przypadek ma 5-11 wykonań
 
 | Kategoria | Logika |
 |-----------|--------|
-| **Szybkie** | ao12 < 80% średniego ao12 bufora |
-| **Wolne** | ao12 > 120% średniego ao12 bufora |
+| **Szybkie** | ao < 80% aktualnego tempa |
+| **Wolne** | ao > 120% aktualnego tempa |
 | **Niestabilne** | Odch. std. ostatnich 12 > 150% średniego dla bufora |
 | **Regres** | Ostatnie 5 wyników gorsze od poprzednich 5 o >15% |
 | **Nowe** | Mniej niż 5 wykonań |
@@ -231,6 +234,7 @@ Cztery zakładki: **Ogólne** / **Krawędzie** / **Rogi** / **Parity**
 - Liczba przypadków (z wynikami / wszystkie)
 - Łączna liczba wykonań
 - Średni czas i odchylenie std.
+- **Aktualne tempo** — średnia ao12/ao5 wszystkich przypadków (punkt odniesienia dla kategorii)
 - Rozkład kategorii (kolorowe badges)
 - Trendy (↑ poprawa / → stabilne / ↓ regres)
 
@@ -248,8 +252,8 @@ Pod tabelą wyświetlana jest sekcja z przypadkami bez algorytmu. Kliknij na prz
 | Wyk. | Liczba wykonań |
 | Avg | Średni czas |
 | Std | Odchylenie standardowe |
-| Best | Najlepszy czas |
-| Worst | Najgorszy czas |
+| ao5 | Średnia z ostatnich 5 (bez best/worst) |
+| ao12 | Średnia z ostatnich 12 (bez best/worst) |
 | Kat. | S=szybki, Ś=średni, W=wolny, N=niestabilny, ?=nowy, R=regres |
 | Tr. | ↑=poprawa, →=stabilny, ↓=regres |
 
@@ -304,6 +308,13 @@ GitHub Pages + Cloudflare subdomain
 ---
 
 ## Changelog
+
+### v2.2 (2026-09-10)
+
+- Kolumny ao5/ao12 w tabeli statystyk zamiast Best/Worst
+- Nowa metryka "Aktualne tempo" — średnia ao12/ao5 bufora jako punkt odniesienia dla kategoryzacji
+- Kategoryzacja przypadków używa ao12 (≥12 wyników) lub ao5 (5-11 wyników)
+- Eksport Excel zawiera ao5/ao12 zamiast Best/Worst
 
 ### v2.1 (2026-08-25)
 
