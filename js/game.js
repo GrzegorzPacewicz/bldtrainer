@@ -14,6 +14,7 @@ class Game {
         this.results = new Map();
         this.startTime = null;
         this.isTiming = false;
+        this.originalDifficult = new Set();
     }
 
     deduplicatePairs(algs) {
@@ -216,11 +217,15 @@ class Game {
                 else if (alg.lp) caseName = alg.lp;
                 else if (alg.target2) caseName = `${alg.target1} ${alg.target2}`;
                 else caseName = alg.target1;
+                const isDifficult = alg.difficult || false;
+                if (isDifficult) {
+                    this.originalDifficult.add(id);
+                }
                 list.push({
                     id,
                     case: caseName,
                     time,
-                    difficult: alg.difficult || false
+                    difficult: isDifficult
                 });
             }
         }
@@ -242,6 +247,12 @@ class Game {
         if (this.difficultCases) {
             for (const id of this.difficultCases) {
                 promises.push(setDifficult(id, true));
+            }
+        }
+
+        for (const id of this.originalDifficult) {
+            if (!this.difficultCases || !this.difficultCases.has(id)) {
+                promises.push(setDifficult(id, false));
             }
         }
 
