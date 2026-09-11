@@ -248,11 +248,11 @@ class Game {
             for (const id of this.difficultCases) {
                 promises.push(setDifficult(id, true));
             }
-        }
 
-        for (const id of this.originalDifficult) {
-            if (!this.difficultCases || !this.difficultCases.has(id)) {
-                promises.push(setDifficult(id, false));
+            for (const id of this.originalDifficult) {
+                if (!this.difficultCases.has(id)) {
+                    promises.push(setDifficult(id, false));
+                }
             }
         }
 
