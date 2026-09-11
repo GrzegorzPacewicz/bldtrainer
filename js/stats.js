@@ -420,6 +420,11 @@ function renderBufferStats(buffer, stats) {
     const cats = stats.categoryCount;
     const trends = stats.trendCount;
 
+    // DEBUG: count difficult in cases
+    const difficultCases = stats.cases.filter(c => c.difficult);
+    const difficultWithAlg = difficultCases.filter(c => c.hasAlg);
+    const debugInfo = `[DEBUG] difficult total: ${difficultCases.length}, with alg: ${difficultWithAlg.length}, cats.difficult: ${cats.difficult}`;
+
     const categoryLabels = {
         weak: 'Słabe punkty',
         maintain: 'Utrzymanie',
@@ -443,7 +448,7 @@ function renderBufferStats(buffer, stats) {
     const categoryHtml = categoryOrder
         .filter(cat => cats[cat] > 0)
         .map(cat => `<span class="cat-badge cat-${cat}" data-filter-cat="${cat}" style="cursor:pointer">${categoryLabels[cat]}: ${cats[cat]}</span>`)
-        .join(' ');
+        .join(' ') + ` <small style="color:#888">${debugInfo}</small>`;
 
     const trendHtml = `
         <span class="trend-badge trend-improving" data-filter-trend="improving" style="cursor:pointer">↑ ${trends.improving}</span>
