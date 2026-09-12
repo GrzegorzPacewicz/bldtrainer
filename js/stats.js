@@ -131,11 +131,9 @@ function categorizeCase(results, bufferStats, updatedAt) {
         return 'unstable';
     }
 
-    if (results.length < 12 && updatedAt) {
-        const daysSinceUpdate = (Date.now() - updatedAt) / (1000 * 60 * 60 * 24);
-        if (daysSinceUpdate > RARE_DAYS) {
-            return 'rare';
-        }
+    const daysSinceUpdate = updatedAt ? (Date.now() - updatedAt) / (1000 * 60 * 60 * 24) : 0;
+    if (results.length < 12 || daysSinceUpdate > RARE_DAYS) {
+        return 'rare';
     }
 
     if (caseAo <= currentTempo * 0.8) {
