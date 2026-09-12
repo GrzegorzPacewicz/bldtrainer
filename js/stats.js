@@ -132,7 +132,8 @@ function categorizeCase(results, bufferStats, updatedAt) {
     }
 
     const daysSinceUpdate = updatedAt ? (Date.now() - updatedAt) / (1000 * 60 * 60 * 24) : 0;
-    if (results.length < 12 || daysSinceUpdate > RARE_DAYS) {
+    const hasAo12 = !isNaN(ao12(results));
+    if (!hasAo12 || daysSinceUpdate > RARE_DAYS) {
         return 'rare';
     }
 
@@ -303,7 +304,7 @@ async function getBufferStats(pieceType, buffer) {
         if (c.difficult) {
             categoryCount.difficult++;
         }
-        if (c.category === 'slow' || c.category === 'unstable' || c.category === 'regressing' || c.category === 'rare' || c.difficult) {
+        if (c.category === 'slow' || c.category === 'unstable' || c.category === 'regressing' || c.difficult) {
             categoryCount.weak++;
         }
         if (c.category === 'fast' || c.category === 'average') {
@@ -330,7 +331,7 @@ async function getBufferStats(pieceType, buffer) {
 
 async function getDrillWeakCases(pieceType, buffer) {
     const cats = await getCasesByCategory(pieceType, buffer);
-    const weak = [...cats.slow, ...cats.unstable, ...cats.regressing, ...cats.difficult, ...cats.rare];
+    const weak = [...cats.slow, ...cats.unstable, ...cats.regressing, ...cats.difficult];
     const uniqueIds = new Set();
     return weak.filter(a => {
         if (uniqueIds.has(a.id)) return false;
@@ -612,7 +613,7 @@ function initCaseRowClicks() {
 }
 
 function initCategoryFilter() {
-    const weakCategories = ['cat-slow', 'cat-unstable', 'cat-regressing', 'cat-difficult', 'cat-rare'];
+    const weakCategories = ['cat-slow', 'cat-unstable', 'cat-regressing', 'cat-difficult'];
     const maintainCategories = ['cat-fast', 'cat-average'];
 
     document.querySelectorAll('.cat-badge[data-filter-cat]').forEach(badge => {
