@@ -107,7 +107,9 @@ async function getDifficultCases(pieceType, buffer) {
     return algs.filter(a => a.difficult);
 }
 
-function categorizeCase(results, bufferStats) {
+const RARE_DAYS = 14;
+
+function categorizeCase(results, bufferStats, updatedAt) {
     if (results.length < 5) {
         return 'new';
     }
@@ -127,6 +129,13 @@ function categorizeCase(results, bufferStats) {
 
     if (avgStdDev > 0 && caseStdDev > avgStdDev * 1.5) {
         return 'unstable';
+    }
+
+    if (results.length < 12 && updatedAt) {
+        const daysSinceUpdate = (Date.now() - updatedAt) / (1000 * 60 * 60 * 24);
+        if (daysSinceUpdate > RARE_DAYS) {
+            return 'rare';
+        }
     }
 
     if (caseAo <= currentTempo * 0.8) {
@@ -186,7 +195,7 @@ async function getDetailedCaseStats(pieceType, buffer) {
         const avg = executions > 0 ? mean(results) : null;
         const last12 = results.slice(-12);
         const stdDev = last12.length > 1 ? std(last12) : null;
-        const category = executions > 0 ? categorizeCase(results, bufferStats) : 'new';
+        const category = executions > 0 ? categorizeCase(results, bufferStats, alg.updatedAt) : 'new';
         const trend = getTrend(results);
         const caseAo5 = ao5(results);
         const caseAo12 = ao12(results);
@@ -228,7 +237,8 @@ async function getCasesByCategory(pieceType, buffer) {
         unstable: [],
         new: [],
         regressing: [],
-        difficult: []
+        difficult: [],
+        rare: []
     };
 
     for (const c of cases) {
@@ -282,7 +292,8 @@ async function getBufferStats(pieceType, buffer) {
         slow: 0,
         unstable: 0,
         regressing: 0,
-        difficult: 0
+        difficult: 0,
+        rare: 0
     };
 
     const casesWithAlg = cases.filter(c => c.hasAlg);
@@ -294,7 +305,7 @@ async function getBufferStats(pieceType, buffer) {
         if (c.difficult) {
             categoryCount.difficult++;
         }
-        if (c.category === 'slow' || c.category === 'unstable' || c.category === 'regressing' || c.difficult) {
+        if (c.category === 'slow' || c.category === 'unstable' || c.category === 'regressing' || c.category === 'rare' || c.difficult) {
             categoryCount.weak++;
         }
         if (c.category === 'fast' || c.category === 'average') {
@@ -321,7 +332,7 @@ async function getBufferStats(pieceType, buffer) {
 
 async function getDrillWeakCases(pieceType, buffer) {
     const cats = await getCasesByCategory(pieceType, buffer);
-    const weak = [...cats.slow, ...cats.unstable, ...cats.regressing, ...cats.difficult];
+    const weak = [...cats.slow, ...cats.unstable, ...cats.regressing, ...cats.difficult, ...cats.rare];
     const uniqueIds = new Set();
     return weak.filter(a => {
         if (uniqueIds.has(a.id)) return false;
@@ -429,10 +440,11 @@ function renderBufferStats(buffer, stats) {
         slow: 'Wolne',
         unstable: 'Niestabilne',
         regressing: 'Regres',
-        difficult: 'Trudne'
+        difficult: 'Trudne',
+        rare: 'Rzadkie'
     };
 
-    const categoryOrder = ['weak', 'maintain', 'new', 'fast', 'average', 'slow', 'unstable', 'regressing', 'difficult'];
+    const categoryOrder = ['weak', 'maintain', 'new', 'fast', 'average', 'slow', 'unstable', 'regressing', 'difficult', 'rare'];
 
     const trendIcons = {
         improving: '↑',
@@ -530,7 +542,8 @@ function renderCasesTable(cases, buffer) {
         slow: 'W',
         unstable: 'N',
         new: '?',
-        regressing: 'R'
+        regressing: 'R',
+        rare: 'Rz'
     };
 
     const rows = sortedCases.map(c => {
@@ -601,7 +614,7 @@ function initCaseRowClicks() {
 }
 
 function initCategoryFilter() {
-    const weakCategories = ['cat-slow', 'cat-unstable', 'cat-regressing', 'cat-difficult'];
+    const weakCategories = ['cat-slow', 'cat-unstable', 'cat-regressing', 'cat-difficult', 'cat-rare'];
     const maintainCategories = ['cat-fast', 'cat-average'];
 
     document.querySelectorAll('.cat-badge[data-filter-cat]').forEach(badge => {

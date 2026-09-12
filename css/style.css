@@ -45,6 +45,8 @@
     --cat-nowe-bg: #0E1A33;
     --cat-trudne-text: #a0a6b8;
     --cat-trudne-bg: #262A33;
+    --cat-rare-text: #C084FC;
+    --cat-rare-bg: #1E1030;
     --cat-weak-text: #F87171;
     --cat-weak-bg: #2A1010;
     --cat-maintain-text: #4ADE80;
@@ -89,6 +91,8 @@
     --cat-nowe-bg: #E9EFFC;
     --cat-trudne-text: #5A5F6E;
     --cat-trudne-bg: #EEF0F3;
+    --cat-rare-text: #7C3AED;
+    --cat-rare-bg: #F3E8FF;
     --cat-weak-text: #791F1F;
     --cat-weak-bg: #FDEAEA;
     --cat-maintain-text: #27500A;
@@ -1051,7 +1055,8 @@ h3 {
 .cat-badge.cat-slow,
 .cat-badge.cat-unstable,
 .cat-badge.cat-regressing,
-.cat-badge.cat-difficult {
+.cat-badge.cat-difficult,
+.cat-badge.cat-rare {
     background: var(--bg-card);
     color: var(--text-primary);
     border: 1px solid var(--cat-border);
@@ -1153,6 +1158,7 @@ h3 {
 .case-row.cat-unstable { background: var(--cat-niestabilne-bg); color: var(--cat-niestabilne-text); }
 .case-row.cat-new { background: var(--cat-nowe-bg); color: var(--cat-nowe-text); }
 .case-row.cat-regressing { background: var(--cat-regres-bg); color: var(--cat-regres-text); }
+.case-row.cat-rare { background: var(--cat-rare-bg); color: var(--cat-rare-text); }
 
 .text-muted {
     color: var(--text-secondary);

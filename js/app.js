@@ -244,6 +244,7 @@ async function selectBuffer(buffer) {
     document.getElementById('btn-unstable').onclick = () => selectSubset('unstable');
     document.getElementById('btn-regressing').onclick = () => selectSubset('regressing');
     document.getElementById('btn-difficult').onclick = () => selectSubset('difficult');
+    document.getElementById('btn-rare').onclick = () => selectSubset('rare');
 
     document.getElementById('btn-add-target').onclick = modifySelection.bind(null, 'add');
     document.getElementById('btn-remove-target').onclick = modifySelection.bind(null, 'remove');
@@ -291,6 +292,9 @@ async function selectSubset(type) {
     } else if (type === 'difficult') {
         const difficult = await getDifficultCases(currentPieceType, currentBuffer);
         difficult.filter(a => hasAlgorithm(a)).forEach(a => selectedCases.add(a.id));
+    } else if (type === 'rare') {
+        const cats = await getCasesByCategory(currentPieceType, currentBuffer);
+        cats.rare.filter(a => a.hasAlg).forEach(a => selectedCases.add(a.id));
     }
 
     updateSelectedCasesDisplay();
