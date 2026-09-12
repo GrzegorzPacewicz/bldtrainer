@@ -114,6 +114,12 @@ function categorizeCase(results, bufferStats, updatedAt) {
         return 'new';
     }
 
+    const daysSinceUpdate = updatedAt ? (Date.now() - updatedAt) / (1000 * 60 * 60 * 24) : 0;
+    const hasAo12 = !isNaN(ao12(results));
+    if (!hasAo12 || daysSinceUpdate > RARE_DAYS) {
+        return 'rare';
+    }
+
     const caseAo = getCurrentAo(results);
     const lastN = results.slice(-12);
     const caseStdDev = std(lastN);
@@ -129,12 +135,6 @@ function categorizeCase(results, bufferStats, updatedAt) {
 
     if (avgStdDev > 0 && caseStdDev > avgStdDev * 1.5) {
         return 'unstable';
-    }
-
-    const daysSinceUpdate = updatedAt ? (Date.now() - updatedAt) / (1000 * 60 * 60 * 24) : 0;
-    const hasAo12 = !isNaN(ao12(results));
-    if (!hasAo12 || daysSinceUpdate > RARE_DAYS) {
-        return 'rare';
     }
 
     if (caseAo <= currentTempo * 0.8) {
@@ -431,7 +431,7 @@ function renderBufferStats(buffer, stats) {
     const trends = stats.trendCount;
 
     const categoryLabels = {
-        weak: 'Słabe punkty',
+        weak: 'Słabe',
         maintain: 'Utrzymanie',
         new: 'Nowe',
         fast: 'Szybkie',
