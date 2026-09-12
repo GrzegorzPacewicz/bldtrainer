@@ -246,8 +246,6 @@ async function selectBuffer(buffer) {
     document.getElementById('btn-difficult').onclick = () => selectSubset('difficult');
     document.getElementById('btn-rare').onclick = () => selectSubset('rare');
 
-    await updateCategoryButtonsVisibility();
-
     document.getElementById('btn-add-target').onclick = modifySelection.bind(null, 'add');
     document.getElementById('btn-remove-target').onclick = modifySelection.bind(null, 'remove');
     document.getElementById('btn-reset-selection').onclick = resetSelection;
@@ -258,34 +256,6 @@ async function selectBuffer(buffer) {
 
 function hasAlgorithm(a) {
     return a.algorithms[0]?.alg?.trim();
-}
-
-async function updateCategoryButtonsVisibility() {
-    const cats = await getCasesByCategory(currentPieceType, currentBuffer);
-    const difficult = await getDifficultCases(currentPieceType, currentBuffer);
-    const weak = await getDrillWeakCases(currentPieceType, currentBuffer);
-    const maintain = await getMaintainCases(currentPieceType, currentBuffer);
-    const newCases = await getNewCases(currentPieceType, currentBuffer);
-
-    const btnMap = {
-        'btn-drill-weak': weak.filter(a => a.hasAlg).length,
-        'btn-maintain': maintain.filter(a => a.hasAlg).length,
-        'btn-learn-new': newCases.filter(a => a.hasAlg).length,
-        'btn-fast': cats.fast.filter(a => a.hasAlg).length,
-        'btn-average': cats.average.filter(a => a.hasAlg).length,
-        'btn-slow': cats.slow.filter(a => a.hasAlg).length,
-        'btn-unstable': cats.unstable.filter(a => a.hasAlg).length,
-        'btn-regressing': cats.regressing.filter(a => a.hasAlg).length,
-        'btn-difficult': difficult.filter(a => hasAlgorithm(a)).length,
-        'btn-rare': cats.rare.filter(a => a.hasAlg).length
-    };
-
-    for (const [btnId, count] of Object.entries(btnMap)) {
-        const btn = document.getElementById(btnId);
-        if (btn) {
-            btn.style.display = count > 0 ? '' : 'none';
-        }
-    }
 }
 
 async function selectSubset(type) {
