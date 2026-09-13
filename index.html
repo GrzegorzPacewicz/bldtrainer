@@ -62,7 +62,7 @@
         </div>
         <button id="btn-help" class="btn btn-help">?</button>
         <div class="version">
-          <div>v2.11 | 2026-09-12</div>
+          <div>v2.12 | 2026-09-13</div>
           <div class="copyright">
             © 2026
             <a href="https://grzegorzpacewicz.pl" target="_blank" rel="noopener"
@@ -411,8 +411,8 @@ UBL URF: R U R' U'</pre
               </li>
               <li>Wybierz bufor (jeśli masz kilka)</li>
               <li>
-                Wybierz tryb (np. Słabe) — aplikacja automatycznie
-                wybierze przypadki na podstawie Twoich wyników
+                Wybierz tryb (np. Słabe) — aplikacja automatycznie wybierze
+                przypadki na podstawie Twoich wyników
               </li>
               <li>
                 Pod przyciskiem Start zobaczysz listę wybranych przypadków
@@ -451,17 +451,13 @@ UBL URF: R U R' U'</pre
             </p>
             <ul>
               <li>
-                <strong>Słabe</strong> — wolne + niestabilne + w regresie
-                + trudne
+                <strong>Słabe</strong> — Wolne + Niestabilne + Regres + Trudne
               </li>
-              <li>
-                <strong>Utrzymanie</strong> — szybkie + średnie (utrzymanie
-                formy)
-              </li>
+              <li><strong>Utrzymanie</strong> — Szybkie + Średnie</li>
               <li><strong>Nowe</strong> — przypadki z &lt;5 wykonaniami</li>
               <li>
-                <strong>Wolne / Niestab. / Regres / Rzadkie</strong> — pojedyncze
-                kategorie
+                <strong>Wolne / Niestab. / Regres / Rzadkie</strong> —
+                pojedyncze kategorie
               </li>
             </ul>
             <p>
@@ -473,22 +469,33 @@ UBL URF: R U R' U'</pre
           <section>
             <h4>Kategorie</h4>
             <p>
-              Kategorie obliczane na podstawie ao12 (lub ao5 jeśli 5-11 wykonań)
-              względem "Aktualnego tempa" bufora.
+              Każdy algorytm ma dwie niezależne kategorie: szybkość i stan. Mogą
+              się nakładać (np. Wolny + Niestabilny).
             </p>
+            <p><strong>Szybkość</strong> (wymaga ao5 lub ao12):</p>
             <ul>
-              <li><strong>Szybkie</strong> — ao &lt; 80% aktualnego tempa</li>
-              <li><strong>Średnie</strong> — między 80-120%</li>
-              <li><strong>Wolne</strong> — ao &gt; 120% aktualnego tempa</li>
-              <li><strong>Niestabilne</strong> — wysokie odchylenie std.</li>
               <li>
-                <strong>Regres</strong> — ostatnie 5 gorsze od poprzednich 5
+                <strong>Szybkie</strong> — ao &lt; 80% aktualnego tempa bufora
               </li>
-              <li><strong>Nowe</strong> — &lt;5 wykonań</li>
+              <li><strong>Średnie</strong> — ao 80-120% tempa</li>
+              <li><strong>Wolne</strong> — ao &gt; 120% tempa</li>
+            </ul>
+            <p><strong>Stan</strong> (mogą się nakładać):</p>
+            <ul>
+              <li><strong>Nowe</strong> — &lt;5 wykonań (brak ao)</li>
+              <li>
+                <strong>Rzadkie</strong> — &lt;12 wykonań lub &gt;14 dni bez
+                treningu
+              </li>
+              <li>
+                <strong>Niestabilne</strong> — std &gt; 1.5× średniego std
+                bufora
+              </li>
+              <li>
+                <strong>Regres</strong> — ostatnie 5 &gt; 20% gorsze od
+                poprzednich 5
+              </li>
               <li><strong>Trudne</strong> — ręcznie oznaczone</li>
-              <li>
-                <strong>Rzadkie</strong> — brak ao12 lub &gt;14 dni bez treningu
-              </li>
             </ul>
           </section>
 

@@ -110,40 +110,47 @@ async function getDifficultCases(pieceType, buffer) {
 const RARE_DAYS = 14;
 
 function categorizeCase(results, bufferStats, updatedAt) {
+    const states = [];
+
     if (results.length < 5) {
-        return 'new';
+        return { speed: null, states: ['new'] };
     }
 
     const daysSinceUpdate = updatedAt ? (Date.now() - updatedAt) / (1000 * 60 * 60 * 24) : 0;
     const hasAo12 = !isNaN(ao12(results));
     if (!hasAo12 || daysSinceUpdate > RARE_DAYS) {
-        return 'rare';
+        states.push('rare');
     }
-
-    const caseAo = getCurrentAo(results);
-    const lastN = results.slice(-12);
-    const caseStdDev = std(lastN);
-    const { currentTempo, avgStdDev } = bufferStats;
 
     if (results.length >= 10) {
         const last5 = mean(results.slice(-5));
         const prev5 = mean(results.slice(-10, -5));
-        if (last5 > prev5 * 1.15) {
-            return 'regressing';
+        if (last5 > prev5 * 1.20) {
+            states.push('regressing');
         }
     }
 
+    const lastN = results.slice(-12);
+    const caseStdDev = std(lastN);
+    const { currentTempo, avgStdDev } = bufferStats;
+
     if (avgStdDev > 0 && caseStdDev > avgStdDev * 1.5) {
-        return 'unstable';
+        states.push('unstable');
     }
 
-    if (caseAo <= currentTempo * 0.8) {
-        return 'fast';
-    } else if (caseAo >= currentTempo * 1.2) {
-        return 'slow';
+    const caseAo = getCurrentAo(results);
+    let speed = null;
+    if (!isNaN(caseAo)) {
+        if (caseAo <= currentTempo * 0.8) {
+            speed = 'fast';
+        } else if (caseAo >= currentTempo * 1.2) {
+            speed = 'slow';
+        } else {
+            speed = 'average';
+        }
     }
 
-    return 'average';
+    return { speed, states };
 }
 
 function getTrend(results) {
@@ -194,7 +201,9 @@ async function getDetailedCaseStats(pieceType, buffer) {
         const avg = executions > 0 ? mean(results) : null;
         const last12 = results.slice(-12);
         const stdDev = last12.length > 1 ? std(last12) : null;
-        const category = executions > 0 ? categorizeCase(results, bufferStats, alg.updatedAt) : 'new';
+        const { speed, states } = executions > 0
+            ? categorizeCase(results, bufferStats, alg.updatedAt)
+            : { speed: null, states: ['new'] };
         const trend = getTrend(results);
         const caseAo5 = ao5(results);
         const caseAo12 = ao12(results);
@@ -216,7 +225,8 @@ async function getDetailedCaseStats(pieceType, buffer) {
             stdDev,
             ao5: isNaN(caseAo5) ? null : caseAo5,
             ao12: isNaN(caseAo12) ? null : caseAo12,
-            category,
+            speed,
+            states,
             trend,
             difficult: alg.difficult || false,
             hasAlg
@@ -244,8 +254,13 @@ async function getCasesByCategory(pieceType, buffer) {
         if (c.difficult) {
             categories.difficult.push(c);
         }
-        if (categories[c.category]) {
-            categories[c.category].push(c);
+        if (c.speed) {
+            categories[c.speed].push(c);
+        }
+        for (const state of c.states) {
+            if (categories[state]) {
+                categories[state].push(c);
+            }
         }
     }
 
@@ -298,16 +313,21 @@ async function getBufferStats(pieceType, buffer) {
     const casesWithAlg = cases.filter(c => c.hasAlg);
 
     for (const c of casesWithAlg) {
-        if (categoryCount.hasOwnProperty(c.category)) {
-            categoryCount[c.category]++;
+        if (c.speed) {
+            categoryCount[c.speed]++;
+        }
+        for (const state of c.states) {
+            if (categoryCount.hasOwnProperty(state)) {
+                categoryCount[state]++;
+            }
         }
         if (c.difficult) {
             categoryCount.difficult++;
         }
-        if (c.category === 'slow' || c.category === 'unstable' || c.category === 'regressing' || c.difficult) {
+        if (c.speed === 'slow' || c.states.includes('unstable') || c.states.includes('regressing') || c.difficult) {
             categoryCount.weak++;
         }
-        if (c.category === 'fast' || c.category === 'average') {
+        if (c.speed === 'fast' || c.speed === 'average') {
             categoryCount.maintain++;
         }
     }
@@ -535,15 +555,8 @@ function renderCasesTable(cases, buffer) {
         none: ''
     };
 
-    const categoryLabels = {
-        fast: 'S',
-        average: 'Ś',
-        slow: 'W',
-        unstable: 'N',
-        new: '?',
-        regressing: 'R',
-        rare: 'Rz'
-    };
+    const speedLabels = { fast: 'S', average: 'Ś', slow: 'W' };
+    const stateLabels = { unstable: 'N', new: '?', regressing: 'R', rare: 'Rz' };
 
     const rows = sortedCases.map(c => {
         const avgStr = c.avg !== null ? c.avg.toFixed(2) : '-';
@@ -551,12 +564,17 @@ function renderCasesTable(cases, buffer) {
         const ao5Str = c.ao5 !== null ? c.ao5.toFixed(2) : '-';
         const ao12Str = c.ao12 !== null ? c.ao12.toFixed(2) : '-';
         const trendIcon = trendIcons[c.trend] || '';
-        const catLabel = categoryLabels[c.category] || '';
+        const speedLabel = c.speed ? speedLabels[c.speed] : '';
+        const stateLabel = c.states.map(s => stateLabels[s] || '').join('');
+        const catLabel = speedLabel + stateLabel;
         const difficultMark = c.difficult ? '!' : '';
         const difficultClass = c.difficult ? ' cat-difficult' : '';
+        const speedClass = c.speed ? `cat-${c.speed}` : '';
+        const stateClasses = c.states.map(s => `cat-${s}`).join(' ');
+        const allClasses = [speedClass, stateClasses, difficultClass].filter(Boolean).join(' ');
 
         return `
-            <tr class="case-row cat-${c.category}${difficultClass}" data-id="${c.id}" data-case="${c.case}">
+            <tr class="case-row ${allClasses}" data-id="${c.id}" data-case="${c.case}">
                 <td class="case-name">${c.case}${difficultMark}</td>
                 <td class="case-exec">${c.executions}</td>
                 <td class="case-avg">${avgStr}</td>
@@ -841,6 +859,7 @@ async function exportToExcel() {
                 const resultsStr = results.map(r => r.toFixed(2)).join(';');
                 const algText = alg.algorithms[0]?.alg || '';
 
+                const categoryStr = [stats.speed, ...(stats.states || [])].filter(Boolean).join(',') || 'new';
                 rows.push([
                     caseName,
                     alg.target1,
@@ -851,7 +870,7 @@ async function exportToExcel() {
                     stats.avg ? stats.avg.toFixed(2) : '',
                     stats.ao5 ? stats.ao5.toFixed(2) : '',
                     stats.ao12 ? stats.ao12.toFixed(2) : '',
-                    stats.category || 'new',
+                    categoryStr,
                     resultsStr
                 ]);
             }
