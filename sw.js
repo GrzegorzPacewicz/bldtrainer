@@ -7,7 +7,7 @@ const ASSETS = [
     '/js/game.js?v=23',
     '/js/import.js?v=22',
     '/js/stats.js?v=22',
-    '/js/app.js?v=25',
+    '/js/app.js?v=26',
     '/manifest.json'
 ];
 

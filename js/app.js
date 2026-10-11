@@ -882,26 +882,24 @@ async function renderStatsTab(tab) {
     }
 }
 
+function applyTheme(theme) {
+    if (theme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+    } else {
+        document.documentElement.removeAttribute('data-theme');
+    }
+    const bg = getComputedStyle(document.documentElement).getPropertyValue('--bg-primary').trim();
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', bg);
+}
+
 function initThemeToggle() {
     const toggle = document.getElementById('theme-toggle');
-    const saved = localStorage.getItem('theme');
-
-    if (saved === 'light') {
-        document.documentElement.setAttribute('data-theme', 'light');
-        toggle.textContent = '☀️';
-    }
+    applyTheme(localStorage.getItem('theme'));
 
     toggle.addEventListener('click', () => {
-        const current = document.documentElement.getAttribute('data-theme');
-        if (current === 'light') {
-            document.documentElement.removeAttribute('data-theme');
-            localStorage.setItem('theme', 'dark');
-            toggle.textContent = '🌙';
-        } else {
-            document.documentElement.setAttribute('data-theme', 'light');
-            localStorage.setItem('theme', 'light');
-            toggle.textContent = '☀️';
-        }
+        const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        localStorage.setItem('theme', next);
+        applyTheme(next);
     });
 }
 
