@@ -1,13 +1,13 @@
-const CACHE_NAME = 'bldtrainer-v20';
+const CACHE_NAME = 'bldtrainer-v21';
 const ASSETS = [
     '/',
     '/index.html',
-    '/css/style.css?v=20',
-    '/js/db.js?v=20',
-    '/js/game.js?v=20',
-    '/js/import.js?v=20',
-    '/js/stats.js?v=20',
-    '/js/app.js?v=20',
+    '/css/style.css?v=28',
+    '/js/db.js?v=22',
+    '/js/game.js?v=23',
+    '/js/import.js?v=22',
+    '/js/stats.js?v=22',
+    '/js/app.js?v=25',
     '/manifest.json'
 ];
 

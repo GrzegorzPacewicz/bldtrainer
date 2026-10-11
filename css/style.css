@@ -601,6 +601,88 @@ h3 {
     box-shadow: var(--focus-ring);
 }
 
+/* Case display (LP / memo) */
+.case-display-setting {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.segmented {
+    display: inline-flex;
+    background: var(--bg-card);
+    border-radius: 0.25rem;
+    padding: 2px;
+}
+
+.segmented button {
+    padding: 0.45rem 0.75rem;
+    font-size: 0.85rem;
+    background: transparent;
+    color: var(--text-secondary);
+    border: none;
+    border-radius: 0.2rem;
+    cursor: pointer;
+}
+
+.segmented button.active {
+    background: var(--accent-button);
+    color: var(--accent-on);
+    font-weight: 600;
+}
+
+.segmented button:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+}
+
+.case-lp {
+    font-size: 0.6em;
+    font-weight: 600;
+    color: var(--text-secondary);
+    line-height: 1.2;
+    margin-top: 0.15em;
+}
+
+.game-case, .game-next-preview, .flashcard-case {
+    overflow-wrap: anywhere;
+}
+
+.game-case.has-memo { font-size: 2.75rem; }
+.game-next-preview.has-memo { font-size: 1.75rem; }
+.flashcard-case.has-memo { font-size: 3rem; }
+
+.memo-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-top: 0.75rem;
+    color: var(--text-primary);
+}
+
+.memo-row input {
+    padding: 0.6rem 0.75rem;
+    font-size: 1rem;
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 2px solid transparent;
+    border-radius: 0.375rem;
+}
+
+.memo-row input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.memo-row small {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}
+
 /* Game Screen */
 .game-top {
     display: flex;

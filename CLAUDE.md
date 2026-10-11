@@ -56,6 +56,13 @@ Arkusz nazywany `{pieceType}_{buffer}` np. `edges_UF`, `corners_UFR`, `parity_UF
 
 Re-import zachowuje istniejące wyniki treningów.
 
+## Memo (wyrazy do letter pairów)
+- Osobny store `memo` w IndexedDB (`{key, word}`), wspólny dla wszystkich typów i buforów; w pamięci `memoMap` (db.js)
+- Klucz = LP (np. `AB`); parity = LP + `Z` (np. `AZ`)
+- Import/eksport: arkusz `memo`, tabela NxN (nagłówek = pierwsza litera, pierwsza kolumna = druga litera)
+- Tryb wyświetlania w grze/nauce (`localStorage.caseDisplay`): `both` (memo duże, LP pod spodem) / `memo` / `lp` — przełącznik na ekranie wyboru trybu
+- Wyniki sesji i statystyki pokazują tylko LP
+
 ## Format importu TXT
 ```
 # edges_UF

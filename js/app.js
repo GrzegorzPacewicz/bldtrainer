@@ -10,6 +10,7 @@ let closingEditModal = false;
 
 document.addEventListener('DOMContentLoaded', async () => {
     await initDB();
+    await loadMemo();
     initNavigation();
     initMenuHandlers();
     initGameHandlers();
@@ -20,7 +21,45 @@ document.addEventListener('DOMContentLoaded', async () => {
     initHomeButtons();
     initEditModal();
     initPauseSetting();
+    initCaseDisplaySetting();
 });
+
+// Tryb wyświetlania case'a: 'both' (memo + LP pod spodem), 'memo', 'lp'
+function getCaseDisplayMode() {
+    return localStorage.getItem('caseDisplay') || 'both';
+}
+
+function initCaseDisplaySetting() {
+    const buttons = document.querySelectorAll('#case-display-setting button');
+    const update = () => {
+        const mode = getCaseDisplayMode();
+        buttons.forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+    };
+    buttons.forEach(b => b.addEventListener('click', () => {
+        localStorage.setItem('caseDisplay', b.dataset.mode);
+        update();
+    }));
+    update();
+}
+
+function renderCase(el, info) {
+    el.textContent = '';
+    el.classList.remove('has-memo');
+    if (!info) return;
+    const mode = getCaseDisplayMode();
+    if (!info.memo || mode === 'lp') {
+        el.textContent = info.label;
+        return;
+    }
+    el.textContent = info.memo;
+    el.classList.add('has-memo');
+    if (mode === 'both') {
+        const lpEl = document.createElement('div');
+        lpEl.className = 'case-lp';
+        lpEl.textContent = info.label;
+        el.appendChild(lpEl);
+    }
+}
 
 function initPauseSetting() {
     const select = document.getElementById('pause-duration');
@@ -418,6 +457,7 @@ function startCountdown(callback) {
     gameState = 'countdown';
 
     let count = 3;
+    caseEl.classList.remove('has-memo');
     caseEl.textContent = count;
     tapArea.classList.remove('timing');
 
@@ -467,7 +507,7 @@ function initGameHandlers() {
         document.getElementById('game-screen').classList.remove('timing');
         currentGame.saveResult(time);
         document.getElementById('game-alg').classList.add('visible');
-        document.getElementById('game-next-preview').textContent = currentGame.getNextCase();
+        renderCase(document.getElementById('game-next-preview'), currentGame.getNextCase());
         document.getElementById('game-next-preview').classList.add('visible');
         gameState = 'showingAlg';
 
@@ -592,7 +632,7 @@ function cancelGame() {
 }
 
 function updateGameDisplay() {
-    document.getElementById('game-case').textContent = currentGame.getCurrentCase();
+    renderCase(document.getElementById('game-case'), currentGame.getCurrentCase());
     document.getElementById('game-alg').textContent = currentGame.getCurrentAlg();
     document.getElementById('game-progress').textContent = currentGame.getProgress();
     document.getElementById('game-avg').textContent = currentGame.getCurrentAvg() ? `Avg: ${currentGame.getCurrentAvg()}s` : '';
@@ -777,7 +817,8 @@ function initImportHandlers() {
 
         try {
             const count = await handleFileImport(file);
-            status.textContent = `Zaimportowano ${count} algorytmów`;
+            status.textContent = `Zaimportowano ${count.algs} algorytmów` +
+                (count.memo ? `, ${count.memo} wyrazów memo` : '');
             status.className = 'success';
             setTimeout(() => showScreen('menu-screen'), 1000);
         } catch (err) {
@@ -886,6 +927,7 @@ function goToMenu() {
 
 let timerInterval = null;
 let currentEditId = null;
+let currentEditMemoKey = '';
 
 function initEditModal() {
     const modal = document.getElementById('edit-modal');
@@ -904,9 +946,13 @@ function initEditModal() {
 
         const newAlg = document.getElementById('edit-modal-alg').value.trim();
         const difficult = document.getElementById('edit-modal-difficult').checked;
+        const newMemo = document.getElementById('edit-modal-memo').value.trim();
 
         await updateAlgorithmText(currentEditId, newAlg);
         await setDifficult(currentEditId, difficult);
+        if (currentEditMemoKey && newMemo !== (memoMap.get(currentEditMemoKey) || '')) {
+            await setMemo(currentEditMemoKey, newMemo);
+        }
 
         if (currentGame) {
             if (currentGame.allAlgorithms) {
@@ -967,12 +1013,18 @@ async function openEditModal(id, caseName) {
     const caseEl = document.getElementById('edit-modal-case');
     const algInput = document.getElementById('edit-modal-alg');
     const difficultCheckbox = document.getElementById('edit-modal-difficult');
+    const memoRow = document.getElementById('edit-modal-memo-row');
+    const memoInput = document.getElementById('edit-modal-memo');
 
     currentEditId = id;
     caseEl.textContent = caseName;
 
     const alg = await getAlgorithmById(id);
     algInput.value = alg?.algorithms[0]?.alg || '';
+    currentEditMemoKey = memoKey(alg?.lp, alg && !alg.target2);
+    memoRow.style.display = currentEditMemoKey ? '' : 'none';
+    document.getElementById('edit-modal-memo-key').textContent = currentEditMemoKey;
+    memoInput.value = memoMap.get(currentEditMemoKey) || '';
     const isDifficultInGame = currentGame?.difficultCases?.has(id);
     difficultCheckbox.checked = isDifficultInGame ?? alg?.difficult ?? false;
 
@@ -987,6 +1039,7 @@ function closeEditModal(skipHistory = false) {
 
     modal.classList.remove('active');
     currentEditId = null;
+    currentEditMemoKey = '';
 
     if (!skipHistory && history.state?.modal === 'edit') {
         closingEditModal = true;
@@ -1073,7 +1126,7 @@ function showFlashcard() {
     else caseName = c.target1;
 
     document.getElementById('flashcard-progress').textContent = `${flashcardIndex + 1}/${flashcardCases.length}`;
-    document.getElementById('flashcard-case').textContent = caseName;
+    renderCase(document.getElementById('flashcard-case'), { label: caseName, memo: getMemo(c.lp, !c.target2) });
     document.getElementById('flashcard-alg').textContent = c.algorithms[0].alg;
     document.getElementById('flashcard-alg').classList.remove('visible');
 
@@ -1135,5 +1188,7 @@ async function refreshCurrentFlashcard() {
     if (updated) {
         flashcardCases[flashcardIndex] = updated;
         document.getElementById('flashcard-alg').textContent = updated.algorithms[0]?.alg || '';
+        const caseName = updated.lp || (updated.target2 ? `${updated.target1}${updated.target2}` : updated.target1);
+        renderCase(document.getElementById('flashcard-case'), { label: caseName, memo: getMemo(updated.lp, !updated.target2) });
     }
 }

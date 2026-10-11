@@ -16,7 +16,7 @@
     <link rel="icon" type="image/svg+xml" href="icons/icon.svg" />
     <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
     <title>BLD AlgDriller</title>
-    <link rel="stylesheet" href="css/style.css?v=25" />
+    <link rel="stylesheet" href="css/style.css?v=28" />
   </head>
   <body>
     <div id="app">
@@ -152,6 +152,14 @@
             <option value="3000">3s</option>
             <option value="4000">4s</option>
           </select>
+        </div>
+        <div class="case-display-setting" id="case-display-setting">
+          <span>Wyświetlaj:</span>
+          <div class="segmented">
+            <button type="button" data-mode="both">Memo + LP</button>
+            <button type="button" data-mode="memo">Memo</button>
+            <button type="button" data-mode="lp">LP</button>
+          </div>
         </div>
         <div class="start-buttons">
           <button id="btn-start-game" class="btn btn-primary btn-large">
@@ -400,6 +408,25 @@ UBL URF: R U R' U'</pre
             <p>
               <strong>Re-import:</strong> Zachowuje istniejące wyniki treningów.
             </p>
+
+            <p><strong>Memo (wyrazy):</strong> arkusz o nazwie <code>memo</code>,
+              tabela NxN jak algi. Nagłówek = pierwsza litera, pierwsza kolumna =
+              druga litera, w komórkach wyrazy.</p>
+            <pre>
+     A        B        C
+A    -      Baran    Cacko
+B  Abba       -      Cebula
+Z  Azor     Bzik     Czapla</pre
+            >
+            <p>
+              Słownik jest wspólny dla krawędzi, rogów i wszystkich buforów.
+              Kolumna A, wiersz B = para AB. Parity: litera +
+              <code>Z</code> (A → AZ, wiersz Z). Wyraz można też zmienić
+              w oknie edycji algorytmu. Na ekranie wyboru trybu ustawisz, co
+              wyświetlać w trakcie gry: <strong>Memo + LP</strong> (wyraz, pod nim
+              para),
+              <strong>Memo</strong> albo <strong>LP</strong>.
+            </p>
           </section>
 
           <section>
@@ -629,6 +656,13 @@ UBL URF: R U R' U'</pre
           rows="3"
           placeholder="Algorytm..."
         ></textarea>
+        <div class="memo-row" id="edit-modal-memo-row">
+          <label for="edit-modal-memo"
+            >Memo (<span id="edit-modal-memo-key"></span>)</label
+          >
+          <input type="text" id="edit-modal-memo" placeholder="Wyraz..." />
+          <small>Wspólne dla wszystkich buforów i typów</small>
+        </div>
         <label class="checkbox-row">
           <input type="checkbox" id="edit-modal-difficult" />
           <span>Oznacz jako trudny</span>
@@ -646,11 +680,11 @@ UBL URF: R U R' U'</pre
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    <script src="js/db.js?v=21"></script>
-    <script src="js/game.js?v=22"></script>
-    <script src="js/import.js?v=21"></script>
-    <script src="js/stats.js?v=21"></script>
-    <script src="js/app.js?v=23"></script>
+    <script src="js/db.js?v=22"></script>
+    <script src="js/game.js?v=23"></script>
+    <script src="js/import.js?v=22"></script>
+    <script src="js/stats.js?v=22"></script>
+    <script src="js/app.js?v=25"></script>
     <script>
       if ("serviceWorker" in navigator) {
         navigator.serviceWorker.register("/sw.js", { updateViaCache: "none" });

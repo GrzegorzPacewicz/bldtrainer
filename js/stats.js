@@ -827,6 +827,29 @@ function sortTable(table, column, direction) {
 function initDetailsLock() {
 }
 
+function appendMemoSheet(workbook) {
+    if (memoMap.size === 0) return;
+
+    const firsts = new Set();
+    const seconds = new Set();
+    for (const key of memoMap.keys()) {
+        firsts.add(key.slice(0, 1));
+        seconds.add(key.slice(1));
+    }
+    const letters = [...new Set([...firsts, ...seconds])].sort((a, b) => a.localeCompare(b, 'pl'));
+    const cols = letters.filter(l => firsts.has(l));
+    const rowLetters = letters.filter(l => seconds.has(l));
+
+    const rows = [['', ...cols]];
+    for (const second of rowLetters) {
+        rows.push([second, ...cols.map(first => memoMap.get(`${first}${second}`) || '')]);
+    }
+
+    const sheet = XLSX.utils.aoa_to_sheet(rows);
+    sheet['!cols'] = [{ wch: 4 }, ...cols.map(() => ({ wch: 12 }))];
+    XLSX.utils.book_append_sheet(workbook, sheet, 'memo');
+}
+
 async function exportToExcel() {
     const workbook = XLSX.utils.book_new();
 
@@ -892,6 +915,8 @@ async function exportToExcel() {
             XLSX.utils.book_append_sheet(workbook, sheet, `${pieceType}_${buffer}`);
         }
     }
+
+    appendMemoSheet(workbook);
 
     const date = new Date().toISOString().slice(0, 10);
     XLSX.writeFile(workbook, `bldtrainer_export_${date}.xlsx`);
@@ -985,6 +1010,8 @@ async function exportAlgorithmsNxN() {
         sheet['!cols'] = [{ wch: 12 }, { wch: 50 }];
         XLSX.utils.book_append_sheet(workbook, sheet, `parity_${buffer}`);
     }
+
+    appendMemoSheet(workbook);
 
     const date = new Date().toISOString().slice(0, 10);
     XLSX.writeFile(workbook, `bldtrainer_algs_${date}.xlsx`);

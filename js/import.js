@@ -8,8 +8,15 @@ async function importExcel(file) {
                 const workbook = XLSX.read(data, { type: 'array' });
 
                 const algorithms = [];
+                const memos = [];
 
                 for (const sheetName of workbook.SheetNames) {
+                    if (sheetName.trim().toLowerCase() === 'memo') {
+                        const json = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1 });
+                        memos.push(...parseMemoSheet(json));
+                        continue;
+                    }
+
                     const parts = sheetName.split('_');
                     if (parts.length !== 2) continue;
 
@@ -22,7 +29,8 @@ async function importExcel(file) {
                 }
 
                 await saveAlgorithms(algorithms);
-                resolve(algorithms.length);
+                await saveMemos(memos);
+                resolve({ algs: algorithms.length, memo: memos.length });
             } catch (err) {
                 reject(err);
             }
@@ -176,6 +184,33 @@ function parseSheet(rows, pieceType, buffer) {
     return algorithms;
 }
 
+// Tabela NxN: nagłówek = pierwsza litera, pierwsza kolumna = druga litera.
+// Komórki nagłówków jako "A" lub "A (UB)".
+function parseMemoSheet(rows) {
+    const memos = [];
+    if (rows.length < 2 || !rows[0]) return memos;
+
+    const letterOf = (cell) => {
+        const text = String(cell ?? '').trim();
+        return (extractLp(text) || text).toUpperCase();
+    };
+
+    const headers = rows[0];
+    for (let rowIdx = 1; rowIdx < rows.length; rowIdx++) {
+        const row = rows[rowIdx];
+        if (!row || !row[0]) continue;
+        const second = letterOf(row[0]);
+
+        for (let colIdx = 1; colIdx < headers.length; colIdx++) {
+            const first = letterOf(headers[colIdx]);
+            const word = String(row[colIdx] ?? '').trim();
+            if (!first || !second || !word || word === '-') continue;
+            memos.push({ key: `${first}${second}`, word });
+        }
+    }
+    return memos;
+}
+
 function parseResultsString(str) {
     if (!str || !str.trim()) return [];
     return str.split(';').map(s => parseFloat(s.trim())).filter(n => !isNaN(n));
@@ -263,7 +298,6 @@ function parseAlgorithm(pieceType, buffer, target1, target2, algText, lp1, lp2, 
             results: results || []
         }],
         lp,
-        memo: '',
         difficult,
         updatedAt: Date.now()
     };
@@ -294,7 +328,6 @@ function parseParityAlgorithm(pieceType, buffer, target, algText, lp, results, d
             results: results || []
         }],
         lp: lp || '',
-        memo: '',
         difficult,
         updatedAt: Date.now()
     };
@@ -335,7 +368,7 @@ async function importTxt(file) {
                 }
 
                 await saveAlgorithms(algorithms);
-                resolve(algorithms.length);
+                resolve({ algs: algorithms.length, memo: 0 });
             } catch (err) {
                 reject(err);
             }

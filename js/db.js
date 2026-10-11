@@ -1,5 +1,5 @@
 const DB_NAME = 'bldtrainer';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 let db = null;
 
@@ -21,6 +21,10 @@ async function initDB() {
                 algStore.createIndex('pieceType', 'pieceType', { unique: false });
                 algStore.createIndex('buffer', 'buffer', { unique: false });
                 algStore.createIndex('pieceBuffer', ['pieceType', 'buffer'], { unique: false });
+            }
+
+            if (!database.objectStoreNames.contains('memo')) {
+                database.createObjectStore('memo', { keyPath: 'key' });
             }
         };
     });
@@ -150,11 +154,14 @@ async function appendResult(id, result) {
 
 async function clearAllData() {
     return new Promise((resolve, reject) => {
-        const tx = db.transaction('algorithms', 'readwrite');
-        const store = tx.objectStore('algorithms');
-        const request = store.clear();
-        request.onsuccess = () => resolve();
-        request.onerror = () => reject(request.error);
+        const tx = db.transaction(['algorithms', 'memo'], 'readwrite');
+        tx.objectStore('algorithms').clear();
+        tx.objectStore('memo').clear();
+        tx.oncomplete = () => {
+            memoMap.clear();
+            resolve();
+        };
+        tx.onerror = () => reject(tx.error);
     });
 }
 
@@ -209,5 +216,61 @@ async function updateAlgorithmText(id, newAlgText) {
             }
         };
         getRequest.onerror = () => reject(getRequest.error);
+    });
+}
+
+// Memo: słownik letter pair -> wyraz, wspólny dla wszystkich typów i buforów.
+// Parity używa klucza LP + 'Z' (np. A -> AZ).
+const memoMap = new Map();
+
+function memoKey(lp, isParity) {
+    if (!lp) return '';
+    const key = lp.trim().toUpperCase();
+    return isParity ? `${key}Z` : key;
+}
+
+function getMemo(lp, isParity) {
+    return memoMap.get(memoKey(lp, isParity)) || '';
+}
+
+async function loadMemo() {
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction('memo', 'readonly');
+        const request = tx.objectStore('memo').getAll();
+        request.onsuccess = () => {
+            memoMap.clear();
+            request.result.forEach(m => memoMap.set(m.key, m.word));
+            resolve(memoMap);
+        };
+        request.onerror = () => reject(request.error);
+    });
+}
+
+async function saveMemos(entries) {
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction('memo', 'readwrite');
+        const store = tx.objectStore('memo');
+        entries.forEach(m => store.put(m));
+        tx.oncomplete = () => {
+            entries.forEach(m => memoMap.set(m.key, m.word));
+            resolve();
+        };
+        tx.onerror = () => reject(tx.error);
+    });
+}
+
+async function setMemo(key, word) {
+    if (!key) return;
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction('memo', 'readwrite');
+        const store = tx.objectStore('memo');
+        if (word) store.put({ key, word });
+        else store.delete(key);
+        tx.oncomplete = () => {
+            if (word) memoMap.set(key, word);
+            else memoMap.delete(key);
+            resolve();
+        };
+        tx.onerror = () => reject(tx.error);
     });
 }
