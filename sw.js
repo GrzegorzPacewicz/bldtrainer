@@ -3,10 +3,10 @@ const ASSETS = [
     '/',
     '/index.html',
     '/css/style.css?v=28',
-    '/js/db.js?v=22',
+    '/js/db.js?v=24',
     '/js/game.js?v=23',
-    '/js/import.js?v=22',
-    '/js/stats.js?v=22',
+    '/js/import.js?v=23',
+    '/js/stats.js?v=24',
     '/js/app.js?v=26',
     '/manifest.json'
 ];

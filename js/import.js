@@ -55,6 +55,7 @@ function parseSheet(rows, pieceType, buffer) {
     const target2ColIdx = header.findIndex(h => String(h).toLowerCase() === 'target2');
     const algColIdx = header.findIndex(h => String(h).toLowerCase() === 'algorithm');
     const difficultColIdx = header.findIndex(h => String(h).toLowerCase() === 'difficult');
+    const lastTrainedColIdx = header.findIndex(h => String(h).toLowerCase() === 'lasttrained');
     const isExportFormat = header[0] === 'Case' && (header[1] === 'Algorithm' || header[1] === 'Target1');
 
     if (isExportFormat) {
@@ -70,6 +71,11 @@ function parseSheet(rows, pieceType, buffer) {
             const resultsStr = resultsColIdx >= 0 ? String(row[resultsColIdx] || '') : '';
             const results = parseResultsString(resultsStr);
             const difficultVal = difficultColIdx >= 0 ? row[difficultColIdx] : undefined;
+            const lastTrainedAt = lastTrainedColIdx >= 0 ? parseTimestamp(row[lastTrainedColIdx]) : null;
+            const withLastTrained = (alg) => {
+                if (alg && lastTrainedAt) alg.lastTrainedAt = lastTrainedAt;
+                return alg;
+            };
 
             if (isParity) {
                 let target, lp;
@@ -81,7 +87,7 @@ function parseSheet(rows, pieceType, buffer) {
                     target = parsed.target;
                     lp = parsed.lp;
                 }
-                const alg = parseParityAlgorithm(pieceType, buffer, target, algText, lp, results, difficultVal);
+                const alg = withLastTrained(parseParityAlgorithm(pieceType, buffer, target, algText, lp, results, difficultVal));
                 if (alg) algorithms.push(alg);
             } else {
                 let target1, target2, lp;
@@ -95,7 +101,7 @@ function parseSheet(rows, pieceType, buffer) {
                     target2 = parsed.target2;
                     lp = parsed.lp;
                 }
-                const alg = parseAlgorithm(pieceType, buffer, target1, target2, algText, '', '', lp, results, difficultVal);
+                const alg = withLastTrained(parseAlgorithm(pieceType, buffer, target1, target2, algText, '', '', lp, results, difficultVal));
                 if (alg) algorithms.push(alg);
             }
         }
@@ -209,6 +215,14 @@ function parseMemoSheet(rows) {
         }
     }
     return memos;
+}
+
+// ISO z eksportu lub data Excela (numer seryjny), gdy arkusz był edytowany
+function parseTimestamp(value) {
+    if (value === undefined || value === null || value === '') return null;
+    if (typeof value === 'number') return Math.round((value - 25569) * 86400000);
+    const ts = Date.parse(String(value));
+    return isNaN(ts) ? null : ts;
 }
 
 function parseResultsString(str) {

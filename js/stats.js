@@ -109,16 +109,16 @@ async function getDifficultCases(pieceType, buffer) {
 
 const RARE_DAYS = 14;
 
-function categorizeCase(results, bufferStats, updatedAt) {
+function categorizeCase(results, bufferStats, lastTrainedAt) {
     const states = [];
 
     if (results.length < 5) {
         return { speed: null, states: ['new'] };
     }
 
-    const daysSinceUpdate = updatedAt ? (Date.now() - updatedAt) / (1000 * 60 * 60 * 24) : 0;
+    const daysSinceTraining = lastTrainedAt ? (Date.now() - lastTrainedAt) / (1000 * 60 * 60 * 24) : 0;
     const hasAo12 = !isNaN(ao12(results));
-    if (!hasAo12 || daysSinceUpdate > RARE_DAYS) {
+    if (!hasAo12 || daysSinceTraining > RARE_DAYS) {
         states.push('rare');
     }
 
@@ -202,7 +202,7 @@ async function getDetailedCaseStats(pieceType, buffer) {
         const last12 = results.slice(-12);
         const stdDev = last12.length > 1 ? std(last12) : null;
         const { speed, states } = executions > 0
-            ? categorizeCase(results, bufferStats, alg.updatedAt)
+            ? categorizeCase(results, bufferStats, alg.lastTrainedAt ?? alg.updatedAt)
             : { speed: null, states: ['new'] };
         const trend = getTrend(results);
         const caseAo5 = ao5(results);
@@ -861,7 +861,7 @@ async function exportToExcel() {
             const cases = await getDetailedCaseStats(pieceType, buffer);
             const caseMap = new Map(cases.map(c => [c.id, c]));
 
-            const rows = [['Case', 'Target1', 'Target2', 'Algorithm', 'Difficult', 'Exec', 'Avg', 'ao5', 'ao12', 'Category', 'Results']];
+            const rows = [['Case', 'Target1', 'Target2', 'Algorithm', 'Difficult', 'Exec', 'Avg', 'ao5', 'ao12', 'Category', 'Results', 'LastTrained']];
 
             const sorted = [...algs]
                 .filter(a => !a.target2 || a.target1 !== a.target2)
@@ -894,7 +894,8 @@ async function exportToExcel() {
                     stats.ao5 ? stats.ao5.toFixed(2) : '',
                     stats.ao12 ? stats.ao12.toFixed(2) : '',
                     categoryStr,
-                    resultsStr
+                    resultsStr,
+                    alg.lastTrainedAt ? new Date(alg.lastTrainedAt).toISOString() : ''
                 ]);
             }
 
@@ -910,7 +911,8 @@ async function exportToExcel() {
                 { wch: 6 },   // ao5
                 { wch: 6 },   // ao12
                 { wch: 10 },  // Category
-                { wch: 50 }   // Results
+                { wch: 50 },  // Results
+                { wch: 24 }   // LastTrained
             ];
             XLSX.utils.book_append_sheet(workbook, sheet, `${pieceType}_${buffer}`);
         }

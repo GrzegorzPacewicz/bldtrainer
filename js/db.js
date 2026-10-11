@@ -96,6 +96,9 @@ async function saveAlgorithms(algs) {
                         newAlg.algorithms[0].results = existingResults;
                     }
                     if (existing.difficult) newAlg.difficult = true;
+                    // Starsze rekordy nie mają lastTrainedAt — najlepsze przybliżenie to updatedAt
+                    const lastTrainedAt = newAlg.lastTrainedAt ?? existing.lastTrainedAt ?? existing.updatedAt;
+                    if (lastTrainedAt) newAlg.lastTrainedAt = lastTrainedAt;
                 }
                 store.put(newAlg);
                 pending--;
@@ -141,6 +144,7 @@ async function appendResult(id, result) {
             if (alg) {
                 alg.algorithms[0].results.push(result);
                 alg.updatedAt = Date.now();
+                alg.lastTrainedAt = alg.updatedAt;
                 const putRequest = store.put(alg);
                 putRequest.onsuccess = () => resolve();
                 putRequest.onerror = () => reject(putRequest.error);
