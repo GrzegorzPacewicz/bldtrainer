@@ -12,12 +12,13 @@ PWA do treningu algorytmów blindcubing (3BLD) na Rubika 3x3.
 - Eksport algorytmów ze statystykami do Excel
 - Trening z timerem i live podglądem czasu
 - Konfigurowalna pauza między algorytmami (0-4s)
-- Inteligentne tryby treningowe (Słabe punkty, Utrzymanie, Nowe)
-- Automatyczna kategoryzacja przypadków (Szybkie/Wolne/Niestabilne/Regres)
+- Inteligentne tryby treningowe (Słabe, Utrzymanie, Nowe)
+- Automatyczna kategoryzacja przypadków w dwóch osiach: tempo (Szybkie/Średnie/Wolne) i stan (Nowe/Rzadkie/Niestabilne/Regres/Trudne)
 - Szczegółowe statystyki per bufor z trendami
 - Statystyki dzienne (ostatnie 7 dni)
 - Edycja algorytmów w aplikacji (także pustych)
 - Oznaczanie trudnych przypadków
+- Memo — wyrazy do letter pairów wyświetlane w trakcie gry (import/eksport/edycja)
 - Działa offline (PWA)
 
 ---
@@ -152,7 +153,28 @@ R U R' U' 💩
 💩 L' U' L U
 ```
 
-Przyp. zostanie oznaczony jako "Trudny" i pojawi się w trybie **Słabe punkty**.
+Przyp. zostanie oznaczony jako "Trudny" i pojawi się w trybie **Słabe**.
+
+---
+
+### Memo (wyrazy)
+
+Arkusz o nazwie `memo` (w tym samym pliku co algi lub osobnym) — tabela NxN jak algi:
+
+- Wiersz 1 (nagłówki): pierwsza litera pary
+- Kolumna A (od wiersza 2): druga litera pary
+- Komórki: wyrazy (`-` i puste pomijane)
+
+|   | A    | B     | C      |
+|---|------|-------|--------|
+| A | -    | Baran | Cacko  |
+| B | Abba | -     | Cebula |
+| Z | Azor | Bzik  | Czapla |
+
+Kolumna A, wiersz B = para **AB**. Słownik jest wspólny dla krawędzi, rogów i wszystkich buforów.
+**Parity:** litera + `Z` (A → `AZ`), czyli wiersz `Z`.
+
+Re-import nadpisuje wyrazy z pliku, pozostałe zostają. Arkusz `memo` jest dołączany do obu eksportów.
 
 ---
 
@@ -161,10 +183,11 @@ Przyp. zostanie oznaczony jako "Trudny" i pojawi się w trybie **Słabe punkty**
 1. Wybierz typ: **Krawędzie**, **Rogi** lub **Parity**
 2. Wybierz bufor (jeśli masz kilka)
 3. Wybierz tryb lub konkretne przypadek
-4. Kliknij **Start** (trening z timerem) lub **Nauka** (flashcards)
-5. Po odliczaniu 3-2-1 wykonaj algorytm i dotknij ekran
-6. Timer pokazuje czas w trakcie wykonania
-7. Po sesji zapisz lub odrzuć wyniki
+4. Wybierz wyświetlanie: **Memo + LP** (wyraz, pod nim para) / **Memo** / **LP** — gdy para nie ma wyrazu, zawsze widać LP
+5. Kliknij **Start** (trening z timerem) lub **Nauka** (flashcards)
+6. Po odliczaniu 3-2-1 wykonaj algorytm i dotknij ekran
+7. Timer pokazuje czas w trakcie wykonania
+8. Po sesji zapisz lub odrzuć wyniki
 
 ---
 
@@ -176,7 +199,7 @@ Tryb do nauki nowych algorytmów bez presji czasu.
 2. Widzisz przypadek — przypomnij sobie algorytm
 3. Dotknij ekran (lub spacja) aby zobaczyć algorytm
 4. Oceń: **Łatwe** lub **Trudne**
-5. "Trudne" dodaje przypadkowi badge "Trudne" — pojawi się w trybie Słabe punkty
+5. "Trudne" dodaje przypadkowi badge "Trudne" — pojawi się w trybie Słabe
 
 Nazwy przycisków odpowiadają badge'om: kliknięcie "Trudne" = oznaczenie przypadku jako trudnego do dalszej pracy.
 
@@ -196,25 +219,39 @@ Nazwy przycisków odpowiadają badge'om: kliknięcie "Trudne" = oznaczenie przyp
 | Tryb | Opis |
 |------|------|
 | **Wszystkie** | Wszystkie przypadki dla bufora |
-| **Słabe punkty** | Wolne + niestabilne + regres + trudne |
+| **Słabe** | Wolne + niestabilne + regres + trudne |
 | **Utrzymanie** | Szybkie + średnie (utrzymanie formy) |
 | **Nowe** | Przypadki z <5 wykonań |
+| **Szybkie / Średnie / Wolne / Niestab. / Regres / Trudne / Rzadkie** | Pojedyncze kategorie |
 
-### Kategorie szczegółowe
+Puste kategorie są ukryte na ekranie wyboru trybu.
 
-Kategoryzacja oparta na **"Aktualnym tempie"** bufora — średnia ao12/ao5 wszystkich przypadków:
+### Kategorie
+
+Każdy przypadek ma dwie niezależne kategorie: **tempo** i **stan**. Mogą się łączyć — przypadek może być np. jednocześnie Wolny i Niestabilny.
+
+Punktem odniesienia jest **"Aktualne tempo"** bufora — średnia ao12/ao5 wszystkich przypadków:
 
 - ao12 używane gdy przypadek ma ≥12 wykonań
 - ao5 używane gdy przypadek ma 5-11 wykonań
 
+**Tempo** (wymaga ao5 lub ao12):
+
 | Kategoria | Logika |
 |-----------|--------|
-| **Szybkie** | ao < 80% aktualnego tempa |
-| **Wolne** | ao > 120% aktualnego tempa |
+| **Szybkie** | ao ≤ 80% aktualnego tempa |
+| **Średnie** | ao między 80% a 120% tempa |
+| **Wolne** | ao ≥ 120% aktualnego tempa |
+
+**Stan** (może być kilka naraz):
+
+| Kategoria | Logika |
+|-----------|--------|
+| **Nowe** | Mniej niż 5 wykonań (wtedy bez tempa i innych stanów) |
+| **Rzadkie** | Mniej niż 12 wykonań (brak ao12) lub ponad 14 dni od ostatniego wykonania |
 | **Niestabilne** | Odch. std. ostatnich 12 > 150% średniego dla bufora |
-| **Regres** | Ostatnie 5 wyników gorsze od poprzednich 5 o >15% |
-| **Nowe** | Mniej niż 5 wykonań |
-| **Trudne** | Ręcznie oznaczone (💩 lub przycisk !) |
+| **Regres** | Średnia ostatnich 5 wyników gorsza od poprzednich 5 o >20% (wymaga ≥10 wykonań) |
+| **Trudne** | Ręcznie oznaczone (💩, przycisk ! lub „Trudne” w Nauce) |
 
 ### Wybór niestandardowy
 
@@ -254,7 +291,7 @@ Pod tabelą wyświetlana jest sekcja z przypadkami bez algorytmu. Kliknij na prz
 | Std | Odchylenie standardowe (ostatnie 12) |
 | ao5 | Średnia z ostatnich 5 (bez best/worst) |
 | ao12 | Średnia z ostatnich 12 (bez best/worst) |
-| Kat. | S=szybki, Ś=średni, W=wolny, N=niestabilny, ?=nowy, R=regres |
+| Kat. | Tempo: S=szybki, Ś=średni, W=wolny; stan: ?=nowy, Rz=rzadki, N=niestabilny, R=regres (można łączyć, np. WN) |
 | Tr. | ↑=poprawa, →=stabilny, ↓=regres |
 
 **Re-import:** Zachowuje istniejące wyniki treningów — można bezpiecznie aktualizować algorytmy.
@@ -267,7 +304,7 @@ Po zakończeniu sesji:
 
 | Przycisk | Akcja |
 |----------|-------|
-| **✎** | Edytuj algorytm |
+| **✎** | Edytuj algorytm i memo pary |
 | **!** | Oznacz jako trudny |
 | **×** | Usuń wynik z sesji |
 | **Zapisz** | Zapisz wszystkie wyniki do bazy |
@@ -309,23 +346,83 @@ GitHub Pages + Cloudflare subdomain
 
 ## Changelog
 
-### v2.2 (2026-09-10)
+### v2.13 (2026-10-11)
+
+- Memo: wyrazy do letter pairów (wspólny słownik, parity = litera + Z)
+- Import/eksport memo jako arkusz `memo` (tabela NxN)
+- Przełącznik wyświetlania w grze i nauce: Memo + LP / Memo / LP
+- Edycja memo w oknie edycji algorytmu
+- Pasek statusu na telefonie w kolorze motywu
+- Przełącznik motywu znów pokazuje ikony SVG zamiast emoji
+- Kategoria Rzadkie liczona od ostatniego wykonania (wcześniej od ostatniej zmiany — edycja i re-import ją resetowały)
+- Pełny eksport zawiera kolumnę `LastTrained` (data ostatniego wykonania), odczytywaną przy imporcie
+
+### v2.12 (2026-09-13)
+
+- Kategorie w dwóch niezależnych osiach: **tempo** (szybkie / średnie / wolne, wymaga ao5/ao12) i **stan** (nowe / rzadkie / niestabilne / regres / trudne) — przypadek może być np. jednocześnie wolny i niestabilny
+- Próg regresu podniesiony z 15% do 20%
+- Pełne opisy kategorii w pomocy
+
+### v2.11 (2026-09-12)
+
+- Nowa kategoria **Rzadkie**: brak ao12 lub ostatni trening ponad 14 dni temu
+- Puste kategorie są ukrywane na ekranie wyboru trybu
+- „Słabe punkty” przemianowane na „Słabe”
+
+### v2.10 (2026-09-11)
+
+- Poprawka: trudne przypadki były czyszczone po sesji, w której nie kliknięto żadnego „!”
+
+### v2.09 (2026-09-10)
+
+- Poprawka: odznaczenie trudnego przypadku nie zapisywało się w bazie
+- Odchylenie std liczone z ostatnich 12 wyników zamiast z całej historii
+
+### v2.08 (2026-09-10)
 
 - Kolumny ao5/ao12 w tabeli statystyk zamiast Best/Worst
 - Nowa metryka "Aktualne tempo" — średnia ao12/ao5 bufora jako punkt odniesienia dla kategoryzacji
-- Kategoryzacja przypadków używa ao12 (≥12 wyników) lub ao5 (5-11 wyników)
 - Eksport Excel zawiera ao5/ao12 zamiast Best/Worst
 
-### v2.1 (2026-08-25)
+### v2.07 (2026-09-08)
+
+- Kategoryzacja przypadków używa ao12 (≥12 wyników) lub ao5 (5-11 wyników) względem tempa bufora zamiast średnich globalnych
+
+### v2.06 (2026-08-14 – 2026-08-25)
 
 - Nowa subdomena: driller.grzegorzpacewicz.pl
-- Ujednolicone kategorie w statystykach — 9 kategorii w siatce 3x3, tak jak w grze
-- Filtry "Słabe punkty" i "Utrzymanie" dodane do widoku statystyk
 - Poprawki nawigacji: Android back button działa poprawnie po zakończeniu gry i w trybie nauki
 - Wyjście z trybu nauki wraca do wyboru trybu (nie do menu głównego)
-- Przyciski w flashcards przemianowane na Łatwe/Trudne (zamiast Znam/Nie znam)
-- Poprawki kontrastu WCAG AA dla przycisków wyników
+- Przyciski w flashcards przemianowane na Łatwe/Trudne (zamiast Znam/Nie znam), sekcja o trybie Nauka w pomocy
+- Ekran wyników: większe elementy dotykowe, poprawna liczba przypadków z inwersją, wyśrodkowana nazwa przypadku
+- Poprawki kontrastu WCAG AA dla przycisków wyników (także hover)
+- Nowy styl oznaczenia trudnego przypadku
+- Okno edycji zachowuje stan „trudny” z ekranu wyników
 - Poprawki algorytmów inwersji
+
+### v2.05 (2026-08-12)
+
+- Poprawka: przycisk back wymagał podwójnego naciśnięcia po zakończeniu gry
+
+### v2.04 (2026-08-11)
+
+- Ujednolicone kategorie w statystykach — 9 kategorii w siatce 3x3, tak jak w grze
+- Filtry "Słabe punkty" i "Utrzymanie" dodane do widoku statystyk
+- Liczniki kategorii w statystykach zgodne z wyborem w grze
+- Ujednolicony styl przycisków kategorii
+
+### v2.03 (2026-08-10)
+
+- Eksport w dwóch wariantach: pełny ze statystykami oraz same algorytmy w tabeli NxN
+- Algorytm ukryty w trakcie pauzy między przypadkami
+- Poprawka Android back po zapisaniu wyników sesji
+
+### v2.01 (2026-08-08)
+
+- Statystyki dzienne liczone w czasie lokalnym
+- Poprawki okna edycji i przepływu po zakończeniu gry; okno edycji wyżej na telefonie
+- Filtry w statystykach zostają po edycji algorytmu
+- Poprawki WCAG: kontrast, wielkość elementów dotykowych, dostępność pomocy
 
 ### v2.0 (2026-08-07)
 
@@ -334,6 +431,7 @@ GitHub Pages + Cloudflare subdomain
 - Kategoria "Trudne" z obramowaniem zamiast wypełnienia
 - Przyciski trybów (Słabe punkty, Utrzymanie, Nowe) z kolorowym border-left
 - Ikona motywu: SVG słońce/księżyc zamiast emoji
+- Nowe ikony aplikacji (SVG, maskable, apple-touch-icon)
 - Kontrast przycisków spełnia WCAG AA (4.5:1)
 - Skrypt check-contrast.js do weryfikacji kontrastu
 

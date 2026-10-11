@@ -34,10 +34,12 @@ PWA do treningu algorytmów blindcubing (3BLD).
 - `.btn-back` ukryte na mobile (≤600px) — Android ma systemowy back
 
 ## Tryby gry
-- **Słabe punkty** — wolne + niestabilne + regres + trudne
+- **Słabe** — wolne + niestabilne + regres + trudne
 - **Utrzymanie** — szybkie + średnie
 - **Nowe** — <5 wykonań
-- Kategorie szczegółowe: Szybkie, Średnie, Wolne, Niestabilne, Regres, Trudne
+- Kategorie w dwóch niezależnych osiach (`categorizeCase` w stats.js):
+  - tempo (`speed`): Szybkie / Średnie / Wolne — wymaga ao5/ao12, względem tempa bufora (80% / 120%)
+  - stan (`states`, może być kilka): Nowe, Rzadkie (brak ao12 lub >14 dni od ostatniego wykonania — pole `lastTrainedAt`, ustawiane w `appendResult`), Niestabilne, Regres (>20%), Trudne (ręczne)
 - Custom: wybór po target1/target2, opcjonalnie z inwersją
 
 ## Uruchomienie lokalne
@@ -46,7 +48,13 @@ npx serve .
 ```
 
 ## Deploy
-GitHub Pages + Cloudflare subdomain: `bldtrainer.grzegorzpacewicz.pl`
+GitHub Pages + Cloudflare subdomain: `driller.grzegorzpacewicz.pl` (CNAME)
+
+## Wydanie nowej wersji
+- Wersja i data w `index.html` (`<div class="version">`, np. `v2.13 | 2026-10-11`)
+- Wpis w Changelog w `README.md`
+- Po zmianie pliku JS/CSS podbij jego `?v=N` w `index.html` i w `ASSETS` w `sw.js` (oraz `CACHE_NAME`)
+- README opisuje funkcje dla użytkownika — aktualizuj przy nowych funkcjach, razem z modalem pomocy w `index.html`
 
 ## Format importu Excel
 Arkusz nazywany `{pieceType}_{buffer}` np. `edges_UF`, `corners_UFR`, `parity_UFR`:
