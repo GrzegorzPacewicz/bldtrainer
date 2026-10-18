@@ -1312,6 +1312,17 @@ h3 {
     .modal-content {
         margin-bottom: 10rem;
     }
+
+    /* Edycja alg otwiera klawiaturę — modal na górze, żeby Zapisz był widoczny */
+    #edit-modal {
+        align-items: flex-start;
+        padding-top: calc(0.75rem + env(safe-area-inset-top));
+    }
+
+    #edit-modal .modal-content {
+        margin-bottom: 0;
+        max-height: calc(100dvh - 1.5rem - env(safe-area-inset-top));
+    }
 }
 
 .modal-content h3 {
