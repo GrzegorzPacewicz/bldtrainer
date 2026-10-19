@@ -924,6 +924,12 @@ async function exportToExcel() {
     XLSX.writeFile(workbook, `bldtrainer_export_${date}.xlsx`);
 }
 
+// 💩 marks a difficult case — import turns it back into the flag
+function algTextWithDifficult(alg) {
+    const text = alg.algorithms[0]?.alg || '';
+    return text && alg.difficult ? `${text} 💩` : text;
+}
+
 async function exportAlgorithmsNxN() {
     const workbook = XLSX.utils.book_new();
 
@@ -968,7 +974,7 @@ async function exportAlgorithmsNxN() {
             for (const alg of algs) {
                 if (alg.target1 && alg.target2) {
                     const key = `${alg.target1}|${alg.target2}`;
-                    algMap.set(key, alg.algorithms[0]?.alg || '');
+                    algMap.set(key, algTextWithDifficult(alg));
                 }
             }
 
@@ -1004,8 +1010,7 @@ async function exportAlgorithmsNxN() {
 
         for (const alg of sorted) {
             const lpLabel = alg.lp ? `${alg.lp} (${alg.target1})` : alg.target1;
-            const algText = alg.algorithms[0]?.alg || '';
-            rows.push([lpLabel, algText]);
+            rows.push([lpLabel, algTextWithDifficult(alg)]);
         }
 
         const sheet = XLSX.utils.aoa_to_sheet(rows);

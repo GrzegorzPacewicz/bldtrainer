@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bldtrainer-v23';
+const CACHE_NAME = 'bldtrainer-v24';
 const ASSETS = [
     '/',
     '/index.html',
@@ -7,7 +7,7 @@ const ASSETS = [
     '/js/game.js?v=23',
     '/js/speech.js?v=1',
     '/js/import.js?v=23',
-    '/js/stats.js?v=24',
+    '/js/stats.js?v=25',
     '/js/app.js?v=27',
     '/manifest.json'
 ];
