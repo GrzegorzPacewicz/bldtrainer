@@ -582,7 +582,8 @@ h3 {
     color: var(--text-secondary);
 }
 
-.pause-setting select {
+.pause-setting select,
+.case-display-setting select {
     padding: 0.5rem 2rem 0.5rem 0.75rem;
     font-size: 0.9rem;
     background: var(--bg-card);
@@ -596,7 +597,8 @@ h3 {
     cursor: pointer;
 }
 
-.pause-setting select:focus-visible {
+.pause-setting select:focus-visible,
+.case-display-setting select:focus-visible {
     outline: none;
     box-shadow: var(--focus-ring);
 }
@@ -604,6 +606,7 @@ h3 {
 /* Case display (LP / memo) */
 .case-display-setting {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
     gap: 0.75rem;

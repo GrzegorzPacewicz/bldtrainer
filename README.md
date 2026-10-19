@@ -18,7 +18,7 @@ PWA do treningu algorytmów blindcubing (3BLD) na Rubika 3x3.
 - Statystyki dzienne (ostatnie 7 dni)
 - Edycja algorytmów w aplikacji (także pustych)
 - Oznaczanie trudnych przypadków
-- Memo — wyrazy do letter pairów wyświetlane w trakcie gry (import/eksport/edycja)
+- Memo — wyrazy do letter pairów wyświetlane w trakcie gry (import/eksport/edycja), opcjonalnie czytane na głos
 - Działa offline (PWA)
 
 ---
@@ -183,7 +183,8 @@ Re-import nadpisuje wyrazy z pliku, pozostałe zostają. Arkusz `memo` jest doł
 1. Wybierz typ: **Krawędzie**, **Rogi** lub **Parity**
 2. Wybierz bufor (jeśli masz kilka)
 3. Wybierz tryb lub konkretne przypadek
-4. Wybierz wyświetlanie: **Memo + LP** (wyraz, pod nim para) / **Memo** / **LP** — gdy para nie ma wyrazu, zawsze widać LP
+4. Wybierz wyświetlanie: **Memo + LP** (wyraz, pod nim para) / **Memo** / **LP** / **Audio** (nic na ekranie, wyraz czytany na głos — trening z zamkniętymi oczami; pary bez wyrazu są pomijane) — gdy para nie ma wyrazu, zawsze widać LP
+   - **Czytaj memo** (Wył/Wł) + tempo mowy — wyraz czytany na głos, czas startuje dopiero po przeczytaniu; pary bez wyrazu nie są czytane
 5. Kliknij **Start** (trening z timerem) lub **Nauka** (flashcards)
 6. Po odliczaniu 3-2-1 wykonaj algorytm i dotknij ekran
 7. Timer pokazuje czas w trakcie wykonania
@@ -345,6 +346,12 @@ GitHub Pages + Cloudflare subdomain
 ---
 
 ## Changelog
+
+### v2.14 (2026-10-19)
+
+- Czytanie memo na głos (polski głos systemu), czas startuje po przeczytaniu
+- Tryb wyświetlania Audio — trening z zamkniętymi oczami (pary bez memo pomijane)
+- Wybór tempa mowy
 
 ### v2.13 (2026-10-11)
 

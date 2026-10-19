@@ -16,7 +16,7 @@
     <link rel="icon" type="image/svg+xml" href="icons/icon.svg" />
     <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
     <title>BLD AlgDriller</title>
-    <link rel="stylesheet" href="css/style.css?v=29" />
+    <link rel="stylesheet" href="css/style.css?v=30" />
   </head>
   <body>
     <div id="app">
@@ -62,7 +62,7 @@
         </div>
         <button id="btn-help" class="btn btn-help">?</button>
         <div class="version">
-          <div>v2.13 | 2026-10-11</div>
+          <div>v2.14 | 2026-10-19</div>
           <div class="copyright">
             © 2026
             <a href="https://grzegorzpacewicz.pl" target="_blank" rel="noopener"
@@ -159,7 +159,22 @@
             <button type="button" data-mode="both">Memo + LP</button>
             <button type="button" data-mode="memo">Memo</button>
             <button type="button" data-mode="lp">LP</button>
+            <button type="button" data-mode="audio">Audio</button>
           </div>
+        </div>
+        <div class="case-display-setting" id="speech-setting">
+          <span>Czytaj memo:</span>
+          <div class="segmented">
+            <button type="button" data-speak="off">Wył</button>
+            <button type="button" data-speak="on">Wł</button>
+          </div>
+          <select id="speech-rate" aria-label="Tempo mowy">
+            <option value="0.8">0.8×</option>
+            <option value="1">1×</option>
+            <option value="1.2">1.2×</option>
+            <option value="1.5">1.5×</option>
+            <option value="2">2×</option>
+          </select>
         </div>
         <div class="start-buttons">
           <button id="btn-start-game" class="btn btn-primary btn-large">
@@ -427,6 +442,14 @@ Z  Azor     Bzik     Czapla</pre
               para),
               <strong>Memo</strong> albo <strong>LP</strong>.
             </p>
+            <p>
+              <strong>Czytanie memo:</strong> przy włączonym
+              <strong>Czytaj memo</strong> aplikacja czyta wyraz na głos, a czas
+              startuje dopiero po przeczytaniu. Tryb <strong>Audio</strong> nie
+              pokazuje pary na ekranie — ćwiczysz z zamkniętymi oczami, dotykając
+              ekranu po wykonaniu algu. W trybie Audio pary bez wyrazu są pomijane; przy samym Czytaj memo nie są czytane (widać LP).
+              Tempo mowy ustawisz obok przełącznika.
+            </p>
           </section>
 
           <section>
@@ -448,8 +471,13 @@ Z  Azor     Bzik     Czapla</pre
               <li>
                 Wybierz, co wyświetlać: <strong>Memo + LP</strong> (wyraz,
                 pod nim para), <strong>Memo</strong> (sam wyraz) lub
-                <strong>LP</strong> (sama para). Działa też w trybie Nauka.
-                Gdy para nie ma wyrazu, zawsze widać LP.
+                <strong>LP</strong> (sama para) lub <strong>Audio</strong>
+                (nic na ekranie, wyraz czytany na głos). Działa też w trybie
+                Nauka. Gdy para nie ma wyrazu, zawsze widać LP.
+              </li>
+              <li>
+                Opcjonalnie włącz <strong>Czytaj memo</strong> — wyraz czytany
+                na głos, czas startuje po przeczytaniu
               </li>
               <li>Kliknij <strong>Start</strong></li>
               <li>Po odliczaniu dotknij ekran gdy wykonasz algorytm</li>
@@ -692,9 +720,10 @@ Z  Azor     Bzik     Czapla</pre
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="js/db.js?v=24"></script>
     <script src="js/game.js?v=23"></script>
+    <script src="js/speech.js?v=1"></script>
     <script src="js/import.js?v=23"></script>
     <script src="js/stats.js?v=24"></script>
-    <script src="js/app.js?v=26"></script>
+    <script src="js/app.js?v=27"></script>
     <script>
       if ("serviceWorker" in navigator) {
         navigator.serviceWorker.register("/sw.js", { updateViaCache: "none" });

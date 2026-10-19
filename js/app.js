@@ -22,9 +22,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     initEditModal();
     initPauseSetting();
     initCaseDisplaySetting();
+    initSpeechSetting();
 });
 
-// Tryb wyświetlania case'a: 'both' (memo + LP pod spodem), 'memo', 'lp'
+// Tryb wyświetlania case'a: 'both' (memo + LP pod spodem), 'memo', 'lp', 'audio' (tylko czytanie)
 function getCaseDisplayMode() {
     return localStorage.getItem('caseDisplay') || 'both';
 }
@@ -42,13 +43,16 @@ function initCaseDisplaySetting() {
     update();
 }
 
-function renderCase(el, info) {
+function renderCase(el, info, mode = getCaseDisplayMode()) {
     el.textContent = '';
     el.classList.remove('has-memo');
     if (!info) return;
-    const mode = getCaseDisplayMode();
     if (!info.memo || mode === 'lp') {
         el.textContent = info.label;
+        return;
+    }
+    if (mode === 'audio') {
+        el.textContent = '🎧';
         return;
     }
     el.textContent = info.memo;
@@ -126,6 +130,7 @@ function initHistoryNavigation() {
         const flashcardScreen = document.getElementById('flashcard-screen');
         if (flashcardScreen.classList.contains('active')) {
             flashcardState = 'idle';
+            cancelSpeech();
             showScreen('subset-screen', false);
             return;
         }
@@ -421,10 +426,10 @@ async function startGame() {
     }
 
     const algs = await getAlgorithmsByPieceAndBuffer(currentPieceType, currentBuffer);
-    const filtered = algs.filter(a => selectedCases.has(a.id) && hasAlgorithm(a));
+    const filtered = algs.filter(a => selectedCases.has(a.id) && hasAlgorithm(a) && hasMemoForAudio(a));
 
     if (filtered.length === 0) {
-        alert('Brak przypadków z algorytmami');
+        alert(getCaseDisplayMode() === 'audio' ? 'Brak przypadków z memo' : 'Brak przypadków z algorytmami');
         return;
     }
 
@@ -449,7 +454,7 @@ async function startGame() {
     });
 }
 
-let gameState = 'idle'; // 'idle' | 'countdown' | 'timing' | 'showingAlg'
+let gameState = 'idle'; // 'idle' | 'countdown' | 'speaking' | 'timing' | 'showingAlg'
 
 function startCountdown(callback) {
     const caseEl = document.getElementById('game-case');
@@ -472,13 +477,40 @@ function startCountdown(callback) {
     }, 1000);
 }
 
+// W trybie Audio pary bez memo są pomijane
+function hasMemoForAudio(alg) {
+    return getCaseDisplayMode() !== 'audio' || !!getMemo(alg.lp, !alg.target2);
+}
+
 function startNextCase() {
-    const tapArea = document.getElementById('game-tap-area');
-    const gameScreen = document.getElementById('game-screen');
+    // Odwrotność (inverse) bez memo w trybie Audio — pomiń bez wyniku
+    if (getCaseDisplayMode() === 'audio' && !currentGame.getCurrentCase()?.memo) {
+        if (currentGame.next()) {
+            startNextCase();
+        } else {
+            endGame();
+            gameState = 'idle';
+        }
+        return;
+    }
     updateGameDisplay();
     document.getElementById('game-alg').classList.remove('visible');
     document.getElementById('game-next-preview').classList.remove('visible');
     document.getElementById('game-timer').textContent = '';
+    speakCurrentCase();
+}
+
+// Przy włączonym czytaniu timer startuje dopiero po przeczytaniu memo
+function speakCurrentCase() {
+    gameState = 'speaking';
+    speakCase(currentGame.getCurrentCase(), () => {
+        if (gameState === 'speaking') startCaseTiming();
+    });
+}
+
+function startCaseTiming() {
+    const tapArea = document.getElementById('game-tap-area');
+    const gameScreen = document.getElementById('game-screen');
     currentGame.startTimer();
     startGameTimer();
     tapArea.classList.add('timing');
@@ -507,8 +539,10 @@ function initGameHandlers() {
         document.getElementById('game-screen').classList.remove('timing');
         currentGame.saveResult(time);
         document.getElementById('game-alg').classList.add('visible');
-        renderCase(document.getElementById('game-next-preview'), currentGame.getNextCase());
-        document.getElementById('game-next-preview').classList.add('visible');
+        if (getCaseDisplayMode() !== 'audio') {
+            renderCase(document.getElementById('game-next-preview'), currentGame.getNextCase());
+            document.getElementById('game-next-preview').classList.add('visible');
+        }
         gameState = 'showingAlg';
 
         const pause = getPauseDuration();
@@ -564,6 +598,8 @@ function pauseGame() {
     stopGameTimer();
     if (pausedState === 'timing') {
         currentGame.pauseTimer();
+    } else if (pausedState === 'speaking') {
+        cancelSpeech();
     }
 
     if (algPauseTimeout) {
@@ -585,6 +621,8 @@ function resumeGame() {
     if (gameState === 'timing') {
         currentGame.resumeTimer();
         startGameTimer();
+    } else if (gameState === 'speaking') {
+        speakCurrentCase();
     } else if (gameState === 'showingAlg') {
         if (algPauseRemaining > 0) {
             algPauseStartedAt = performance.now();
@@ -610,6 +648,7 @@ function resumeGame() {
 
 function finishGameWithResults() {
     document.getElementById('pause-overlay').classList.remove('active');
+    cancelSpeech();
     if (algPauseTimeout) {
         clearTimeout(algPauseTimeout);
         algPauseTimeout = null;
@@ -622,6 +661,7 @@ function cancelGame() {
     document.getElementById('pause-overlay').classList.remove('active');
     gameState = 'idle';
     stopGameTimer();
+    cancelSpeech();
     if (algPauseTimeout) {
         clearTimeout(algPauseTimeout);
         algPauseTimeout = null;
@@ -920,6 +960,7 @@ function goToMenu() {
         gameState = 'idle';
     }
     flashcardState = 'idle';
+    cancelSpeech();
     showScreen('menu-screen');
 }
 
@@ -1098,10 +1139,10 @@ async function startFlashcard() {
     }
 
     const algs = await getAlgorithmsByPieceAndBuffer(currentPieceType, currentBuffer);
-    flashcardCases = algs.filter(a => selectedCases.has(a.id) && hasAlgorithm(a));
+    flashcardCases = algs.filter(a => selectedCases.has(a.id) && hasAlgorithm(a) && hasMemoForAudio(a));
 
     if (flashcardCases.length === 0) {
-        alert('Brak przypadków z algorytmami');
+        alert(getCaseDisplayMode() === 'audio' ? 'Brak przypadków z memo' : 'Brak przypadków z algorytmami');
         return;
     }
 
@@ -1124,7 +1165,9 @@ function showFlashcard() {
     else caseName = c.target1;
 
     document.getElementById('flashcard-progress').textContent = `${flashcardIndex + 1}/${flashcardCases.length}`;
-    renderCase(document.getElementById('flashcard-case'), { label: caseName, memo: getMemo(c.lp, !c.target2) });
+    const info = { label: caseName, memo: getMemo(c.lp, !c.target2) };
+    renderCase(document.getElementById('flashcard-case'), info);
+    speakCase(info);
     document.getElementById('flashcard-alg').textContent = c.algorithms[0].alg;
     document.getElementById('flashcard-alg').classList.remove('visible');
 
@@ -1138,6 +1181,11 @@ function revealFlashcard() {
     if (flashcardState !== 'hidden') return;
 
     document.getElementById('flashcard-alg').classList.add('visible');
+    if (getCaseDisplayMode() === 'audio') {
+        const c = flashcardCases[flashcardIndex];
+        const caseName = c.lp || (c.target2 ? `${c.target1}${c.target2}` : c.target1);
+        renderCase(document.getElementById('flashcard-case'), { label: caseName, memo: getMemo(c.lp, !c.target2) }, 'both');
+    }
     document.getElementById('flashcard-tap-area').classList.add('hidden');
     document.getElementById('flashcard-buttons').classList.remove('hidden');
 
@@ -1163,6 +1211,7 @@ async function flashcardAnswer(known) {
 
 function exitFlashcard() {
     flashcardState = 'idle';
+    cancelSpeech();
     showScreen('subset-screen', false);
     history.replaceState({ screen: 'subset-screen' }, '', '');
 }
