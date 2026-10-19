@@ -1,3 +1,15 @@
+// SheetJS decodes XML entities like &#128169; (written by openpyxl) with
+// String.fromCharCode, truncating emoji to the private-use range U+F000–U+F8FF.
+// Restore them (e.g. U+F4A9 -> 💩 U+1F4A9).
+function fixTruncatedEmoji(str) {
+    return str.replace(/[\uF000-\uF8FF]/g, ch => String.fromCodePoint(ch.charCodeAt(0) + 0x10000));
+}
+
+function sheetToRows(sheet) {
+    const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+    return rows.map(row => row.map(v => typeof v === 'string' ? fixTruncatedEmoji(v) : v));
+}
+
 async function importExcel(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -12,7 +24,7 @@ async function importExcel(file) {
 
                 for (const sheetName of workbook.SheetNames) {
                     if (sheetName.trim().toLowerCase() === 'memo') {
-                        const json = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1 });
+                        const json = sheetToRows(workbook.Sheets[sheetName]);
                         memos.push(...parseMemoSheet(json));
                         continue;
                     }
@@ -22,7 +34,7 @@ async function importExcel(file) {
 
                     const [pieceType, buffer] = parts;
                     const sheet = workbook.Sheets[sheetName];
-                    const json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+                    const json = sheetToRows(sheet);
 
                     const parsed = parseSheet(json, pieceType, buffer);
                     algorithms.push(...parsed);

@@ -352,6 +352,8 @@ GitHub Pages + Cloudflare subdomain
 - Czytanie memo na głos (polski głos systemu), czas startuje po przeczytaniu
 - Tryb wyświetlania Audio — trening z zamkniętymi oczami (pary bez memo pomijane)
 - Wybór tempa mowy
+- Trudne algorytmy oznaczane 💩 w eksporcie NxN
+- Import rozpoznaje 💩 także w plikach zapisanych przez openpyxl/inne narzędzia
 
 ### v2.13 (2026-10-11)
 
