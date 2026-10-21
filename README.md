@@ -347,6 +347,10 @@ GitHub Pages + Cloudflare subdomain
 
 ## Changelog
 
+### v2.15 (2026-10-21)
+
+- Tryb Audio pokazuje też LP pod ikoną 🎧 (na ekranie gry i nauki)
+
 ### v2.14 (2026-10-19)
 
 - Czytanie memo na głos (polski głos systemu), czas startuje po przeczytaniu

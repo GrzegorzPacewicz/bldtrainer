@@ -53,6 +53,10 @@ function renderCase(el, info, mode = getCaseDisplayMode()) {
     }
     if (mode === 'audio') {
         el.textContent = '🎧';
+        const lpEl = document.createElement('div');
+        lpEl.className = 'case-lp';
+        lpEl.textContent = info.label;
+        el.appendChild(lpEl);
         return;
     }
     el.textContent = info.memo;
