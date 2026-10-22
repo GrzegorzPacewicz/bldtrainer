@@ -347,6 +347,12 @@ GitHub Pages + Cloudflare subdomain
 
 ## Changelog
 
+### v2.16 (2026-10-22)
+
+- Ekran wyboru gry: ustawienia (Pauza, Wyświetlaj, Czytaj memo) schowane w zwijanej sekcji — mieści się bez przewijania na telefonie
+- Wybrany tryb/kategoria jest teraz podświetlony
+- Przycisk Start pokazuje liczbę wybranych przypadków (np. „Start · 24")
+
 ### v2.15 (2026-10-21)
 
 - Tryb Audio pokazuje też LP pod ikoną 🎧 (na ekranie gry i nauki)

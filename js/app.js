@@ -23,7 +23,32 @@ document.addEventListener('DOMContentLoaded', async () => {
     initPauseSetting();
     initCaseDisplaySetting();
     initSpeechSetting();
+    initGameSettings();
 });
+
+// Zwijana sekcja ustawień na ekranie wyboru gry — zapamiętuje stan
+function initGameSettings() {
+    const details = document.getElementById('game-settings');
+    if (!details) return;
+    details.open = localStorage.getItem('gameSettingsOpen') === '1';
+    details.addEventListener('toggle', () => {
+        localStorage.setItem('gameSettingsOpen', details.open ? '1' : '0');
+    });
+}
+
+// Podświetla wybrany tryb/kategorię (lub nic, gdy wybór ręczny)
+function setActiveSubset(type) {
+    document
+        .querySelectorAll('#subset-screen .btn-all, #subset-screen .subset-modes .btn, #subset-screen .subset-buttons .btn')
+        .forEach(b => b.classList.remove('active'));
+    if (type) document.getElementById('btn-' + type)?.classList.add('active');
+}
+
+// Licznik przypadków na przycisku Start
+function updateStartCount(n) {
+    const btn = document.getElementById('btn-start-game');
+    if (btn) btn.textContent = n > 0 ? `Start · ${n}` : 'Start';
+}
 
 // Tryb wyświetlania case'a: 'both' (memo + LP pod spodem), 'memo', 'lp', 'audio' (tylko czytanie)
 function getCaseDisplayMode() {
@@ -247,6 +272,7 @@ async function selectPieceType(pieceType) {
 async function selectBuffer(buffer) {
     currentBuffer = buffer;
     selectedCases.clear();
+    setActiveSubset(null);
 
     const algs = await getAlgorithmsByPieceAndBuffer(currentPieceType, currentBuffer);
 
@@ -310,6 +336,7 @@ async function selectSubset(type) {
     const algs = await getAlgorithmsByPieceAndBuffer(currentPieceType, currentBuffer);
 
     selectedCases.clear();
+    setActiveSubset(type);
 
     if (type === 'all') {
         algs.filter(a => (!a.target2 || a.target1 !== a.target2) && hasAlgorithm(a)).forEach(a => selectedCases.add(a.id));
@@ -354,6 +381,8 @@ async function modifySelection(action) {
 
     const algs = await getAlgorithmsByPieceAndBuffer(currentPieceType, currentBuffer);
 
+    setActiveSubset(null);
+
     algs.forEach(a => {
         const matchT1 = t1 === 'All' || a.target1 === t1;
         const matchT2 = t2 === 'All' || a.target2 === t2;
@@ -372,6 +401,7 @@ async function modifySelection(action) {
 
 function resetSelection() {
     selectedCases.clear();
+    setActiveSubset(null);
     updateSelectedCasesDisplay();
 }
 
@@ -379,6 +409,7 @@ async function updateSelectedCasesDisplay() {
     const container = document.getElementById('selected-cases');
     if (selectedCases.size === 0) {
         container.innerHTML = '<span class="text-muted">Wybierz przypadki</span>';
+        updateStartCount(0);
         return;
     }
 
@@ -421,6 +452,7 @@ async function updateSelectedCasesDisplay() {
     }
 
     container.innerHTML = `<strong>Wybrano: ${totalCount}</strong><div class="selected-preview">${preview}</div>`;
+    updateStartCount(totalCount);
 }
 
 async function startGame() {

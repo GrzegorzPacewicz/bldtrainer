@@ -16,7 +16,7 @@
     <link rel="icon" type="image/svg+xml" href="icons/icon.svg" />
     <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
     <title>BLD AlgDriller</title>
-    <link rel="stylesheet" href="css/style.css?v=30" />
+    <link rel="stylesheet" href="css/style.css?v=31" />
   </head>
   <body>
     <div id="app">
@@ -62,7 +62,7 @@
         </div>
         <button id="btn-help" class="btn btn-help">?</button>
         <div class="version">
-          <div>v2.15 | 2026-10-21</div>
+          <div>v2.16 | 2026-10-22</div>
           <div class="copyright">
             © 2026
             <a href="https://grzegorzpacewicz.pl" target="_blank" rel="noopener"
@@ -140,6 +140,8 @@
             <button id="btn-reset-selection" class="btn-reset">Reset</button>
           </div>
         </div>
+        <details class="game-settings" id="game-settings">
+        <summary>Ustawienia</summary>
         <div class="pause-setting">
           <label for="pause-duration">Pauza między algami:</label>
           <select id="pause-duration">
@@ -176,6 +178,7 @@
             <option value="2">2×</option>
           </select>
         </div>
+        </details>
         <div class="start-buttons">
           <button id="btn-start-game" class="btn btn-primary btn-large">
             Start
@@ -723,7 +726,7 @@ Z  Azor     Bzik     Czapla</pre
     <script src="js/speech.js?v=1"></script>
     <script src="js/import.js?v=24"></script>
     <script src="js/stats.js?v=25"></script>
-    <script src="js/app.js?v=28"></script>
+    <script src="js/app.js?v=29"></script>
     <script>
       if ("serviceWorker" in navigator) {
         navigator.serviceWorker.register("/sw.js", { updateViaCache: "none" });

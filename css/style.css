@@ -643,6 +643,68 @@ h3 {
     box-shadow: var(--focus-ring);
 }
 
+/* Zwijana sekcja ustawień na ekranie wyboru gry */
+.game-settings {
+    background: var(--bg-secondary);
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+    padding: 0 0.9375rem;
+}
+
+.game-settings > summary {
+    cursor: pointer;
+    padding: 0.85rem 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    list-style: none;
+    user-select: none;
+}
+
+.game-settings > summary::-webkit-details-marker {
+    display: none;
+}
+
+.game-settings > summary::before {
+    content: "▸";
+    display: inline-block;
+    margin-right: 0.5rem;
+    transition: transform 0.15s;
+}
+
+.game-settings[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+.game-settings[open] {
+    padding-bottom: 0.5rem;
+}
+
+.game-settings > :last-child {
+    margin-bottom: 0;
+}
+
+.game-settings > summary:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+    border-radius: 0.25rem;
+}
+
+/* Podświetlenie aktywnie wybranego trybu/kategorii */
+.btn-all.active,
+.subset-modes .btn.active,
+#btn-fast.active,
+#btn-average.active,
+#btn-slow.active,
+#btn-unstable.active,
+#btn-regressing.active,
+#btn-difficult.active,
+#btn-rare.active {
+    background: var(--accent-button);
+    color: var(--accent-on);
+    border-color: var(--accent-button);
+}
+
 .case-lp {
     font-size: 0.6em;
     font-weight: 600;
