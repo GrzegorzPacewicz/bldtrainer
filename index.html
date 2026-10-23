@@ -16,7 +16,7 @@
     <link rel="icon" type="image/svg+xml" href="icons/icon.svg" />
     <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
     <title>BLD AlgDriller</title>
-    <link rel="stylesheet" href="css/style.css?v=31" />
+    <link rel="stylesheet" href="css/style.css?v=32" />
   </head>
   <body>
     <div id="app">
@@ -97,6 +97,12 @@
       <div id="subset-screen" class="screen">
         <button class="btn-logo">BLD AlgDriller</button>
         <button id="btn-all" class="btn btn-primary btn-all">Wszystkie</button>
+        <div class="subset-buttons subset-primary">
+          <button id="btn-difficult" class="btn btn-secondary">💩 Trudne</button>
+          <button id="btn-rare" class="btn btn-secondary">Rzadkie</button>
+        </div>
+        <details class="collapsible" id="game-more">
+        <summary>Więcej</summary>
         <div class="subset-modes">
           <button id="btn-drill-weak" class="btn btn-mode btn-danger">
             Słabe
@@ -108,17 +114,18 @@
             Nowe
           </button>
         </div>
-        <div class="subset-buttons">
+        <div class="subset-buttons subset-tempo">
           <button id="btn-fast" class="btn btn-secondary">Szybkie</button>
           <button id="btn-average" class="btn btn-secondary">Średnie</button>
           <button id="btn-slow" class="btn btn-secondary">Wolne</button>
+        </div>
+        <div class="subset-buttons subset-states">
           <button id="btn-unstable" class="btn btn-secondary">
             Niestabilne
           </button>
           <button id="btn-regressing" class="btn btn-secondary">Regres</button>
-          <button id="btn-difficult" class="btn btn-secondary">Trudne</button>
-          <button id="btn-rare" class="btn btn-secondary">Rzadkie</button>
         </div>
+        </details>
         <div id="subset-custom" class="subset-custom">
           <h3>Custom</h3>
           <div class="target-selectors">
@@ -140,7 +147,7 @@
             <button id="btn-reset-selection" class="btn-reset">Reset</button>
           </div>
         </div>
-        <details class="game-settings" id="game-settings">
+        <details class="collapsible" id="game-settings">
         <summary>Ustawienia</summary>
         <div class="pause-setting">
           <label for="pause-duration">Pauza między algami:</label>
@@ -464,11 +471,14 @@ Z  Azor     Bzik     Czapla</pre
               </li>
               <li>Wybierz bufor (jeśli masz kilka)</li>
               <li>
-                Wybierz tryb (np. Słabe) — aplikacja automatycznie wybierze
-                przypadki na podstawie Twoich wyników
+                Wybierz kategorię — na wierzchu <strong>Wszystkie</strong>,
+                <strong>💩 Trudne</strong> i <strong>Rzadkie</strong>; tryby,
+                tempo oraz Niestabilne/Regres pod <strong>Więcej</strong>.
+                Aplikacja automatycznie wybierze przypadki na podstawie Twoich
+                wyników
               </li>
               <li>
-                Pod przyciskiem Start zobaczysz listę wybranych przypadków
+                Na każdym przycisku widać liczbę przypadków (np. „Rzadkie · 12")
               </li>
               <li>Ustaw <strong>Pauzę między algami</strong> (0-4s)</li>
               <li>
@@ -520,10 +530,16 @@ Z  Azor     Bzik     Czapla</pre
               <li><strong>Utrzymanie</strong> — Szybkie + Średnie</li>
               <li><strong>Nowe</strong> — przypadki z &lt;5 wykonaniami</li>
               <li>
-                <strong>Wolne / Niestab. / Regres / Rzadkie</strong> —
-                pojedyncze kategorie
+                <strong>Pojedyncze kategorie</strong> — tempo
+                (Szybkie/Średnie/Wolne) oraz stan
+                (Niestabilne/Regres/Rzadkie/💩 Trudne)
               </li>
             </ul>
+            <p>
+              Na wierzchu ekranu wyboru są tylko <strong>Wszystkie</strong>,
+              <strong>💩 Trudne</strong> i <strong>Rzadkie</strong> — tryby i
+              pozostałe kategorie znajdziesz pod <strong>Więcej</strong>.
+            </p>
             <p>
               Możesz też ręcznie dodawać/usuwać przypadki używając selektorów i
               przycisków +/−.

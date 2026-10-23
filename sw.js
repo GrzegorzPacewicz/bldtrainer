@@ -2,7 +2,7 @@ const CACHE_NAME = 'bldtrainer-v28';
 const ASSETS = [
     '/',
     '/index.html',
-    '/css/style.css?v=31',
+    '/css/style.css?v=32',
     '/js/db.js?v=24',
     '/js/game.js?v=23',
     '/js/speech.js?v=1',

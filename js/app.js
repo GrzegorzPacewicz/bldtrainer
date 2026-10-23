@@ -23,16 +23,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     initPauseSetting();
     initCaseDisplaySetting();
     initSpeechSetting();
-    initGameSettings();
+    initCollapsible('game-more', 'gameMoreOpen');
+    initCollapsible('game-settings', 'gameSettingsOpen');
 });
 
-// Zwijana sekcja ustawień na ekranie wyboru gry — zapamiętuje stan
-function initGameSettings() {
-    const details = document.getElementById('game-settings');
+// Zwijana sekcja na ekranie wyboru gry (Więcej / Ustawienia) — zapamiętuje stan
+function initCollapsible(id, storageKey) {
+    const details = document.getElementById(id);
     if (!details) return;
-    details.open = localStorage.getItem('gameSettingsOpen') === '1';
+    details.open = localStorage.getItem(storageKey) === '1';
     details.addEventListener('toggle', () => {
-        localStorage.setItem('gameSettingsOpen', details.open ? '1' : '0');
+        localStorage.setItem(storageKey, details.open ? '1' : '0');
     });
 }
 
@@ -55,7 +56,7 @@ const SUBSET_BUTTONS = [
     ['btn-slow', 'Wolne', 'slow'],
     ['btn-unstable', 'Niestabilne', 'unstable'],
     ['btn-regressing', 'Regres', 'regressing'],
-    ['btn-difficult', 'Trudne', 'difficult'],
+    ['btn-difficult', '💩 Trudne', 'difficult'],
     ['btn-rare', 'Rzadkie', 'rare'],
 ];
 

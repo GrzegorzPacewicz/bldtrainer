@@ -351,6 +351,8 @@ GitHub Pages + Cloudflare subdomain
 
 - Każda kategoria pokazuje liczbę przypadków na przycisku (np. „Rzadkie · 12") — widać gdzie jest robota jeszcze przed kliknięciem
 - Przycisk Start wrócił do samego „Start" (licznik dublował „Wybrano: N")
+- „Trudne" oznaczone 💩 (to kategoria ręczna, nie liczona automatycznie)
+- Odchudzony ekran wyboru: na wierzchu tylko Wszystkie, 💩 Trudne, Rzadkie; tryby (Słabe/Utrzymanie/Nowe), tempo (Szybkie/Średnie/Wolne) oraz Niestabilne/Regres schowane pod zwijane „Więcej"
 
 ### v2.16 (2026-10-22)
 
