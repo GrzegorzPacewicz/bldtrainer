@@ -347,6 +347,11 @@ GitHub Pages + Cloudflare subdomain
 
 ## Changelog
 
+### v2.17 (2026-10-23)
+
+- Każda kategoria pokazuje liczbę przypadków na przycisku (np. „Rzadkie · 12") — widać gdzie jest robota jeszcze przed kliknięciem
+- Przycisk Start wrócił do samego „Start" (licznik dublował „Wybrano: N")
+
 ### v2.16 (2026-10-22)
 
 - Ekran wyboru gry: ustawienia (Pauza, Wyświetlaj, Czytaj memo) schowane w zwijanej sekcji — mieści się bez przewijania na telefonie

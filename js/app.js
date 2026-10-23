@@ -44,10 +44,31 @@ function setActiveSubset(type) {
     if (type) document.getElementById('btn-' + type)?.classList.add('active');
 }
 
-// Licznik przypadków na przycisku Start
-function updateStartCount(n) {
-    const btn = document.getElementById('btn-start-game');
-    if (btn) btn.textContent = n > 0 ? `Start · ${n}` : 'Start';
+// Liczniki przypadków na przyciskach trybów/kategorii na ekranie wyboru
+const SUBSET_BUTTONS = [
+    ['btn-all', 'Wszystkie', 'all'],
+    ['btn-drill-weak', 'Słabe', 'weak'],
+    ['btn-maintain', 'Utrzymanie', 'maintain'],
+    ['btn-learn-new', 'Nowe', 'new'],
+    ['btn-fast', 'Szybkie', 'fast'],
+    ['btn-average', 'Średnie', 'average'],
+    ['btn-slow', 'Wolne', 'slow'],
+    ['btn-unstable', 'Niestabilne', 'unstable'],
+    ['btn-regressing', 'Regres', 'regressing'],
+    ['btn-difficult', 'Trudne', 'difficult'],
+    ['btn-rare', 'Rzadkie', 'rare'],
+];
+
+async function updateSubsetCounts() {
+    const stats = await getBufferStats(currentPieceType, currentBuffer);
+    const counts = stats.categoryCount;
+    const allCount = stats.cases.filter(c => c.hasAlg).length;
+    for (const [id, label, key] of SUBSET_BUTTONS) {
+        const btn = document.getElementById(id);
+        if (!btn) continue;
+        const n = key === 'all' ? allCount : (counts[key] || 0);
+        btn.textContent = `${label} · ${n}`;
+    }
 }
 
 // Tryb wyświetlania case'a: 'both' (memo + LP pod spodem), 'memo', 'lp', 'audio' (tylko czytanie)
@@ -305,6 +326,7 @@ async function selectBuffer(buffer) {
     inversionWrapper.style.display = isParity ? 'none' : '';
 
     updateSelectedCasesDisplay();
+    updateSubsetCounts();
 
     showScreen('subset-screen');
 
@@ -409,7 +431,6 @@ async function updateSelectedCasesDisplay() {
     const container = document.getElementById('selected-cases');
     if (selectedCases.size === 0) {
         container.innerHTML = '<span class="text-muted">Wybierz przypadki</span>';
-        updateStartCount(0);
         return;
     }
 
@@ -452,7 +473,6 @@ async function updateSelectedCasesDisplay() {
     }
 
     container.innerHTML = `<strong>Wybrano: ${totalCount}</strong><div class="selected-preview">${preview}</div>`;
-    updateStartCount(totalCount);
 }
 
 async function startGame() {
