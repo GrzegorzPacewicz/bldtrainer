@@ -467,6 +467,27 @@ h3 {
     grid-template-columns: 1fr 1fr;
 }
 
+/* Przypięte skróty (ostatnio / najczęściej) — 1 lub 2 przyciski na pełną szerokość */
+.subset-shortcuts {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.subset-shortcuts:empty {
+    display: none;
+}
+
+.btn-shortcut {
+    flex: 1;
+    padding: 0.75rem 0.5rem;
+    font-size: 1rem;
+    min-height: 3rem;
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 1px solid var(--cat-border);
+}
+
 .subset-buttons .btn {
     padding: 0.75rem 0.5rem;
     font-size: 1rem;
@@ -710,7 +731,8 @@ h3 {
 #btn-unstable.active,
 #btn-regressing.active,
 #btn-difficult.active,
-#btn-rare.active {
+#btn-rare.active,
+.btn-shortcut.active {
     background: var(--accent-button);
     color: var(--accent-on);
     border-color: var(--accent-button);

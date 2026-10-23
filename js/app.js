@@ -37,12 +37,39 @@ function initCollapsible(id, storageKey) {
     });
 }
 
+// Aktualnie wybrany nazwany podzbiór (null = wybór ręczny/Custom)
+let activeSubsetType = null;
+
 // Podświetla wybrany tryb/kategorię (lub nic, gdy wybór ręczny)
 function setActiveSubset(type) {
+    activeSubsetType = type;
     document
-        .querySelectorAll('#subset-screen .btn-all, #subset-screen .subset-modes .btn, #subset-screen .subset-buttons .btn')
+        .querySelectorAll('#subset-screen .btn-all, #subset-screen .subset-modes .btn, #subset-screen .subset-buttons .btn, #subset-screen .subset-shortcuts .btn')
         .forEach(b => b.classList.remove('active'));
-    if (type) document.getElementById('btn-' + type)?.classList.add('active');
+    if (type) {
+        document.getElementById('btn-' + type)?.classList.add('active');
+        document.querySelectorAll(`#subset-shortcuts [data-subset="${type}"]`).forEach(b => b.classList.add('active'));
+    }
+}
+
+// Zapis użycia podzbiorów — osobno dla każdego typu+bufora (rogi/parity/krawędzie mają inny profil)
+const SUBSET_USAGE_KEY = 'subsetUsage';
+function subsetUsageKey() {
+    return `${currentPieceType}_${currentBuffer}`;
+}
+function getSubsetUsage() {
+    try { return JSON.parse(localStorage.getItem(SUBSET_USAGE_KEY) || '{}'); }
+    catch { return {}; }
+}
+function recordSubsetUsage() {
+    if (!activeSubsetType) return;
+    const all = getSubsetUsage();
+    const k = subsetUsageKey();
+    const entry = all[k] || { last: null, counts: {} };
+    entry.last = activeSubsetType;
+    entry.counts[activeSubsetType] = (entry.counts[activeSubsetType] || 0) + 1;
+    all[k] = entry;
+    localStorage.setItem(SUBSET_USAGE_KEY, JSON.stringify(all));
 }
 
 // Liczniki przypadków na przyciskach trybów/kategorii na ekranie wyboru
@@ -60,6 +87,18 @@ const SUBSET_BUTTONS = [
     ['btn-rare', 'Rzadkie', 'rare'],
 ];
 
+// Mapa typ podzbioru -> etykieta + klucz licznika (dla przypiętych skrótów)
+const SUBSET_META = {
+    'drill-weak': { label: 'Słabe', countKey: 'weak' },
+    'maintain': { label: 'Utrzymanie', countKey: 'maintain' },
+    'learn-new': { label: 'Nowe', countKey: 'new' },
+    'fast': { label: 'Szybkie', countKey: 'fast' },
+    'average': { label: 'Średnie', countKey: 'average' },
+    'slow': { label: 'Wolne', countKey: 'slow' },
+    'unstable': { label: 'Niestabilne', countKey: 'unstable' },
+    'regressing': { label: 'Regres', countKey: 'regressing' },
+};
+
 async function updateSubsetCounts() {
     const stats = await getBufferStats(currentPieceType, currentBuffer);
     const counts = stats.categoryCount;
@@ -70,6 +109,35 @@ async function updateSubsetCounts() {
         const n = key === 'all' ? allCount : (counts[key] || 0);
         btn.textContent = `${label} · ${n}`;
     }
+    renderShortcuts(counts);
+}
+
+// Przypięte skróty na wierzchu: ostatnio (↺) i najczęściej (★) używany podzbiór
+// z tego typu+bufora — tylko gdy wskazuje coś schowanego pod „Więcej"
+function renderShortcuts(counts) {
+    const container = document.getElementById('subset-shortcuts');
+    if (!container) return;
+    container.innerHTML = '';
+    const entry = getSubsetUsage()[subsetUsageKey()];
+    if (!entry) return;
+
+    const shown = new Set();
+    const add = (type, icon) => {
+        const meta = SUBSET_META[type];
+        if (!meta || shown.has(type)) return;
+        shown.add(type);
+        const n = counts[meta.countKey] || 0;
+        const btn = document.createElement('button');
+        btn.className = 'btn btn-secondary btn-shortcut';
+        btn.dataset.subset = type;
+        btn.textContent = `${icon} ${meta.label} · ${n}`;
+        btn.onclick = () => selectSubset(type);
+        container.appendChild(btn);
+    };
+
+    const most = Object.entries(entry.counts || {}).sort((a, b) => b[1] - a[1])[0]?.[0];
+    add(entry.last, '↺');
+    add(most, '★');
 }
 
 // Tryb wyświetlania case'a: 'both' (memo + LP pod spodem), 'memo', 'lp', 'audio' (tylko czytanie)
@@ -489,6 +557,8 @@ async function startGame() {
         alert(getCaseDisplayMode() === 'audio' ? 'Brak przypadków z memo' : 'Brak przypadków z algorytmami');
         return;
     }
+
+    recordSubsetUsage();
 
     const includeInverse = document.getElementById('include-inverse').checked;
     currentGame = new Game(filtered, includeInverse, algs);
@@ -1202,6 +1272,8 @@ async function startFlashcard() {
         alert(getCaseDisplayMode() === 'audio' ? 'Brak przypadków z memo' : 'Brak przypadków z algorytmami');
         return;
     }
+
+    recordSubsetUsage();
 
     // Shuffle
     for (let i = flashcardCases.length - 1; i > 0; i--) {

@@ -353,6 +353,7 @@ GitHub Pages + Cloudflare subdomain
 - Przycisk Start wrócił do samego „Start" (licznik dublował „Wybrano: N")
 - „Trudne" oznaczone 💩 (to kategoria ręczna, nie liczona automatycznie)
 - Odchudzony ekran wyboru: na wierzchu tylko Wszystkie, 💩 Trudne, Rzadkie; tryby (Słabe/Utrzymanie/Nowe), tempo (Szybkie/Średnie/Wolne) oraz Niestabilne/Regres schowane pod zwijane „Więcej"
+- Przypięte skróty na wierzchu: ↺ ostatnio używany i ★ najczęściej używany podzbiór — osobno dla każdego typu i bufora (rogi/parity/krawędzie), pokazywane tylko gdy wskazują coś spod „Więcej"
 
 ### v2.16 (2026-10-22)
 
